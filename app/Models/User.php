@@ -13,15 +13,25 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    protected $primaryKey = 'id';
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var string[]
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
+        'phone',
+        'cpf',
+        'status',
+        'is_admin',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -33,6 +43,9 @@ class User extends Authenticatable implements JWTSubject
         'password'
     ];
 
+    public function students(){
+        return $this->hasMany( Students::class, 'id_user', 'id' );
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -53,5 +66,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
 }

@@ -5,26 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class InvoicePayment extends Model
 {
     use HasFactory;
 
     protected $primaryKey = 'id';
-    protected $table = 'students';
+    protected $table = 'invoice_payment';
 
     protected $fillable = [
         'id',
-        'id_user',
-        'id_class',
-        'name',
-        'nick_name',
-        'birthdate',
+        'id_invoice',
+        'type',
+        'value',
+        'reference',
         'status',
+        'status_detail',
         'created_at',
         'updated_at'
     ];
 
-    public function user(){
-        return $this->hasOne( User::class, 'id', 'id_user' );
+    public function invoice(){
+        return $this->hasOne( Invoice::class, 'id', 'id_invoice' );
     }
 }

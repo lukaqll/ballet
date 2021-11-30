@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ClassModel extends Model
+{
+    use HasFactory;
+
+    protected $primaryKey = 'id';
+    protected $table = 'classes';
+
+    protected $fillable = [
+        'id',
+        'id_unit',
+        'name',
+        'value'
+    ];
+
+    public $timestamps = false;
+
+    public function unit(){
+        return $this->hasOne( Unit::class, 'id', 'id_unit' );
+    }
+}

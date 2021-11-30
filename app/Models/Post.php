@@ -5,26 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Post extends Model
 {
     use HasFactory;
 
     protected $primaryKey = 'id';
-    protected $table = 'students';
+    protected $table = 'posts';
 
     protected $fillable = [
         'id',
-        'id_user',
-        'id_class',
-        'name',
-        'nick_name',
-        'birthdate',
+        'title',
+        'description',
         'status',
         'created_at',
         'updated_at'
     ];
-
-    public function user(){
-        return $this->hasOne( User::class, 'id', 'id_user' );
-    }
 }

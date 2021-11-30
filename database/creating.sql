@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `ballet`.`post_src` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `id_post` INT NOT NULL,
   `type` VARCHAR(45) NOT NULL,
-  `scr` TEXT NOT NULL,
+  `src` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_post_src_posts1_idx` (`id_post` ASC),
   CONSTRAINT `fk_post_src_posts1`
