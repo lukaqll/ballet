@@ -16,12 +16,29 @@
                 </div>
             </div>
         </div>
+
+        <t-modal
+            header="Title of the modal"
+        >
+            Content of the modal.
+            <template v-slot:footer>
+                <div class="flex justify-between">
+                    <t-button type="button">
+                        Cancel
+                    </t-button>
+                    <t-button type="button">
+                        Ok
+                    </t-button>
+                </div>
+            </template>
+        </t-modal>
+
     </admin-base>
 </template>
 
 <script>
-import common from '../../common/common'
-import AdminBase from '../../components/AdminBase.vue'
+import common from '../../../common/common'
+import AdminBase from '../../../components/AdminBase'
 
 export default {
       components: { AdminBase },

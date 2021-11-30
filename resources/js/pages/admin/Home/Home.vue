@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import common from '../../common/common'
-import AdminBase from '../../components/AdminBase.vue'
+import common from '../../../common/common'
+import AdminBase from '../../../components/AdminBase'
 
 export default {
     components: { AdminBase },

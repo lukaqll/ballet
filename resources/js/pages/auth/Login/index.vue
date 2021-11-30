@@ -24,7 +24,7 @@
     </div>
 </template>
 <script>
-import common from '../../common/common'
+import common from '../../../common/common'
 
 export default {
     data(){
