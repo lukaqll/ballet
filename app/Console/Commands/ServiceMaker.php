@@ -61,7 +61,7 @@ class ServiceMaker extends Command
 
         if( $this->option('c') ){
 
-            $controllerName = 'Api'. ucfirst($model) . 'Controller';
+            $controllerName = ucfirst($model) . 'Controller';
             $this->call("make:apiController", [
                 'name' => $controllerName, 
                 '--s' => [$serviceName]
