@@ -5,35 +5,50 @@
         
         <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-header">Usuários</div>
-                    <div class="card-body">
-                        
-                        <table class="table">
+                <div>
+                    <b-card no-body>
+                        <b-card-header>
+                            Usuários    
+                            <b-button class="float-right" @click="() => newUserModalShow = true">Novo Usário</b-button>
+                        </b-card-header>
 
-                        </table>
-                    </div>
+                        <b-card-body>
+                            <b-table></b-table>
+                        </b-card-body>
+                    </b-card>
                 </div>
             </div>
         </div>
+
+        <div>
+            
+            <new-user-modal :isVisible="newUserModalShow" @onHidden="() => this.newUserModalShow = false"/>
+        </div>
+
+        
     </admin-base>
 </template>
 
 <script>
 import common from '../../../common/common'
 import AdminBase from '../../../components/AdminBase/index.vue'
+import NewUserModal from './NewUserModal';
 
 export default {
-      components: { AdminBase },
-
+    components: { AdminBase, NewUserModal },
+    
     data: () => ({
-        user: {}
+        user: {},
+        student: {},
+        newUserModalShow: false
     }),
+    
 
     methods: {
         getUsers: () => {
 
-        }
+        },
+        _alert(a){  alert(a)}
     }
 }
 </script>

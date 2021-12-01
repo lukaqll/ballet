@@ -1,24 +1,42 @@
 <template>
 
     <div>
-        <div class="flex bg-gray-100 border-gray-800 py-4">
-            <div class="container mx-auto flex justify-between">
-                <div class="flex">
-                    <router-link class="mr-4" to='/admin' exact>Home</router-link>
-                    <router-link to='/admin/users'>Usuários</router-link>
-                </div>
+        <b-navbar toggleable="lg" type="dark" variant="info">
+            <b-navbar-brand href="#">ADMIN Panel</b-navbar-brand>
 
-                <div class="flex pull-right">
-                    <router-link class="mr-4" to='/login' exact>Login</router-link>
-                    <span>{{ user.name }}</span>
-                </div>
-            </div>
-        </div>
+            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-        <div class="container mx-auto my-2">
-            <h1 class="page-title my-3">{{ title }}</h1>
+            <b-collapse id="nav-collapse" is-nav>
+            <b-navbar-nav>
+                <b-nav-item >
+                    <router-link class="text-white" to='/admin' exact>Home</router-link>
+                </b-nav-item>
+                <b-nav-item>
+                    <router-link class="text-white" to='/admin/users'>Usuários</router-link>
+                </b-nav-item>
+                
+            </b-navbar-nav>
+
+            <!-- Right aligned nav items -->
+            <b-navbar-nav class="ml-auto">
+
+                <b-nav-item-dropdown right>
+                    <template #button-content>
+                        <em>{{ user.name }}</em>
+                    </template>
+                <b-dropdown-item href="#">
+                    
+                </b-dropdown-item>
+                    <b-dropdown-item href="#">
+                        <router-link to='/login' exact>Login</router-link>
+                    </b-dropdown-item>
+                </b-nav-item-dropdown>
+            </b-navbar-nav>
+            </b-collapse>
+        </b-navbar>
+        <b-container class="py-md-5">
             <slot></slot>
-        </div>
+        </b-container>
     </div>
     
 </template>
