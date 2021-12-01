@@ -1,15 +1,15 @@
 <?php 
  namespace App\Services;
 
-use App\Models\User;
+use App\Models\Post;
 
-class UsersService extends AbstractService
+class PostsService extends AbstractService
 {
     protected $model;
 
     public function __construct()
     {
-        $this->model = new User;       
+        $this->model = new Post;       
     }
 
 }

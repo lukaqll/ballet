@@ -53,6 +53,16 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'services' => [
+            'driver' => 'local',
+            'root' => app_path().'/Services',
+        ],
+
+        'apiController' => [
+            'driver' => 'local',
+            'root' => app_path().'/Http/Controllers/Api',
+        ]
+
     ],
 
     /*
