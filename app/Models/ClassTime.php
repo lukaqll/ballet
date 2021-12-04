@@ -25,4 +25,10 @@ class ClassTime extends Model
     public function class(){
         return $this->hasOne( ClassModel::class, 'id', 'id_class' );
     }
+
+    public function getWeekdayText(){
+
+        $weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        return $weekdays[$this->weekday];
+    }
 }

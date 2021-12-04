@@ -1,7 +1,10 @@
 <template>
     <admin-base>
 
-        Home
+        <p class="text-bold">
+
+            Home
+        </p>
            
     </admin-base>
 </template>

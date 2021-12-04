@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StudentResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -25,7 +26,7 @@ class StudentController extends Controller
             $dataFilter = $request->all();
             $result = $this->studentsService->list( $dataFilter, ['id'] );
 
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => StudentResource::collection($result) ];
             
         } catch ( ValidationException $e ){
 
@@ -46,7 +47,7 @@ class StudentController extends Controller
             $dataFilter = $request->all();
             $result = $this->studentsService->get( $dataFilter );
     
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new StudentResource($result) ];
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
@@ -64,7 +65,7 @@ class StudentController extends Controller
         try {
 
             $result = $this->studentsService->get( ['id' => $id] );
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new StudentResource($result) ];
 
         } catch ( ValidationException $e ){
 
@@ -83,11 +84,24 @@ class StudentController extends Controller
         try {
 
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'id_user'   => 'required|integer|exists:users,id',
+                'name'      => 'required|string',
+                'nick_name' => 'required|string',
+                'birthdate' => 'required|date',
+                'classes'   => 'nullable|array',
+                'classes.*' => 'required|integer|exists:classes,id',
+                'picture'   => 'nullable|image'
             ]);
-            
-            $created = $this->studentsService->create( $validData );
-            $response = [ 'status' => 'success', 'data' => ($created) ];
+            $validData['status'] = 'A';           
+            $student = $this->studentsService->create( $validData );
+
+            if( isset($validData['classes']) )
+                $this->studentsService->updateStudentClasses( $student, $validData['classes'] );            
+
+            if( isset($validData['picture']) )
+                $this->studentsService->uploadPicture($student, $validData['picture']);
+
+            $response = [ 'status' => 'success', 'data' => new StudentResource($student) ];
 
         } catch ( ValidationException $e ){
             
@@ -107,10 +121,19 @@ class StudentController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'id_user'   => 'required|integer|exists:users,id',
+                'name'      => 'required|string',
+                'nick_name' => 'required|string',
+                'birthdate' => 'required|date',
+                'classes'   => 'nullable|array',
+                'classes.*' => 'required|integer|exists:classes,id',
             ]);
-            $updated = $this->studentsService->updateById( $id, $validData);
-            $response = [ 'status' => 'success', 'data' => ($updated) ];
+            $student = $this->studentsService->updateById( $id, $validData);
+
+            if( isset($validData['classes']) )
+                $this->studentsService->updateStudentClasses( $student, $validData['classes'] );
+            
+            $response = [ 'status' => 'success', 'data' => new StudentResource($student) ];
 
         } catch ( ValidationException $e ){
             
@@ -130,7 +153,28 @@ class StudentController extends Controller
         try {
 
             $deleted = $this->studentsService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => ($deleted) ];
+            $response = [ 'status' => 'success', 'data' => new StudentResource($deleted) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+
+    public function adminUploadPicture( Request $request, $id ) {
+        try {
+            
+            $data = $request->validate([
+                'picture' => 'required|image',
+            ]);
+            
+            $student = $this->studentsService->find($id);
+            $updated = $this->studentsService->uploadPicture($student, $data['picture']);
+            
+            $response = [ 'status' => 'success', 'data' => new StudentResource($updated) ];
 
         } catch ( ValidationException $e ){
             

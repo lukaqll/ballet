@@ -30,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'cpf',
         'status',
         'is_admin',
+        'picture',
         'created_at',
         'updated_at'
     ];
@@ -44,7 +45,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     public function students(){
-        return $this->hasMany( Students::class, 'id_user', 'id' );
+        return $this->hasMany( Student::class, 'id_user', 'id' );
     }
 
     /**

@@ -1,7 +1,9 @@
+import NotFound from './pages/errors/404'
 import Login from './pages/auth/Login'
 import Home from './pages/admin/Home'
 import Users from './pages/admin/Users'
-import NotFound from './pages/errors/404'
+import Units from './pages/admin/Units'
+import Students from './pages/admin/Students'
 
 import common from './common/common'
 
@@ -21,7 +23,7 @@ const beforeEnter = (to, form, next) => {
 
 export default {
     mode: 'history',
-    linkActiveClass: 'font-semibold',
+    linkActiveClass: 'text-bold',
 
     routes: [
         {
@@ -43,7 +45,18 @@ export default {
         },
         {
             path: '/admin/users',
-            component: Users
+            component: Users,
+            beforeEnter
+        },
+        {
+            path: '/admin/units',
+            component: Units,
+            beforeEnter
+        },
+        {
+            path: '/admin/students',
+            component: Students,
+            beforeEnter
         }
     ]
 }

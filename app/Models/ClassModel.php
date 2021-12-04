@@ -24,4 +24,9 @@ class ClassModel extends Model
     public function unit(){
         return $this->hasOne( Unit::class, 'id', 'id_unit' );
     }
+
+    public function times(){
+        return $this->hasMany( ClassTime::class, 'id_class', 'id')
+                    ->orderBy('weekday');
+    }
 }

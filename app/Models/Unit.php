@@ -18,4 +18,8 @@ class Unit extends Model
     ];
 
     public $timestamps = false;
+
+    public function classes(){
+        return $this->hasMany(ClassModel::class, 'id_unit', 'id');
+    }
 }

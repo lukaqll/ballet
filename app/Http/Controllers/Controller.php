@@ -45,4 +45,14 @@ class Controller extends BaseController
         $this->unitsService = new UnitsService;
         $this->usersService = new UsersService;
     }
+
+    protected function unMaskMoney( string $str ){
+        if( empty($str) ) return 0;
+
+        $str = str_replace('.', '', $str);
+        $str = str_replace(',', '.', $str);
+        $str = str_replace('R$', '', $str);
+        $str = str_replace(' ', '', $str);
+        return floatval($str);
+    }
 }

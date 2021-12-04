@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ClassResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -25,7 +26,7 @@ class ClassController extends Controller
             $dataFilter = $request->all();
             $result = $this->classesService->list( $dataFilter, ['id'] );
 
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => ClassResource::collection($result) ];
             
         } catch ( ValidationException $e ){
 
@@ -46,7 +47,7 @@ class ClassController extends Controller
             $dataFilter = $request->all();
             $result = $this->classesService->get( $dataFilter );
     
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new ClassResource($result) ];
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
@@ -64,7 +65,7 @@ class ClassController extends Controller
         try {
 
             $result = $this->classesService->get( ['id' => $id] );
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new ClassResource($result) ];
 
         } catch ( ValidationException $e ){
 
@@ -83,11 +84,14 @@ class ClassController extends Controller
         try {
 
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'id_unit' => 'required|integer|exists:units,id',
+                'name' => 'required|string',
+                'value' => 'required|string',
             ]);
+            $validData['value'] = $this->unMaskMoney($validData['value']);
             
             $created = $this->classesService->create( $validData );
-            $response = [ 'status' => 'success', 'data' => ($created) ];
+            $response = [ 'status' => 'success', 'data' => new ClassResource($created) ];
 
         } catch ( ValidationException $e ){
             
@@ -107,10 +111,14 @@ class ClassController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'id_unit' => 'required|integer|exists:units,id',
+                'name' => 'required|string',
+                'value' => 'required|string',
             ]);
-            $updated = $this->classesService->updateById( $id, $validData);
-            $response = [ 'status' => 'success', 'data' => ($updated) ];
+            $validData['value'] = $this->unMaskMoney($validData['value']);
+
+            $updated = $this->classesService->updateById( $id, $validData );
+            $response = [ 'status' => 'success', 'data' => new ClassResource($updated) ];
 
         } catch ( ValidationException $e ){
             
@@ -130,7 +138,7 @@ class ClassController extends Controller
         try {
 
             $deleted = $this->classesService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => ($deleted) ];
+            $response = [ 'status' => 'success', 'data' => new ClassResource($deleted) ];
 
         } catch ( ValidationException $e ){
             

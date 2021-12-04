@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UnitResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -23,9 +24,9 @@ class UnitController extends Controller
         try {
 
             $dataFilter = $request->all();
-            $result = $this->unitsService->list( $dataFilter, ['id'] );
+            $result = $this->unitsService->list( $dataFilter, ['name'] );
 
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => UnitResource::collection($result) ];
             
         } catch ( ValidationException $e ){
 
@@ -46,7 +47,7 @@ class UnitController extends Controller
             $dataFilter = $request->all();
             $result = $this->unitsService->get( $dataFilter );
     
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new UnitResource($result) ];
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
@@ -64,7 +65,7 @@ class UnitController extends Controller
         try {
 
             $result = $this->unitsService->get( ['id' => $id] );
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new UnitResource($result) ];
 
         } catch ( ValidationException $e ){
 
@@ -83,11 +84,11 @@ class UnitController extends Controller
         try {
 
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'name' => 'required|string|unique:units',
             ]);
             
             $created = $this->unitsService->create( $validData );
-            $response = [ 'status' => 'success', 'data' => ($created) ];
+            $response = [ 'status' => 'success', 'data' => new UnitResource($created) ];
 
         } catch ( ValidationException $e ){
             
@@ -107,10 +108,10 @@ class UnitController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'name' => 'required|string|unique:units,name,'.$id,
             ]);
             $updated = $this->unitsService->updateById( $id, $validData);
-            $response = [ 'status' => 'success', 'data' => ($updated) ];
+            $response = [ 'status' => 'success', 'data' => new UnitResource($updated) ];
 
         } catch ( ValidationException $e ){
             
@@ -130,7 +131,7 @@ class UnitController extends Controller
         try {
 
             $deleted = $this->unitsService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => ($deleted) ];
+            $response = [ 'status' => 'success', 'data' => new UnitResource($deleted) ];
 
         } catch ( ValidationException $e ){
             

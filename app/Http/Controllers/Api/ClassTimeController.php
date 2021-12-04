@@ -83,7 +83,10 @@ class ClassTimeController extends Controller
         try {
 
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'id_class' => 'required|integer|exists:classes,id',
+                'weekday' => 'required|integer|max:6',
+                'start_at' => 'required|string',
+                'end_at' => 'required|string',
             ]);
             
             $created = $this->classTimesService->create( $validData );
@@ -107,7 +110,10 @@ class ClassTimeController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'id_class' => 'required|integer|exists:classes,id',
+                'weekday' => 'required|integer|max:6',
+                'start_at' => 'required|string',
+                'end_at' => 'required|string',
             ]);
             $updated = $this->classTimesService->updateById( $id, $validData);
             $response = [ 'status' => 'success', 'data' => ($updated) ];

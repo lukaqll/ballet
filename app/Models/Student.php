@@ -15,16 +15,20 @@ class Student extends Model
     protected $fillable = [
         'id',
         'id_user',
-        'id_class',
         'name',
         'nick_name',
         'birthdate',
         'status',
+        'picture',
         'created_at',
         'updated_at'
     ];
 
     public function user(){
         return $this->hasOne( User::class, 'id', 'id_user' );
+    }
+
+    public function classes(){
+        return $this->belongsToMany(ClassModel::class, StudentClass::class, 'id_student', 'id_class', 'id', 'id');
     }
 }
