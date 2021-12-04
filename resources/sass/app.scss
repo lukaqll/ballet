@@ -7,6 +7,7 @@
 @import url('http://fonts.googleapis.com/icon?family=Material+Icons');
 @import "vue-select/src/scss/vue-select.scss";
 
+@import '../css/adminSIdebar.css';
 *{
     font-family: 'Nunito';
 }
@@ -21,4 +22,11 @@
 
 .material-pagination li {
     list-style: none;
+}
+.material-table{
+    border: none;
+}
+
+.main-container{
+    min-height: calc(100vh - var(--header-height));
 }

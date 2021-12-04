@@ -35,6 +35,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::put('/users/admin-password-update/{id}', [UserController::class, 'adminPasswordUpdate']);
     Route::post('/users/admin-upload-picture/{id}', [UserController::class, 'adminUploadPicture']);
+    Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
+    Route::post('/users/password/update', [UserController::class, 'passwordUpdate']);
 
     Route::get('/students/list', [StudentController::class, 'list']);
     Route::get('/students', [StudentController::class, 'get']);

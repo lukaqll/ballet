@@ -28,6 +28,8 @@
                                         :columns="usersBindings"
                                         locale="br"
                                         title=''
+                                        :perPage="[50, 100, 200]"
+                                        :clickable="false"
                                     >
                                         <th slot="thead-tr"></th>
                                         <template slot="tbody-tr" slot-scope="props">

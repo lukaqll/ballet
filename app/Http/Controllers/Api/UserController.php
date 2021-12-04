@@ -224,5 +224,54 @@ class UserController extends Controller
 
         return response()->json( $response );
     }
+
+    public function adminSelfUpdate( Request $request ) {
+        try {
+            
+            $user = auth('api')->user();
+            $userData = $request->validate([
+                'name' => 'required|string|min:1',
+                'phone' => 'nullable|string',
+                'email' => 'required|string|unique:users,email,'.$user->id,
+            ]);
+            
+            $updated = $this->usersService->updateById($user->id, $userData);
+            
+            $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function passwordUpdate( Request $request ) {
+        try {
+            
+            $user = auth('api')->user();
+
+            $userData = $request->validate([
+                'password' => 'required|string|min:6',
+                'password_confirmation' => 'required|string|min:6',
+            ]);
+            
+            if( $userData['password'] != $userData['password_confirmation'] )
+                throw ValidationException::withMessages(['As senhas não conferem']);
+
+            $updated = $this->usersService->updateById($user->id, ['password' => bcrypt($userData['password'])]);
+            
+            $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
 }
+
+
 

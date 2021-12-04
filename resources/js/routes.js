@@ -4,6 +4,7 @@ import Home from './pages/admin/Home'
 import Users from './pages/admin/Users'
 import Units from './pages/admin/Units'
 import Students from './pages/admin/Students'
+import Settings from './pages/admin/Settings'
 
 import common from './common/common'
 
@@ -23,7 +24,7 @@ const beforeEnter = (to, form, next) => {
 
 export default {
     mode: 'history',
-    linkActiveClass: 'text-bold',
+    linkActiveClass: 'active',
 
     routes: [
         {
@@ -56,6 +57,11 @@ export default {
         {
             path: '/admin/students',
             component: Students,
+            beforeEnter
+        },
+        {
+            path: '/admin/settings',
+            component: Settings,
             beforeEnter
         }
     ]
