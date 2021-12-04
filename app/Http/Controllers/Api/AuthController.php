@@ -16,8 +16,8 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json(['status' => 'error', 'message' => 'E-Mail ou Senha incorretos']);
         }
 
         return $this->respondWithToken($token);
@@ -25,16 +25,20 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        auth('api')->logout();
+        return response()->json(['status' => 'success', 'data' => null]);
     }
 
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+
+            'status' => 'success',
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ]
         ]);
     }
 
@@ -42,7 +46,7 @@ class AuthController extends Controller
         try {
             $result = ['status' => 'success', 'data' => auth('api')->user()];
         } catch ( ValidationException $e ) {
-            $result = ['status' => 'error', 'data' => $e->errors()];
+            $result = ['status' => 'error', 'message' => $e->errors()];
         }
         return json_encode($result);
     }

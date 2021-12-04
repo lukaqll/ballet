@@ -40,6 +40,7 @@
     </div>
 </template>
 <script>
+import common from '../../../common/common'
 
 export default {
     data(){
@@ -53,14 +54,18 @@ export default {
     },
     methods:{
         login() {
-            axios.post('/api/login', this.form)
-            .then((resp) => {
-                localStorage.setItem('auth_token', resp.data.access_token)
-                this.$router.push({ name: 'admin.home'});
+
+            common.request({
+                url: '/api/login',
+                type: 'post',
+                data: this.form,
+                setError: true,
+                success: (resp) => {
+                    localStorage.setItem('auth_token', resp.access_token)
+                    this.$router.push({ name: 'admin.home'});
+                }
             })
-            .catch(e => {
-                this.errors = e.response.data.errors
-            })
+
         },
     }
 }

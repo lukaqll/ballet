@@ -45,8 +45,9 @@
                             <em>{{ user.name }}</em>
                         </template>
 
-                        <b-dropdown-item >
-                            <router-link to='/login' exact>Login</router-link>
+                        <b-dropdown-item @click="logout">
+                            <b-icon icon="power"></b-icon>
+                            Sair
                         </b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
@@ -83,6 +84,24 @@ export default {
             }
         })
     },
+    methods: {
+
+        logout(){
+            common.request({
+                type: 'post',
+                url: '/api/logout',
+                auth: true,
+                setError: true,
+                success: (resp) => {
+                    localStorage.removeItem('auth_token')
+                    this.$router.push({name: 'login'})
+                }, 
+                error: e => {
+                    this.$router.push({name: 'login'})
+                }
+            })
+        }
+    }
 }
 </script>
 <style>

@@ -68,3 +68,4 @@ Route::group(['middleware' => ['admin']], function () {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
