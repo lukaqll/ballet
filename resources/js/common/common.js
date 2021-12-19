@@ -3,7 +3,11 @@ import SweetAlert from 'sweetalert2'
 
 const common = {
 
-    request:  ( opt = {url, type, data, auth, log, success, savedAlert, error, setError, file} ) => {
+    request:  ( opt = {url, type, data, auth, log, success, savedAlert, error, setError, file, load} ) => {
+
+        if( opt.load ){
+            common.load.start()
+        }
     
         // send request
         axios({
@@ -17,6 +21,10 @@ const common = {
             },
         })
         .then ( resp => {
+
+            if( opt.load ){
+                common.load.stop()
+            }
     
             opt.log && console.log( resp )
     
@@ -41,6 +49,9 @@ const common = {
     
         })
         .catch ( e => {
+            if( opt.load ){
+                common.load.stop()
+            }
             opt.log && console.error( e )
             opt.error && opt.error( e )
         })
@@ -128,6 +139,21 @@ const common = {
         return '<div class="d-flex justify-content-center"><p class="text-left">' + message + '</p></div>'
     },
 
+    load: {
+        start: () => {
+            SweetAlert.fire({
+                title: 'Aguarde',
+                allowOutsideClick: false,
+                didOpen: () => {
+
+                    SweetAlert.showLoading()
+                }
+            })
+        },
+        stop: () => {
+            SweetAlert.close()
+        }
+    }
 }
 
 export default common;

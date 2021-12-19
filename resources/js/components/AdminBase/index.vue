@@ -1,6 +1,6 @@
 <template>
 
-    <div>
+    <div id="master-wrap" class="body-pd">
         <b-navbar class="header" id="header">
 
             <b-collapse id="nav-collapse" is-nav>
@@ -34,7 +34,13 @@
             <nav class="nav">
                 <div>                     
                     <div class="nav_list"> 
-                        <router-link tag="a" class="nav_link" to='/admin/users'>
+
+                        <router-link tag="a" class="nav_link" to='/admin' exact>
+                            <b-icon icon="house"></b-icon>
+                            Home
+                        </router-link>
+
+                        <router-link tag="a" class="nav_link" to='/admin/users' >
                             <b-icon icon="person-lines-fill"></b-icon>
                             Usuários
                         </router-link>
@@ -52,6 +58,11 @@
                         <router-link tag="a" class="nav_link" to='/admin/settings'>
                             <b-icon icon="person-circle"></b-icon>
                             Minha Conta
+                        </router-link>
+
+                        <router-link tag="a" class="nav_link" to='/admin/config'>
+                            <b-icon icon="gear"></b-icon>
+                            Configurações
                         </router-link>
                         
                     </div>
@@ -127,3 +138,7 @@ export default {
 
 }
 </script>
+
+<style scoped>
+    @import "../../../css/adminSidebar.css";
+</style>

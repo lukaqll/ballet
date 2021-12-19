@@ -1,6 +1,6 @@
 <template>
     
-    <div class="d-flex flex-column justify-content-center h-100" style="height: 100vh !important">
+    <div class="d-flex flex-column justify-content-center h-100 bg-light" style="height: 100vh !important">
 
         <b-container class="w-100 d-flex justify-content-center">
             <b-card style="max-width: 30rem">
@@ -25,10 +25,16 @@
                                 </b-form-group>
                             </div>
                             <div class="col-12 mt-4">
-                                <b-button type="submit" variant="primary">
+                                <b-button type="submit" variant="primary" class="btn-block">
                                     <b-icon icon="box-arrow-in-right"></b-icon>
                                     Login
                                 </b-button>
+
+                                <div class="mt-2">
+                                    <router-link tag="a" to='/password-recovery' >
+                                        Esqueci minha senha
+                                    </router-link>
+                                </div>
                             </div>
                         </b-row>
 

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClassController;
 use App\Http\Controllers\Api\ClassTimeController;
+use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\ParameterController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
@@ -67,7 +69,17 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/class-time', [ClassTimeController::class, 'create']);
     Route::put('/class-time/{id}', [ClassTimeController::class, 'update']);
     Route::delete('/class-time/{id}', [ClassTimeController::class, 'delete']);
+
+    //config
+    Route::get('/contract/get-to-config', [ContractController::class, 'getContract']);
+    Route::post('/contract/update', [ContractController::class, 'updateContract']);
+
+
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+
+// password reset
+Route::post('/password-reset/send-mail', [AuthController::class, 'sendMailPasswordReset']);
+Route::post('/password-reset', [AuthController::class, 'passowrdReset']);

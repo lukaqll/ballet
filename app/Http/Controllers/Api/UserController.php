@@ -86,14 +86,16 @@ class UserController extends Controller
 
             DB::beginTransaction();
 
+            // create user
             $userValidData = $request->validate([
                 'user_name'     => 'required|string',
                 'user_email'    => 'required|string|email|unique:users,email',
                 'user_cpf'      => 'required|string|size:14|unique:users,cpf',
                 'user_phone'    => 'required|string',
-                'user_password' => 'required|string|min:6',
-                'user_password_confirmation' => 'required|string|min:6',
+                'user_password' => 'nullable|string',
+                'user_password_confirmation' => 'nullable|string',
                 'user_picture' => 'nullable|image',
+                'send_password_mail' => 'nullable'
             ]);
             $userData = [
                 'name'      => $userValidData['user_name'],
@@ -102,11 +104,13 @@ class UserController extends Controller
                 'phone'     => $userValidData['user_phone'],
                 'password'  => $userValidData['user_password'],
                 'password_confirmation' => $userValidData['user_password_confirmation'],
-                'picture' => $userValidData['user_picture'] ?? null,
-                'status'  => 'A'
+                'picture'   => $userValidData['user_picture'] ?? null,
+                'status'     => 'A',
+                'send_password_mail'  => $userValidData['send_password_mail'] ?? null,
             ];
             $user = $this->usersService->createUser($userData);
 
+            // create student
             $studentValidData = $request->validate([
                 'student_id_class'  => 'nullable|integer|exists:classes,id',
                 'student_name'      => 'required|string',
@@ -126,6 +130,11 @@ class UserController extends Controller
             $student = $this->studentsService->createStudent($studentData);
             
             $response = [ 'status' => 'success', 'data' => new UserResource($user) ];
+
+            // send password reset mail
+            if( !empty($userData['send_password_mail']) ) {
+                $sendedMail = $this->passwordRecoveryService->sendMail( $user, true );
+            }
 
             DB::commit();
         } catch ( ValidationException $e ){

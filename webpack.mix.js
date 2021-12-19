@@ -22,3 +22,5 @@ mix.js('resources/js/app.js', 'public/js')
     })
     .purgeCss();
 
+mix.css('resources/css/mailBase.css', 'public/css');
+

@@ -16,7 +16,7 @@
     box-sizing: border-box
 }
 
-body {
+#master-wrap {
     position: relative;
     margin: var(--header-height) 0 0 0;
     padding: 0 0;
@@ -146,7 +146,7 @@ a {
 }
 
 @media screen and (min-width: 768px) {
-    body {
+    #master-wrap {
         margin: calc(var(--header-height)) 0 0 0;
         padding-left: calc(var(--nav-width))
     }

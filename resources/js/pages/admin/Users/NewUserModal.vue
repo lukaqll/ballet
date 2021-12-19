@@ -20,13 +20,13 @@
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>CPF</label>
-                                    <b-form-input class="form-control" placeholder="CPF" mask="'000.000.000-00'" v-model="user.cpf"/>
+                                    <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
                                 </b-form-group>
                             </div>
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>Telefone</label>
-                                    <b-form-input placeholder="Telefone"  v-model="user.phone"/>
+                                    <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
                                 </b-form-group>
                             </div>
                             <div class="col-md-6">
@@ -38,13 +38,21 @@
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>Senha</label>
-                                    <b-form-input type="password" placeholder="Senha"  v-model="user.password"/>
+                                    <b-form-input :disabled="sendPasswordMail" type="password" placeholder="Senha"  v-model="user.password"/>
                                 </b-form-group>
                             </div>
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>Confirmação da Senha</label>
-                                    <b-form-input type="password" placeholder="Confirme a senha"  v-model="user.password_confirmation"/>
+                                    <b-form-input :disabled="sendPasswordMail" type="password" placeholder="Confirme a senha"  v-model="user.password_confirmation"/>
+                                </b-form-group>
+                            </div>
+
+                            <div class="col-md-6">
+                                <b-form-group>
+                                    <b-form-checkbox v-model="sendPasswordMail" name="check-button" switch>
+                                        Enviar E-Mail para recuperação de senha
+                                    </b-form-checkbox>
                                 </b-form-group>
                             </div>
                         </div>
@@ -145,13 +153,22 @@ export default {
     data: () => ({
         user: {},
         student: {},
-        classes: []
+        classes: [],
+        sendPasswordMail: false
     }),
     props: {
         isVisible: Boolean,
     },
     mounted: function() {
         this.getClasses()
+    },
+    watch: {
+        sendPasswordMail: function(willSend) {
+            if(willSend){
+                this.user.password_confirmation = null;
+                this.user.password = null;
+            }
+        }
     },
     methods: {
         onHidden(){
@@ -168,6 +185,8 @@ export default {
 
             for( const attr in this.student )
                 formData.append(`student_${attr}`, this.student[attr])
+
+            formData.append('send_password_mail', this.sendPasswordMail)
             
             common.request({
                 url: '/api/users/with-students',
@@ -176,6 +195,7 @@ export default {
                 auth: true,
                 setError: true,
                 file: true,
+                load: true,
                 success: (data) => {
                     this.$emit('onSave', data)
                 }

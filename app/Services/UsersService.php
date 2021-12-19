@@ -15,24 +15,50 @@ class UsersService extends AbstractService
         $this->model = new User;       
     }
 
+    /**
+     * create a new user
+     * 
+     * @param array $data
+     * @return User $user
+     */
     public function createUser( array $data ){
 
-                
-        if( $data['password'] != $data['password_confirmation'] )
-            throw ValidationException::withMessages(['As senhas não conferem']);
+        // send password email
+        if( !empty($data['send_password_mail']) ){
 
+            // rand password
+            $data['password'] = strtotime(date('YmdHis')).$data['name'];
+
+        } else {
+            
+            if( empty($data['password']) )
+                throw ValidationException::withMessages(['Informe uma senha']);
+
+            if( strlen($data['password']) < 6 )
+                throw ValidationException::withMessages(['Senha muito curta']);
+
+            if( $data['password'] != $data['password_confirmation'] )
+                throw ValidationException::withMessages(['As senhas não conferem']);
+        }
+         
         $data['password'] = bcrypt($data['password']);
-
-        $user = $this->create($data);
+            
+        $user = $this->model->create($data);
         $this->uploadPicture($user, $data['picture']);
 
         return $user;
     }
 
+    /**
+     * list clients users
+     */
     public function listClients(){
         return $this->model->where('is_admin', 0)->get();
     }
 
+    /**
+     * upload a user picture
+     */
     public function uploadPicture( User $user, $file ){
 
         if( empty($file) )

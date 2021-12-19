@@ -25,3 +25,17 @@ CREATE TABLE `ballet`.`student_classes` (
     
 ALTER TABLE `ballet`.`students` 
 ADD COLUMN `picture` VARCHAR(255) NULL AFTER `status`;
+
+ALTER TABLE `ballet`.`users` 
+CHANGE COLUMN `phone` `phone` VARCHAR(45) NULL ,
+CHANGE COLUMN `cpf` `cpf` VARCHAR(60) NULL ;
+
+ALTER TABLE `ballet`.`password_recovery` 
+ADD COLUMN `is_first` TINYINT NULL DEFAULT '0' AFTER `status`;
+
+CREATE TABLE `ballet`.`parameters` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `operation` TEXT NOT NULL,
+  `attribute` TEXT NOT NULL,
+  `value` TEXT NULL,
+  PRIMARY KEY (`id`));

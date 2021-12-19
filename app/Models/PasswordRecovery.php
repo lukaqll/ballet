@@ -18,6 +18,7 @@ class PasswordRecovery extends Model
         'token',
         'status',
         'picture',
+        'is_first',
         'created_at',
         'updated_at'
     ];

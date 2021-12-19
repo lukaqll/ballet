@@ -50,4 +50,46 @@ class AuthController extends Controller
         }
         return json_encode($result);
     }
+
+    public function passowrdReset( Request $request ){
+
+        try {
+
+            $data = $request->validate([
+                'token' => 'required|string',
+                'password' => 'required|string|min:6',
+                'password_confirmation' => 'required|string|min:6',
+            ]);
+
+            $updated = $this->passwordRecoveryService->resetPassword($data);
+
+            $result = ['status' => 'success', 'data' => $updated];
+        } catch ( ValidationException $e ) {
+            $result = ['status' => 'error', 'message' => $e->errors()];
+        }
+        return json_encode($result);
+    }
+
+    public function sendMailPasswordReset( Request $request ){
+
+        try {
+
+            $data = $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
+
+            $user = $this->usersService->get(['email' => $data['email']]);
+
+            if( empty($user) )
+                throw ValidationException::withMessages(['usuário não encontrado']);
+
+            $sended = $this->passwordRecoveryService->sendMail($user, false);
+
+            $result = ['status' => 'success', 'data' => $sended];
+        } catch ( ValidationException $e ) {
+            $result = ['status' => 'error', 'message' => $e->errors()];
+        }
+        return json_encode($result);
+    }
 }
+

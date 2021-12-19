@@ -26,13 +26,13 @@
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>CPF</label>
-                                    <b-form-input class="form-control" placeholder="CPF" mask="'000.000.000-00'" v-model="user.cpf"/>
+                                    <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
                                 </b-form-group>
                             </div>
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>Telefone</label>
-                                    <b-form-input placeholder="Telefone"  v-model="user.phone"/>
+                                    <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
                                 </b-form-group>
                             </div>
                             <div class="col-md-6">

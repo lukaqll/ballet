@@ -6,6 +6,7 @@ use App\Services\ClassesService;
 use App\Services\ClassTimesService;
 use App\Services\InvoicePaymentsService;
 use App\Services\InvoicesService;
+use App\Services\ParametersService;
 use App\Services\PasswordRecoveryService;
 use App\Services\PostSrcsService;
 use App\Services\PostsService;
@@ -31,6 +32,7 @@ class Controller extends BaseController
     protected $studentsService;
     protected $unitsService;
     protected $usersService;
+    protected $parametersService;
     
     public function __construct()
     {
@@ -44,6 +46,7 @@ class Controller extends BaseController
         $this->studentsService = new StudentsService;
         $this->unitsService = new UnitsService;
         $this->usersService = new UsersService;
+        $this->parametersService = new ParametersService;
     }
 
     protected function unMaskMoney( string $str ){

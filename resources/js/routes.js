@@ -1,3 +1,4 @@
+import common from './common/common'
 import NotFound from './pages/errors/404'
 import Login from './pages/auth/Login'
 import Home from './pages/admin/Home'
@@ -5,8 +6,10 @@ import Users from './pages/admin/Users'
 import Units from './pages/admin/Units'
 import Students from './pages/admin/Students'
 import Settings from './pages/admin/Settings'
-
-import common from './common/common'
+import PasswordReset from './pages/auth/PasswordRecovery/PasswordReset'
+import SendMail from './pages/auth/PasswordRecovery/SendMail'
+import Config from './pages/admin/Config'
+import ContractConfig from './pages/admin/Config/ContractConfig'
 
 const beforeEnter = (to, form, next) => {
     common.request({
@@ -63,6 +66,28 @@ export default {
             path: '/admin/settings',
             component: Settings,
             beforeEnter
-        }
+        },
+
+        // password recovery
+        {
+            name: 'password_reset',
+            path: '/password-reset/:token',
+            component: PasswordReset
+        },
+        {
+            name: 'password_recovery',
+            path: '/password-recovery',
+            component: SendMail
+        },
+        {
+            name: 'config',
+            path: '/admin/config',
+            component: Config
+        },
+        {
+            name: 'contract_config',
+            path: '/admin/config/contract',
+            component: ContractConfig
+        },
     ]
 }

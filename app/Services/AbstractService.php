@@ -143,7 +143,7 @@ abstract class AbstractService{
      */
     public function get( array $data = [] )
     {
-        $findable =  $this->model->where( $data );
+        $findable = $this->model->where( $data );
 
         if( $this->findColumn('deleted') ){
             $findable = $findable->where('deleted', '!=', 1);

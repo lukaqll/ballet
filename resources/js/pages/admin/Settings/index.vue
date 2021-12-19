@@ -22,7 +22,7 @@
                                 <div class="col-6">
                                     <b-form-group>	
                                         <label>Telefone</label>
-                                        <b-form-input v-model="user.phone"></b-form-input>
+                                        <b-form-input v-model="user.phone" v-mask="'(##) #####-####'"></b-form-input>
                                     </b-form-group>
                                 </div>
 
