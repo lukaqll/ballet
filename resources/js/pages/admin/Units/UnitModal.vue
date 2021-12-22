@@ -79,7 +79,7 @@ export default {
                     data: this.unit,
                     success: (resp) => {
                         this.unit = {}
-                        this.onSave && this.onSave(resp)
+                        this.$emit('onSave', resp)
                     }
                 })
             }

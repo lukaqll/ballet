@@ -78,7 +78,7 @@ export default {
                     data: this.classTime,
                     setError: true,
                     success: (resp) => {
-                        this.onSave && this.onSave(resp)
+                        this.$emit('onSave', resp)
                     }
                 })
             }

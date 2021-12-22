@@ -92,7 +92,7 @@ export default {
                     setError: true,
                     success: (resp) => {
                         this.classModel = {}
-                        this.onSave && this.onSave(resp)
+                        this.$emit('onSave', resp)
                     }
                 })
             }
