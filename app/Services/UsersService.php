@@ -2,6 +2,7 @@
  namespace App\Services;
 
 use App\Models\User;
+use App\Services\Api\ClicksignService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -50,10 +51,50 @@ class UsersService extends AbstractService
     }
 
     /**
+     * public create a new user
+     * 
+     * @param array $data
+     * @return User $user
+     */
+    public function publicCreateUser( array $data ){
+
+        // send password email
+        $sendMail = true;
+
+        if( $sendMail ){
+
+            // rand password
+            $data['password'] = strtotime(date('YmdHis')).$data['name'];
+
+        } else {
+            
+            if( empty($data['password']) )
+                throw ValidationException::withMessages(['Informe uma senha']);
+
+            if( strlen($data['password']) < 6 )
+                throw ValidationException::withMessages(['Senha muito curta']);
+
+            if( $data['password'] != $data['password_confirmation'] )
+                throw ValidationException::withMessages(['As senhas não conferem']);
+        }
+         
+        $data['password'] = bcrypt($data['password']);
+            
+        $user = $this->model->create($data);
+
+        if( !empty($data['picture']) ){
+            $this->uploadPicture($user, $data['picture']);
+        }
+
+        return $user;
+    }
+
+    /**
      * list clients users
      */
-    public function listClients(){
-        return $this->model->where('is_admin', 0)->get();
+    public function listClients( $filters = [] ){
+    
+        return $this->list($filters)->where('is_admin', 0);
     }
 
     /**
@@ -77,6 +118,33 @@ class UsersService extends AbstractService
             if( !empty($oldFile) )
                 Storage::disk('public')->delete($oldFile);
         }
+
+        return $user;
+    }
+
+    public function approveRegistration( int $id ){
+
+        $user = $this->model->find($id);
+
+        if( $user->status != 'MP' )
+            throw ValidationException::withMessages(['este usuário não está pendente de matrícula']);
+
+        $student = $user->pendentStudent;
+
+        if( $student->status != 'MP' )
+            throw ValidationException::withMessages(['este aluno não está pendente de matrícula']);
+
+        // ativo
+        $user->update(['status' => 'A']);
+
+        // contrato pendente
+        $student->update(['status' => 'CP']);
+
+        $clicksignService = new ClicksignService;
+        $clicksignService->createSignatory($user);
+
+        $documentService = new DocumentsService;
+        $documentService->generateContract( $student );
 
         return $user;
     }

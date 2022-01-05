@@ -9,32 +9,67 @@
                         <h4 class="h4">Dados do Usuário</h4>
                         <hr/>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="row">
-                            <div class="col-md-6">
+
+                            <div class="col-md-4">
                                 <b-form-group>
-                                    <label>Nome</label>
-                                    <b-form-input placeholder="Nome"  v-model="user.name"/>
+                                    <label>Nome Completo</label>
+                                    <b-form-input placeholder="Nome" v-model="user.name"/>
                                 </b-form-group>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <b-form-group>
-                                    <label>CPF</label>
-                                    <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
+                                    <label>E-mail</label>
+                                    <b-form-input type="email" placeholder="E-mail"  v-model="user.email"/>
                                 </b-form-group>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <b-form-group>
                                     <label>Telefone</label>
                                     <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
                                 </b-form-group>
                             </div>
-                            <div class="col-md-6">
+
+
+                            <div class="col-md-4">
                                 <b-form-group>
-                                    <label>E-Mail</label>
-                                    <b-form-input type="email" placeholder="E-Mail"  v-model="user.email"/>
+                                    <label>CPF</label>
+                                    <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
                                 </b-form-group>
                             </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>RG</label>
+                                    <b-form-input class="form-control" placeholder="Numero do RG" v-model="user.rg"/>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Órgão Expeditor</label>
+                                    <b-form-select :options="orgaosExpeditores" class="w-100" v-model="user.orgao_exp"></b-form-select>
+                                </b-form-group>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Data de Nascimento</label>
+                                    <b-form-input type="date" v-model="user.birthdate"/>
+                                </b-form-group>
+                            </div>  
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Profissão</label>
+                                    <b-form-input class="form-control" placeholder="Profissão" v-model="user.profession"/>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Instagram</label>
+                                    <b-form-input class="form-control" placeholder="Instagram para marcação do aluno em posts" v-model="user.instagram"/>
+                                </b-form-group>
+                            </div>
+
                             <div class="col-md-6">
                                 <b-form-group>
                                     <label>Senha</label>
@@ -48,6 +83,7 @@
                                 </b-form-group>
                             </div>
 
+                            
                             <div class="col-md-6">
                                 <b-form-group>
                                     <b-form-checkbox v-model="sendPasswordMail" name="check-button" switch>
@@ -58,10 +94,9 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <template>
                             <div>
-                                <!-- Styled -->
                                 <label>Foto</label>
                                 <b-form-file
                                     v-model="user.picture"
@@ -72,6 +107,55 @@
                                 <div class="mt-3">Arquivo Selecionado: {{ user.picture ? user.picture.name : '' }}</div>
                             </div>
                         </template>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- addess -->
+                    <div class="col-md-4">
+                        <b-form-group>
+                            <label>CEP</label>
+                            <b-form-input type="text" placeholder="CEP"  v-model="user.cep" v-mask="'#####-###'"/>
+                        </b-form-group>
+                    </div>
+                    <div class="col-md-4">
+                        <b-form-group>
+                            <label>UF</label>
+                            <b-form-select :options="ufs" class="w-100" v-model="user.uf"></b-form-select>
+                        </b-form-group>
+                    </div>
+                    <div class="col-md-4">
+                        <b-form-group>
+                            <label>Cidade</label>
+                            <b-form-input type="text" placeholder="cidade"  v-model="user.city"/>
+                        </b-form-group>
+                    </div>
+
+                    <div class="col-md-3">
+                        <b-form-group>
+                            <label>Bairro</label>
+                            <b-form-input type="text" placeholder="Bairro"  v-model="user.district"/>
+                        </b-form-group>
+                    </div>
+                    <div class="col-md-4">
+                        <b-form-group>
+                            <label>Logradouro</label>
+                            <b-form-input type="text" placeholder="Rua / Av."  v-model="user.street"/>
+                        </b-form-group>
+                    </div>
+
+                    <div class="col-md-2">
+                        <b-form-group>
+                            <label>Nº</label>
+                            <b-form-input type="text" placeholder="Nº"  v-model="user.address_number"/>
+                        </b-form-group>
+                    </div>
+
+                    <div class="col-md-3">
+                        <b-form-group>
+                            <label>Complemento</label>
+                            <b-form-input type="text" placeholder="Ap 101 / Predio X"  v-model="user.address_complement"/>
+                        </b-form-group>
                     </div>
                 </div>
 
@@ -147,6 +231,7 @@
 
 <script>
 import common from '../../../common/common'
+import orgaosExpeditores from "../../../params/orgaosExpeditores"
 
 export default {
 
@@ -154,7 +239,11 @@ export default {
         user: {},
         student: {},
         classes: [],
-        sendPasswordMail: false
+        sendPasswordMail: false,
+        ufs: [
+            {value: 'ES', text: 'Espírito Santo'},
+            {value: 'MG', text: 'Minas Gerais'},
+        ]
     }),
     props: {
         isVisible: Boolean,
@@ -168,6 +257,11 @@ export default {
                 this.user.password_confirmation = null;
                 this.user.password = null;
             }
+        }
+    },
+    computed: {
+        orgaosExpeditores: function(){
+            return orgaosExpeditores
         }
     },
     methods: {

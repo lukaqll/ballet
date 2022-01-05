@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Api\ClicksignService;
 use App\Services\ClassesService;
 use App\Services\ClassTimesService;
+use App\Services\ContractsService;
+use App\Services\DocumentsService;
 use App\Services\InvoicePaymentsService;
 use App\Services\InvoicesService;
 use App\Services\ParametersService;
 use App\Services\PasswordRecoveryService;
 use App\Services\PostSrcsService;
 use App\Services\PostsService;
+use App\Services\RegisterFilesSerivce;
 use App\Services\StudentsService;
 use App\Services\UnitsService;
 use App\Services\UsersService;
@@ -33,6 +37,10 @@ class Controller extends BaseController
     protected $unitsService;
     protected $usersService;
     protected $parametersService;
+    protected $clicksignService;
+    protected $documentsService;
+    protected $contractsService;
+    protected $registerFilesSerivce;
     
     public function __construct()
     {
@@ -47,6 +55,10 @@ class Controller extends BaseController
         $this->unitsService = new UnitsService;
         $this->usersService = new UsersService;
         $this->parametersService = new ParametersService;
+        $this->clicksignService = new ClicksignService;
+        $this->documentsService = new DocumentsService;
+        $this->contractsService = new ContractsService;
+        $this->registerFilesSerivce = new RegisterFilesSerivce;
     }
 
     protected function unMaskMoney( string $str ){

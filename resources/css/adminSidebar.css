@@ -121,7 +121,8 @@ a {
 }
 
 .l-navbar.show {
-    left: 0
+    left: 0;
+    width: calc(var(--nav-width) + 135px);
 }
 
 .body-pd {
@@ -170,7 +171,7 @@ a {
     }
 
     .l-navbar.show {
-        width: calc(var(--nav-width) + 156px)
+        width: calc(var(--nav-width) + 156px);
     }
 
     .body-pd {

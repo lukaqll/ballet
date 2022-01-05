@@ -95,6 +95,36 @@
                         </b-form-group>
                     </div>
 
+                    <div class="col-md-12" v-if="student.id">
+                        <h5>
+                            Contratos
+                            <b-button variant="light" @click="createContract" class="btn-sm float-right">Gerar Contrato</b-button>
+                        </h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Arquivo</th>
+                                    <th>Status</th>
+                                    <th>Criado Em</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="contract in student.contracts" :key="contract.id">
+                                    <td>{{contract.path}}</td>
+                                    <td>{{contract.status_text}}</td>
+                                    <td>{{formartDate(contract.created_at)}}</td>
+                                    <td>
+                                        <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
+                                        <b-button v-if="contract.status != 'canceled'" variant="light" @click="() => notify(contract.id)" class="btn-sm">
+                                            <b-icon icon="bell"/>
+                                        </b-button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div class="col-12 text-right">
                         <div>
                             <b-button @click="onHidden">Cancelar</b-button>
@@ -209,15 +239,7 @@ export default {
     watch: {
         idStudent: function(idStudent){
             if( idStudent ){
-                common.request({
-                    url: '/api/students/'+idStudent,
-                    type: 'get',
-                    auth: true,
-                    setError: true,
-                    success: (student) => {
-                        this.student = student
-                    }
-                })
+                this.getStudent(idStudent)
             } else {
                 
             }
@@ -225,6 +247,17 @@ export default {
         }
     },
     methods: {
+        getStudent(idStudent){
+            common.request({
+                url: '/api/students/'+idStudent,
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (student) => {
+                    this.student = student
+                }
+            })
+        },
         onShown(){
             if( !this.idStudent ){
                 this.student = {classes: [], id_user: this.user.id}
@@ -236,8 +269,6 @@ export default {
         },
         save(){
 
-            
-            
             if( this.idStudent ) {
 
                 const formData = this.student
@@ -248,6 +279,7 @@ export default {
                     data: formData,
                     auth: true,
                     setError: true,
+                    load: true,
                     success: (data) => {
                         this.$emit('onSave', data)
                     }
@@ -276,6 +308,7 @@ export default {
                     auth: true,
                     setError: true,
                     file: true,
+                    load: true,
                     success: (data) => {
                         this.$emit('onSave', data)
                     }
@@ -333,13 +366,70 @@ export default {
                 auth: true,
                 setError: true,
                 file: true,
+                load: true,
                 success: (student) => {
                     this.pictureModalShow = false
                     this.picture = null
                     this.student = student
                 }
             })
-        }
+        },
+
+        formartDate(str, hour=false){
+            return common.formartDate(str, hour)
+        },
+
+        cancelContract(id){
+
+            common.confirmAlert({
+                title: 'Deseja mesmo cancelar este contrato?',
+                message: 'Esta ação será irreversível',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/contracts/cancel/'+id,
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: (contract) => {
+                            this.getStudent(contract.id_student)
+                        }
+                    })
+                }
+            })
+        },
+
+        createContract(){
+            common.confirmAlert({
+                title: 'Gerar novo contrato?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/contracts/generate/'+this.student.id,
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: (contract) => {
+                            this.getStudent(contract.id_student)
+                        }
+                    })
+                }
+            })
+        },
+
+        notify(id){
+
+            common.request({
+                url: '/api/contracts/notify/'+id,
+                type: 'post',
+                auth: true,
+                setError: true,
+                load: true,
+                success: (student) => {
+                    common.success({title: 'Notificações enviadas'})
+                }
+            })
+        },
 
     }
 }

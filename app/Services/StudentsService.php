@@ -19,11 +19,13 @@ class StudentsService extends AbstractService
         
         $student =  $this->create($data);
         
-        if( $data['id_class'] ){
+        if( !empty($data['id_class']) ){
             $student->classes()->attach( $data['id_class'] );
         }
 
-        $this->uploadPicture($student, $data['picture']);
+        if( !empty($data['picture']) ){
+            $this->uploadPicture($student, $data['picture']);
+        }
 
         return $student;
     }
@@ -58,5 +60,11 @@ class StudentsService extends AbstractService
         }
 
         return $student;
+    }
+
+    public function getbirthdays(){
+        
+        return $this->model->whereRaw("date_format(birthdate, '%m') = date_format(curdate(), '%m')")
+                            ->orderBy('birthdate')->get();
     }
 }

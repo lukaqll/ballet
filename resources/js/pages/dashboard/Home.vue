@@ -10,20 +10,22 @@ import common from '../../common/common'
 export default {
 
     data: () => ({
-        user: {}
+        data: {}
     }),
     mounted(){
-        // common.request({
-        //     type: 'get',
-        //     url: '/api/user',
-        //     auth: true,
-        //     success: (resp) => {
-        //         this.user = resp
-        //     }, 
-        //     error: e => {
-        //         this.$router.push({name: 'login'})
-        //     }
-        // })
+        this.getHome()
+    },
+    methods: {
+        getHome(){
+            // common.request({
+            //     type: 'get',
+            //     url: '/api/get-home',
+            //     auth: true,
+            //     success: (resp) => {
+            //         this.data = resp
+            //     }
+            // })
+        }
     }
 
 }

@@ -7,19 +7,19 @@
                         
                         <b-form @submit.prevent="alterCredentials">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <b-form-group>	
                                         <label>Nome</label>
                                         <b-form-input v-model="user.name"></b-form-input>
                                     </b-form-group>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <b-form-group>	
                                         <label>E-Mail</label>
                                         <b-form-input type="email" v-model="user.email"></b-form-input>
                                     </b-form-group>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <b-form-group>	
                                         <label>Telefone</label>
                                         <b-form-input v-model="user.phone" v-mask="'(##) #####-####'"></b-form-input>

@@ -11,6 +11,11 @@
                             <b-icon id="header-toggle" :class="sibarExpanded ? 'bx-x' : ''" icon="list" @click="toggleSidebar"></b-icon>
                         </span>
                     </b-nav-item>
+                    <router-link tag="b-nav-item" to="/admin" exact>
+                        <span class="text-white">
+                            <span>Ellegance Ballet</span>
+                        </span>
+                    </router-link>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ml-auto">
@@ -40,6 +45,11 @@
                             Home
                         </router-link>
 
+                        <router-link tag="a" class="nav_link" to='/admin/new-users' >
+                            <b-icon icon="person-plus"></b-icon>
+                            Novas Matrículas
+                        </router-link>
+
                         <router-link tag="a" class="nav_link" to='/admin/users' >
                             <b-icon icon="person-lines-fill"></b-icon>
                             Usuários
@@ -50,9 +60,19 @@
                             Alunos
                         </router-link>
 
+                        <router-link tag="a" class="nav_link" to='/admin/contracts'>
+                            <b-icon icon="file-earmark-medical"></b-icon>
+                            Contratos
+                        </router-link>
+
                         <router-link tag="a" class="nav_link" to='/admin/units'>
                             <b-icon icon="calendar2-week"></b-icon>
                             Aulas
+                        </router-link>
+
+                        <router-link tag="a" class="nav_link" to='/admin/posts'>
+                            <b-icon icon="images"></b-icon>
+                            Posts
                         </router-link>
 
                         <router-link tag="a" class="nav_link" to='/admin/settings'>
@@ -81,10 +101,8 @@
 
 <script>
 import common from '../../common/common'
-import Sidebar from './Sidebar'
 
 export default {
-    components: {Sidebar},
     props: {
         title: String
     },

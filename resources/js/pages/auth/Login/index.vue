@@ -15,13 +15,13 @@
                             <div class="col-12">
                                 <b-form-group>
                                     <label>E-Mail</label>
-                                    <b-form-input placeholder="Seu E-Mail" type="email" v-model="form.email"/>
+                                    <b-form-input requiired placeholder="Seu E-Mail" type="email" v-model="form.email"/>
                                 </b-form-group>
                             </div>
                             <div class="col-12">
                                 <b-form-group>
                                     <label>Senha</label>
-                                    <b-form-input placeholder="Informe sua senha" type="password" v-model="form.password"/>
+                                    <b-form-input requiired placeholder="Informe sua senha" type="password" v-model="form.password"/>
                                 </b-form-group>
                             </div>
                             <div class="col-12 mt-4">
@@ -30,6 +30,11 @@
                                     Login
                                 </b-button>
 
+                                <router-link tag="b-button" to='/cadastro' class="btn-block btn-light">
+                                    <b-icon icon="person-plus"></b-icon>
+                                    Cadastrar
+                                </router-link>
+
                                 <div class="mt-2">
                                     <router-link tag="a" to='/password-recovery' >
                                         Esqueci minha senha
@@ -37,8 +42,6 @@
                                 </div>
                             </div>
                         </b-row>
-
-                        <span v-for="error in errors" :key="error">{{error}}</span>
                     </div> 
                 </b-form>
             </b-card>

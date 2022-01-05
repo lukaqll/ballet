@@ -10,6 +10,10 @@ import PasswordReset from './pages/auth/PasswordRecovery/PasswordReset'
 import SendMail from './pages/auth/PasswordRecovery/SendMail'
 import Config from './pages/admin/Config'
 import ContractConfig from './pages/admin/Config/ContractConfig'
+import Register from './pages/Auth/Register'
+import NewRegistration from './pages/admin/NewRegistration'
+import Contracts from './pages/admin/Contracts'
+import Posts from './pages/admin/Posts'
 
 const beforeEnter = (to, form, next) => {
     common.request({
@@ -88,6 +92,28 @@ export default {
             name: 'contract_config',
             path: '/admin/config/contract',
             component: ContractConfig
+        },
+        {
+            name: 'new_users',
+            path: '/admin/new-users',
+            component: NewRegistration
+        },
+        {
+            name: 'contracts',
+            path: '/admin/contracts',
+            component: Contracts
+        },
+        {
+            name: 'contracts',
+            path: '/admin/posts',
+            component: Posts
+        },
+
+        // register
+        {
+            name: 'contract_config',
+            path: '/cadastro',
+            component: Register
         },
     ]
 }

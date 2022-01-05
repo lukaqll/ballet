@@ -23,6 +23,16 @@ class StudentResource extends JsonResource
             'picture' => !empty($this->picture) ? '/storage/'.$this->picture : null,
             'birthdate_formated' => date('d/m/Y', strtotime($this->birthdate)),
             'classes' => ClassResource::collection($this->classes),
+            'contracts' => ContractResource::collection($this->contracts),
+            'open_contracts_count' => $this->openContracts->count(),
+            'openContract' => $this->openContract,
+            'user' => $this->user,
+
+            'health_problem' => $this->health_problem,
+            'food_restriction' => $this->food_restriction,
+            'in_school' => $this->in_school,
+            'school_time' => $this->school_time,
+            'status_text' => $this->getStatusText()
         ];
     }
 }

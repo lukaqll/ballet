@@ -3,7 +3,9 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
@@ -23,9 +25,9 @@ class PostController extends Controller
         try {
 
             $dataFilter = $request->all();
-            $result = $this->postsService->list( $dataFilter, ['id'] );
+            $result = $this->postsService->list( $dataFilter );
 
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => PostResource::collection($result) ];
             
         } catch ( ValidationException $e ){
 
@@ -46,7 +48,7 @@ class PostController extends Controller
             $dataFilter = $request->all();
             $result = $this->postsService->get( $dataFilter );
     
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new PostResource($result) ];
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
@@ -64,7 +66,7 @@ class PostController extends Controller
         try {
 
             $result = $this->postsService->get( ['id' => $id] );
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new PostResource($result) ];
 
         } catch ( ValidationException $e ){
 
@@ -82,15 +84,27 @@ class PostController extends Controller
 
         try {
 
+            DB::beginTransaction();
+
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'title' => 'nullable|string',
+                'description' => 'nullable|string',
+                'files' => 'required|array',
+                'files.*' => 'required|image'
             ]);
+            $validData['status'] = 'A';
             
             $created = $this->postsService->create( $validData );
-            $response = [ 'status' => 'success', 'data' => ($created) ];
 
+            foreach( $validData['files'] as $file ){
+                $this->postsService->uploadFile($created, $file);
+            }
+
+            $response = [ 'status' => 'success', 'data' => new PostResource($created) ];
+
+            DB::commit();
         } catch ( ValidationException $e ){
-            
+            DB::rollBack();
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 
@@ -107,10 +121,22 @@ class PostController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'title' => 'nullable|string',
+                'description' => 'nullable|string',
+                'status' => 'nullable|string',
+                'files' => 'nullable|array',
+                'files.*' => 'required|image'
             ]);
+
             $updated = $this->postsService->updateById( $id, $validData);
-            $response = [ 'status' => 'success', 'data' => ($updated) ];
+
+            if( !empty($validData['files']) ){
+                foreach( $validData['files'] as $file ){
+                    $this->postsService->uploadFile($updated, $file);
+                }
+            }
+
+            $response = [ 'status' => 'success', 'data' => new PostResource($updated) ];
 
         } catch ( ValidationException $e ){
             
@@ -131,6 +157,26 @@ class PostController extends Controller
 
             $deleted = $this->postsService->deleteById( $id );
             $response = [ 'status' => 'success', 'data' => ($deleted) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    /**
+     * delete as image
+     * 
+     * @return  json
+     */
+    public function removeImage( $id ){
+
+        try {
+
+            $deleted = $this->postsService->deleteImage( $id );
+            $response = [ 'status' => 'success', 'data' => new PostResource($deleted) ];
 
         } catch ( ValidationException $e ){
             

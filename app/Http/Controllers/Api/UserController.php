@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,12 +21,11 @@ class UserController extends Controller
      * 
      * @return  json
      */
-    public function list( Request $request )
-    {
+    public function list( Request $request ){
         try {
 
             $dataFilter = $request->all();
-            $result = $this->usersService->listClients( $dataFilter, ['id'] );
+            $result = $this->usersService->listClients( $dataFilter );
 
             $response = [ 'status' => 'success', 'data' => UserResource::collection($result) ];
             
@@ -95,38 +95,37 @@ class UserController extends Controller
                 'user_password' => 'nullable|string',
                 'user_password_confirmation' => 'nullable|string',
                 'user_picture' => 'nullable|image',
-                'send_password_mail' => 'nullable'
+                'send_password_mail' => 'nullable',
+
+                'user_uf'       => 'required|string',
+                'user_city'     => 'required|string',
+                'user_district' => 'required|string',
+                'user_street'   => 'required|string',
+                'user_address_number'     => 'nullable|string',
+                'user_address_complement' => 'nullable|string',
+                'user_instagram' => 'nullable|string',
+                'user_rg'         => 'required|string',
+                'user_orgao_exp'  => 'required|string',
+                'user_profession' => 'nullable|string',
+                'user_birthdate'  => 'required|string',
+                'user_cep'        => 'required|string',
+                'user_know_by'    => 'nullable|string',
             ]);
-            $userData = [
-                'name'      => $userValidData['user_name'],
-                'email'     => $userValidData['user_email'],
-                'cpf'       => $userValidData['user_cpf'],
-                'phone'     => $userValidData['user_phone'],
-                'password'  => $userValidData['user_password'],
-                'password_confirmation' => $userValidData['user_password_confirmation'],
-                'picture'   => $userValidData['user_picture'] ?? null,
-                'status'     => 'A',
-                'send_password_mail'  => $userValidData['send_password_mail'] ?? null,
-            ];
+            $userData = $this->replaceKey($userValidData, 'user_');
+            $userData['status'] = 'A';
             $user = $this->usersService->createUser($userData);
 
             // create student
             $studentValidData = $request->validate([
-                'student_id_class'  => 'nullable|integer|exists:classes,id',
+                'student_id_class'  => 'required|integer|exists:classes,id',
                 'student_name'      => 'required|string',
                 'student_nick_name' => 'required|string',
                 'student_birthdate' => 'required|date',
-                'student_picture'      => 'nullable|image',
+                'student_picture'   => 'nullable|image',
             ]);
-            $studentData = [
-                'id_user'   => $user->id,
-                'id_class'  => $studentValidData['student_id_class'] ?? null,
-                'name'      => $studentValidData['student_name'],
-                'nick_name' => $studentValidData['student_nick_name'],
-                'birthdate' => $studentValidData['student_birthdate'],
-                'picture' => $studentValidData['student_picture'] ?? null,
-                'status'    => 'A',
-            ];
+            $studentData = $this->replaceKey($studentValidData, 'student_');
+            $studentData['status'] = 'A';
+            $studentData['id_user'] = $user->id;
             $student = $this->studentsService->createStudent($studentData);
             
             $response = [ 'status' => 'success', 'data' => new UserResource($user) ];
@@ -159,6 +158,19 @@ class UserController extends Controller
                 'email' => 'required|string|email|unique:users,email,'.$id,
                 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
                 'phone' => 'required|string',
+
+                'uf'       => 'required|string',
+                'city'     => 'required|string',
+                'district' => 'required|string',
+                'street'   => 'required|string',
+                'address_number'     => 'nullable|string',
+                'address_complement' => 'nullable|string',
+                'instagram' => 'nullable|string',
+                'rg'         => 'required|string',
+                'orgao_exp'  => 'required|string',
+                'profession' => 'nullable|string',
+                'birthdate'  => 'required|string',
+                'cep'        => 'required|string',
             ]);
             $updated = $this->usersService->updateById( $id, $validData);
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
@@ -279,6 +291,162 @@ class UserController extends Controller
         }
 
         return response()->json( $response );
+    }
+
+    public function addSignatory( $idUser ) {
+        try {
+            
+            $user = $this->usersService->find($idUser);
+
+            if( !empty($user->signer_key) )
+                throw ValidationException::withMessages(['Este usuário já está cadastrado como signatário']);
+
+            if( $user->status == 'MP' )
+                throw ValidationException::withMessages(['Usuário com matrícula pendente, ao aprovar sua matrícula, ele será adicionado como signatário']);
+
+            $updated = $this->clicksignService->createSignatory($user);
+            $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+
+    /**
+     * create
+     * 
+     * @return  json
+     */
+    public function publicCreateWithStudent( Request $request ){
+
+        try {
+
+            DB::beginTransaction();
+
+            // create user
+            $userValidData = $request->validate([
+                'user_name'     => 'required|string',
+                'user_email'    => 'required|string|email|unique:users,email',
+                'user_cpf'      => 'required|string|size:14|unique:users,cpf',
+                'user_phone'    => 'required|string',
+                'user_password' => 'nullable|string',
+                'user_password_confirmation' => 'nullable|string',
+                'user_picture' => 'nullable|image',
+                'send_password_mail' => 'nullable',
+
+                'user_uf'       => 'required|string',
+                'user_city'     => 'required|string',
+                'user_district' => 'required|string',
+                'user_street'   => 'required|string',
+                'user_address_number'     => 'nullable|string',
+                'user_address_complement' => 'nullable|string',
+                'user_instagram' => 'nullable|string',
+                'user_rg'         => 'required|string',
+                'user_orgao_exp'  => 'required|string',
+                'user_profession' => 'nullable|string',
+                'user_birthdate'  => 'required|string',
+                'user_cep'        => 'required|string',
+                'user_know_by'    => 'nullable|string',
+            ]);
+            $userData = $this->replaceKey($userValidData, 'user_');
+            $userData['status'] = 'MP';
+            $user = $this->usersService->publicCreateUser($userData);
+
+            // create student
+            $studentValidData = $request->validate([
+                'student_id_class'  => 'required|integer|exists:classes,id',
+                'student_name'      => 'required|string',
+                'student_nick_name' => 'required|string',
+                'student_birthdate' => 'required|date',
+                'student_picture'   => 'nullable|image',
+                'student_health_problem' => 'nullable|string',
+                'student_food_restriction' => 'nullable|string',
+                'student_in_school' => 'nullable|string',
+                'student_school_time' => 'nullable|string',
+            ]);
+            $studentData = $this->replaceKey($studentValidData, 'student_');
+            $studentData['status'] = 'MP';
+            $studentData['id_user'] = $user->id;
+            $student = $this->studentsService->createStudent($studentData);
+            
+
+            // register files
+            $fileValidData = $request->validate([
+                'file_doc1' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
+                'file_doc2' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
+                'file_payment' => 'nullable|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
+            ]);
+            $files = $this->registerFilesSerivce->registerUpload( $user, $fileValidData );
+
+            $response = [ 'status' => 'success', 'data' => new UserResource($user) ];
+
+            // send password reset mail
+            $sendMail = true;
+            if( $sendMail ) {
+                $sendedMail = $this->passwordRecoveryService->sendMail( $user, true );
+            }
+
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    private function replaceKey( $data, $replacement ){
+        $out = [];
+        foreach( $data as $key => $value ){
+            $newKey = str_replace($replacement, '', $key);
+
+            if( !empty($value) && $value != 'null' )
+                $out[$newKey] = $value;
+        }
+        return $out;
+    }
+
+    /**
+     * get new registration by id
+     * 
+     * @return  json
+     */
+    public function getNewRegistration( $id ){
+
+        try {
+
+            $result = $this->usersService->get( ['id' => $id, 'status' => 'MP'] );
+            $response = [ 'status' => 'success', 'data' => new RegistrationResource($result) ];
+
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response ); 
+    }
+
+    /**
+     * approve new registration by id
+     * 
+     * @return  json
+     */
+    public function approveRegistration( $id ){
+
+        try {
+
+            DB::beginTransaction();
+            $result = $this->usersService->approveRegistration( $id );
+            $response = [ 'status' => 'success', 'data' => new RegistrationResource($result) ];
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response ); 
     }
 }
 

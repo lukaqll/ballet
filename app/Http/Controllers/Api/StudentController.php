@@ -90,7 +90,11 @@ class StudentController extends Controller
                 'birthdate' => 'required|date',
                 'classes'   => 'nullable|array',
                 'classes.*' => 'required|integer|exists:classes,id',
-                'picture'   => 'nullable|image'
+                'picture'   => 'nullable|image',
+                'health_problem'   => 'nullable|string',
+                'food_restriction' => 'nullable|string',
+                'in_school'        => 'nullable|string',
+                'school_time'      => 'nullable|string',
             ]);
             $validData['status'] = 'A';           
             $student = $this->studentsService->create( $validData );
@@ -127,6 +131,10 @@ class StudentController extends Controller
                 'birthdate' => 'required|date',
                 'classes'   => 'nullable|array',
                 'classes.*' => 'required|integer|exists:classes,id',
+                'health_problem'   => 'nullable|string',
+                'food_restriction' => 'nullable|string',
+                'in_school'        => 'nullable|string',
+                'school_time'      => 'nullable|string',
             ]);
             $student = $this->studentsService->updateById( $id, $validData);
 

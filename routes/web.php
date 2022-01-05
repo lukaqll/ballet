@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DocumentsController;
 use App\Services\PasswordRecoveryService;
 use App\Services\UsersService;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('test-mail', function(){
+Route::get('/test-doc', [DocumentsController::class, 'generate']);
 
-    $usersService = new UsersService;
-    $user = $usersService->find(9);
 
-    $passwordRevoveryService = new PasswordRecoveryService;
-    return $passwordRevoveryService->sendMail($user, true);
-});
 
 Route::get('/{any}', function () {
     return view('base');

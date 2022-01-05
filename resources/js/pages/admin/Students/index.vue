@@ -4,6 +4,7 @@
     >
         
         <div class="row">
+
             <div class="col-12">
                 <div>
                     <b-card no-body>
@@ -17,7 +18,16 @@
                                     </h3>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <b-form-select :options="status" class="w-100" v-model="filter.status"></b-form-select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <b-button @click="getStudents">Buscar</b-button>
+                                            <b-button variant="danger" @click="filter = {}">Limpar</b-button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -33,6 +43,11 @@
                                     >
                                         <th slot="thead-tr"></th>
                                         <template slot="tbody-tr" slot-scope="props">
+                                            <td>
+                                                <b-badge v-if="props.row.open_contracts_count" variant="primary">
+                                                    {{props.row.open_contracts_count}} Contratos Abertos
+                                                </b-badge>
+                                            </td>
                                             <td>
                                                 <b-button variant="outline" size="sm" @click="e => editStudent(props.row.id)">
                                                     <b-icon variant="primary" icon="pencil-square"></b-icon>
@@ -73,9 +88,19 @@ export default {
         studentsBindings(){
             return  [
                     {field: 'name', label: 'Nome'},
+                    {field: 'status_text', label: 'status'},
                     {field: 'nick_name', label: 'Apelido'},
-                    {field: 'birthdate_formated', label: 'Aniversário'},
+                    {field: 'user.name', label: 'Usuário'},
                 ]
+        },
+
+        status(){
+            return [
+                {text: 'Ativo', value: 'A'},
+                {text: 'Inativo', value: 'I'},
+                {text: 'Matrícula Pendente', value: 'MP'},
+                {text: 'Contrato Pendente', value: 'CP'},
+            ]
         }
     },
 
@@ -91,17 +116,28 @@ export default {
         toPasswordUpdateId: null,
         editableStudentId: null,
         studentModalShow: false,
+
+        filter: {}
     }),
 
     methods: {
         getStudents(){
+
+            let filters = {}
+            for(const key in this.filter){
+                if( this.filter[key] )
+                    filters[key] = this.filter[key]
+            }
+            let queryString = new URLSearchParams(filters)
+
             common.request({
-                url: '/api/students/list',
+                url: '/api/students/list?'+queryString,
                 type: 'get',
                 auth: true,
                 setError: true,
                 success: (students) => {
                     this.students = students
+                    console.log(students)
                 }
             })
         },

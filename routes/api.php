@@ -3,8 +3,12 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClassController;
 use App\Http\Controllers\Api\ClassTimeController;
+use App\Http\Controllers\Api\ClicksignHooksController;
 use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\DocumentsController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ParameterController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
@@ -26,9 +30,14 @@ use Illuminate\Support\Facades\Route;
 //     
 // });
 
+Route::get('/classes/list', [ClassController::class, 'list']);
+
+
 Route::group(['middleware' => ['admin']], function () {
     
-    Route::get('/user', [AuthController::class, 'getUser'])->name('login.verify');
+    Route::get('/get-home', [HomeController::class, 'getHomeData']);
+
+    Route::get('/user', [AuthController::class, 'getUser']);
 
     Route::get('/users/list', [UserController::class, 'list']);
     Route::get('/users', [UserController::class, 'get']);
@@ -39,6 +48,11 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/users/admin-upload-picture/{id}', [UserController::class, 'adminUploadPicture']);
     Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
     Route::post('/users/password/update', [UserController::class, 'passwordUpdate']);
+
+    //
+    Route::get('/users/get-registration/{id}', [UserController::class, 'getNewRegistration']);
+    Route::post('/users/approve-registration/{id}', [UserController::class, 'approveRegistration']);
+
 
     Route::get('/students/list', [StudentController::class, 'list']);
     Route::get('/students', [StudentController::class, 'get']);
@@ -56,7 +70,6 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/units/{id}', [UnitController::class, 'update']);
 
     // classes
-    Route::get('/classes/list', [ClassController::class, 'list']);
     Route::get('/classes', [ClassController::class, 'get']);
     Route::get('/classes/{id}', [ClassController::class, 'getById']);
     Route::post('/classes', [ClassController::class, 'create']);
@@ -75,11 +88,36 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/contract/update', [ContractController::class, 'updateContract']);
 
 
+    /**
+     * docs | clicksign
+     */
+    Route::post('/users/add-signatory/{id}', [UserController::class, 'addSignatory']);
+    Route::get('/contracts/list/{idStudent}', [UserController::class, 'listByStudent']);
+    Route::post('/contracts/cancel/{id}', [DocumentsController::class, 'cancelContract']);
+    Route::post('/contracts/generate/{idStudent}', [DocumentsController::class, 'generate']);
+    Route::post('/contracts/notify/{id}', [DocumentsController::class, 'notify']);
+
+    // contracts
+    Route::get('/contracts/list-all', [DocumentsController::class, 'list']);
+
+    // posts
+    Route::get('/posts/list', [PostController::class, 'list']);
+    Route::post('/posts/update/{id}', [PostController::class, 'update']);
+    Route::post('/posts', [PostController::class, 'create']);
+    Route::get('/posts/get/{id}', [PostController::class, 'getById']);
+    Route::delete('/posts/remove-image/{id}', [PostController::class, 'removeImage']);
+
+    
 });
 
+// auth
+Route::post('/register', [UserController::class, 'publicCreateWithStudent']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 // password reset
 Route::post('/password-reset/send-mail', [AuthController::class, 'sendMailPasswordReset']);
 Route::post('/password-reset', [AuthController::class, 'passowrdReset']);
+
+// hooks
+Route::post('/clicksign/hook', [ClicksignHooksController::class, 'hooksCallback']);
