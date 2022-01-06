@@ -1,6 +1,6 @@
 <template>
 
-    <div id="master-wrap" class="body-pd">
+    <div id="master-wrap-admin" class="body-pd">
         <b-navbar class="header" id="header">
 
             <b-collapse id="nav-collapse" is-nav>
@@ -112,7 +112,7 @@ export default {
                 return this.containerTag
             } else {
 
-                if( window.innerWidth <= 768 ){
+                if( window.innerWidth < 768 ){
                     return 'div'
                 } else {
                     return 'b-container'

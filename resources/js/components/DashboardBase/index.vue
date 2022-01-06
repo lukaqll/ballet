@@ -150,5 +150,5 @@ export default {
 </script>
 
 <style scoped>
-    @import "../../../css/dashboardSidebar.css";
+    @import "../../../css/adminSidebar.css";
 </style>

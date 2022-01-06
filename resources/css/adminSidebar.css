@@ -25,6 +25,15 @@
     transition: .5s
 }
 
+#master-wrap-admin {
+    position: relative;
+    margin: var(--header-height) 0 0 0;
+    padding: 0 0;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    transition: .5s
+}
+
 a {
     text-decoration: none
 }
@@ -147,9 +156,14 @@ a {
 }
 
 @media screen and (min-width: 768px) {
-    #master-wrap {
+    #master-wrap-admim {
         margin: calc(var(--header-height)) 0 0 0;
         padding-left: calc(var(--nav-width))
+    }
+
+    #master-wrap {
+        margin: calc(var(--header-height)) 0 0 0;
+        padding-left: calc(var(--nav-width) + 156px)
     }
 
     .header {
