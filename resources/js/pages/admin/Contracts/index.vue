@@ -43,11 +43,17 @@
                                         <th slot="thead-tr"></th>
                                         <template slot="tbody-tr" slot-scope="props">
                                             <td>
-                                                <b-button v-if="props.row.status == 'running'" variant="danger" @click="() => cancelContract(props.row.id)" class="btn-sm">Cancelar</b-button>
-                                                <b-button v-if="props.row.status == 'running'" variant="light" @click="() => notify(props.row.id)" class="btn-sm">
+                                                <b-button v-if="props.row.status == 'running'" variant="danger" @click="() => cancelContract(props.row.id)" class="btn-sm" v-b-tooltip title="Cancelar contrato">Cancelar</b-button>
+                                                <b-button v-if="props.row.status == 'running'" variant="light" @click="() => notify(props.row.id)" class="btn-sm" v-b-tooltip title="Enviar notificação">
                                                     <b-icon icon="bell"/>
                                                 </b-button>
-                                                
+                                                <a :href="`/contracts/sign/${props.row.id}`" target="_blank" class="btn btn-light btn-sm" v-if="props.row.status == 'running'" v-b-tooltip title="Tela de assinatura">
+                                                    <b-icon icon="vector-pen"/>
+                                                </a>
+                                                <a :href="`/contracts/view/${props.row.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
+                                                    <b-icon icon="download"/>
+                                                </a>
+
                                             </td>
                                         </template>
                                     </data-table>

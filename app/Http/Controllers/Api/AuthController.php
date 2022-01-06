@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -11,16 +12,32 @@ class AuthController extends Controller
 {
     public function login( Request $request ){
 
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string'
-        ]);
+        try {
 
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['status' => 'error', 'message' => 'E-Mail ou Senha incorretos']);
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string'
+            ]);
+    
+            if (! $token = auth('api')->attempt($credentials)) {
+                throw ValidationException::withMessages(['E-Mail ou Senha incorretos']);
+            }
+    
+            $user = auth('api')->user();
+            
+            if( $user->status == 'MP' )
+                throw ValidationException::withMessages(['Seu cadastro está em análise', 'Em breve entraremos em contato']);
+
+            if( $user->status == 'I' )
+                throw ValidationException::withMessages(['Cadastro inativado']);
+
+            return $this->respondWithToken($token); 
+        } catch ( ValidationException $e ){
+
+            return response()->json(['status' => 'error', 'message' => $e->errors() ]); 
         }
 
-        return $this->respondWithToken($token);
+        
     }
 
     public function logout()
@@ -31,20 +48,28 @@ class AuthController extends Controller
 
     protected function respondWithToken($token)
     {
+
+        $user = auth('api')->user();
+        $redirectTo = '/';
+
+        if( $user->is_admin == 1 )
+            $redirectTo = '/admin';
+
         return response()->json([
 
             'status' => 'success',
             'data' => [
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
+                'token_type'   => 'bearer',
+                'expires_in'   => auth()->factory()->getTTL() * 60,
+                'redirect_to'  => $redirectTo
             ]
         ]);
     }
 
     public function getUser(){
         try {
-            $result = ['status' => 'success', 'data' => auth('api')->user()];
+            $result = ['status' => 'success', 'data' => new UserResource(auth('api')->user())];
         } catch ( ValidationException $e ) {
             $result = ['status' => 'error', 'message' => $e->errors()];
         }

@@ -103,4 +103,18 @@ class User extends Authenticatable implements JWTSubject
     public function getStatusText(){
         return $this->getStatusArray()[$this->status];
     }
+
+    public function contracts(){
+        return $this->hasManyThrough(Contract::class, Student::class, 'id_user', 'id_student', 'id', 'id');
+    }
+
+    public function getFirstName(){
+        $name = $this->name;
+        $splitedName = explode(' ', $name);
+        if( count($splitedName) == 1 ){
+            return $name;
+        } else {
+            return $splitedName[0];
+        }
+    }
 }

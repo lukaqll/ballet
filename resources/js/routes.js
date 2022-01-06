@@ -15,10 +15,30 @@ import NewRegistration from './pages/admin/NewRegistration'
 import Contracts from './pages/admin/Contracts'
 import Posts from './pages/admin/Posts'
 
+import ClientHome from './pages/dashboard/Home'
+import ClientSettings from './pages/dashboard/Settings'
+import ClientStudents from './pages/dashboard/Students'
+import ClientContracts from './pages/dashboard/Contracts'
+import ClientPosts from './pages/dashboard/Posts'
+
+const beforeAdminEnter = (to, form, next) => {
+    common.request({
+        type: 'get',
+        url: '/api/user/admin',
+        auth: true,
+        success: (resp) => {
+            next()
+        }, 
+        error: e => {
+            return next({name: 'login'})
+        }
+    })
+}
+
 const beforeEnter = (to, form, next) => {
     common.request({
         type: 'get',
-        url: '/api/user',
+        url: '/api/user/client',
         auth: true,
         success: (resp) => {
             next()
@@ -49,27 +69,22 @@ export default {
             name: 'admin.home',
             path: '/admin',
             component: Home,
-            beforeEnter
         },
         {
             path: '/admin/users',
             component: Users,
-            beforeEnter
         },
         {
             path: '/admin/units',
             component: Units,
-            beforeEnter
         },
         {
             path: '/admin/students',
             component: Students,
-            beforeEnter
         },
         {
             path: '/admin/settings',
             component: Settings,
-            beforeEnter
         },
 
         // password recovery
@@ -86,27 +101,27 @@ export default {
         {
             name: 'config',
             path: '/admin/config',
-            component: Config
+            component: Config,
         },
         {
             name: 'contract_config',
             path: '/admin/config/contract',
-            component: ContractConfig
+            component: ContractConfig,
         },
         {
             name: 'new_users',
             path: '/admin/new-users',
-            component: NewRegistration
+            component: NewRegistration,
         },
         {
             name: 'contracts',
             path: '/admin/contracts',
-            component: Contracts
+            component: Contracts,
         },
         {
             name: 'contracts',
             path: '/admin/posts',
-            component: Posts
+            component: Posts,
         },
 
         // register
@@ -114,6 +129,37 @@ export default {
             name: 'contract_config',
             path: '/cadastro',
             component: Register
+        },
+
+
+        /**
+         * client dashboard
+         */
+        {
+            name: 'client.home',
+            path: '/',
+            component: ClientHome,
+            exact: true
+        },
+        {
+            name: 'client.settings',
+            path: '/minha-conta',
+            component: ClientSettings,
+        },
+        {
+            name: 'client.settings',
+            path: '/alunos',
+            component: ClientStudents,
+        },
+        {
+            name: 'client.settings',
+            path: '/contratos',
+            component: ClientContracts,
+        },
+        {
+            name: 'client.settings',
+            path: '/posts',
+            component: ClientPosts,
         },
     ]
 }

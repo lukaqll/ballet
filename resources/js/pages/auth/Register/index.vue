@@ -1,12 +1,12 @@
 <template>
     <commom-header>
-        <div class="d-flex flex-column justify-content-center h-100 bg-light mt-3" style="min-height: 100vh !important">
-            <b-container class="w-100 d-flex justify-content-center py-5">
+        <div class="d-flex flex-column justify-content-center h-100 bg-light mt-3 main-container" style="min-height: 100vh !important">
+            <component :is="containerTag" class="w-100 d-flex justify-content-center py-5">
                 <template v-if="!saved">
                     <b-form>
                         <div class="row">
                             <div class="col-12">
-                                <h2>
+                                <h2 class="p-2">
                                     <b-icon icon="person-plus"></b-icon> 
                                     Cadastro
                                 </h2>
@@ -22,7 +22,9 @@
                                             @click="currentStep = step.index"
                                         >
                                             <div class="step-counter">{{ step.index + 1 }}</div>
-                                            <div class="step-name">{{ step.name }}</div>
+                                            <div class="step-name">
+                                                <small>{{ step.name }}</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </b-card>
@@ -378,7 +380,7 @@
                     </div>
                 </template>
 
-            </b-container>
+            </component>
         </div>
     </commom-header>
 
@@ -432,6 +434,13 @@ export default {
     computed: {
         orgaosExpeditores: function(){
             return orgaosExpeditores
+        },
+        containerTag: function(){
+            if( window.innerWidth < 500 ){
+                return 'div'
+            } else {
+                return 'b-container'
+            }
         }
     },
     watch: {

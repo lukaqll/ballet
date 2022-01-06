@@ -167,7 +167,8 @@
                                 <tr>
                                     <th>Nome</th>
                                     <th>Apelido</th>
-                                    <th>Aniversário</th>
+                                    <th>Status</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -175,10 +176,16 @@
                                 <tr v-for="student in user.students" :key="student.id">
                                     <td>{{ student.name }}</td>
                                     <td>{{ student.nick_name }}</td>
-                                    <td>{{ student.birthdate_formated }}</td>
+                                    <td>{{ student.status_text }}</td>
                                     <td>
-                                        <b-button variant="outline" size="sm" @click="editStudent($event, student.id)">
-                                            <b-icon variant="primary" icon="pencil-square"></b-icon>
+                                        <b-badge v-if="student.open_contracts_count" variant="primary">
+                                            {{student.open_contracts_count}} Contratos Abertos
+                                        </b-badge>
+                                    </td>
+                                    <td>
+                                        
+                                        <b-button variant="light" size="sm" @click="editStudent($event, student.id)">
+                                            <b-icon icon="pencil-square"></b-icon>
                                         </b-button>
                                     </td>
                                 </tr>

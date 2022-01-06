@@ -92,9 +92,9 @@
 
         <!--Container Main start-->
         <div class="bg-light main-container">
-            <b-container class="py-md-5 pd-sm-0">
+            <component :is="containerTagComponent" class="py-md-5 pd-sm-0">
                 <slot></slot>
-            </b-container>
+            </component>
         </div>
     </div>
 </template>
@@ -105,6 +105,20 @@ import common from '../../common/common'
 export default {
     props: {
         title: String
+    },
+    computed: {
+        containerTagComponent: function(){
+            if(this.containerTag){
+                return this.containerTag
+            } else {
+
+                if( window.innerWidth <= 768 ){
+                    return 'div'
+                } else {
+                    return 'b-container'
+                }
+            }
+        }
     },
     watch: {
         sibarExpanded: function(isExpanded) {
@@ -122,7 +136,7 @@ export default {
     mounted(){
         common.request({
             type: 'get',
-            url: '/api/user',
+            url: '/api/user/admin',
             auth: true,
             success: (resp) => {
                 this.user = resp

@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test-doc', [DocumentsController::class, 'generate']);
+Route::get('/contracts/view/{id}', [DocumentsController::class, 'viewDocument']);
+Route::get('/contracts/sign/{id}', [DocumentsController::class, 'signDocument']);
 
 
 

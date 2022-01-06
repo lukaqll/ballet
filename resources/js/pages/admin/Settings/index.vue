@@ -86,7 +86,7 @@ export default {
     mounted: function() {
         common.request({
             type: 'get',
-            url: '/api/user',
+            url: '/api/user/admin',
             auth: true,
             setError: true,
             success: (resp) => {

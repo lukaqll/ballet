@@ -31,7 +31,7 @@
                                         <th slot="thead-tr"></th>
                                         <template slot="tbody-tr" slot-scope="props">
                                             <td>
-                                                <b-button variant="outline" size="sm" @click="e => viewRegistration(props.row.id)">
+                                                <b-button variant="light" size="sm" @click="e => viewRegistration(props.row.id)">
                                                     <b-icon variant="primary" icon="eye"></b-icon>
                                                 </b-button>
                                             </td>

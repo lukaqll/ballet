@@ -154,7 +154,7 @@ class UserController extends Controller
         try {
             
             $validData = $request->validate([
-                'name' => 'required|string|unique:users,name,'.$id,
+                'name' => 'required|string',
                 'email' => 'required|string|email|unique:users,email,'.$id,
                 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
                 'phone' => 'required|string',
@@ -447,6 +447,69 @@ class UserController extends Controller
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
         return response()->json( $response ); 
+    }
+
+
+    /**
+     * client self update
+     * 
+     * @return  json
+     */
+    public function selfUpdate( Request $request ){
+
+        try {
+            
+            $user = auth('api')->user();
+
+            $validData = $request->validate([
+                'name' => 'required|string',
+                // 'email' => 'required|string|email|unique:users,email,'.$id,
+                // 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
+                'phone' => 'required|string',
+
+                'uf'       => 'required|string',
+                'city'     => 'required|string',
+                'district' => 'required|string',
+                'street'   => 'required|string',
+                'address_number'     => 'nullable|string',
+                'address_complement' => 'nullable|string',
+                'instagram' => 'nullable|string',
+                'rg'         => 'required|string',
+                'orgao_exp'  => 'required|string',
+                'profession' => 'nullable|string',
+                'birthdate'  => 'required|string',
+                'cep'        => 'required|string',
+            ]);
+            $updated = $this->usersService->updateById( $user->id, $validData);
+            $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function uploadPicture( Request $request ) {
+        try {
+            
+            $user = auth('api')->user();
+
+            $userData = $request->validate([
+                'picture' => 'required|image',
+            ]);
+            
+            $updated = $this->usersService->uploadPicture($user, $userData['picture']);
+            
+            $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
     }
 }
 

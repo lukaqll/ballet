@@ -32,14 +32,14 @@
                                         <th slot="thead-tr"></th>
                                         <template slot="tbody-tr" slot-scope="props">
                                             <td>
-                                                <b-button variant="outline" size="sm" @click="e => getPost(props.row.id)">
-                                                    <b-icon variant="primary" icon="pencil-square"></b-icon>
+                                                <b-button variant="light" size="sm" @click="e => getPost(props.row.id)">
+                                                    <b-icon icon="pencil-square"></b-icon>
                                                 </b-button>                                                
                                             </td>
                                         </template>
                                     </data-table>
                                 </div>
-                                <div v-else>Nenhum contrato ainda</div>
+                                <div v-else>Nenhum post ainda</div>
 
                             </div>
                         </b-card-body>

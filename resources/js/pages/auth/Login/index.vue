@@ -69,9 +69,10 @@ export default {
                 type: 'post',
                 data: this.form,
                 setError: true,
+                load: true,
                 success: (resp) => {
                     localStorage.setItem('auth_token', resp.access_token)
-                    this.$router.push({ name: 'admin.home'});
+                    this.$router.push({ path: resp.redirect_to || '/'} )
                 }
             })
 

@@ -49,11 +49,11 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <b-button variant="outline" size="sm" @click="e => editUser(props.row.id)">
-                                                    <b-icon variant="primary" icon="pencil-square"></b-icon>
+                                                <b-button variant="light" size="sm" @click="e => editUser(props.row.id)">
+                                                    <b-icon  icon="pencil-square"></b-icon>
                                                 </b-button>
-                                                <b-button variant="outline" size="sm" @click="() => toPasswordUpdateId = props.row.id">
-                                                    <b-icon variant="primary" icon="key"></b-icon>
+                                                <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = props.row.id">
+                                                    <b-icon  icon="key"></b-icon>
                                                 </b-button>
                                             </td>
                                         </template>

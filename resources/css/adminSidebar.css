@@ -129,11 +129,11 @@ a {
     padding-left: calc(var(--nav-width))
 }
 
-.active {
+.nav_link.active {
     color: var(--white-color)
 }
 
-.active::before {
+.nav_link.active::before {
     content: '';
     position: absolute;
     left: 0;

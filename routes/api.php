@@ -26,18 +26,68 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     
-// });
-
+/**
+ * public routes
+ */
 Route::get('/classes/list', [ClassController::class, 'list']);
 
+// auth
+Route::post('/register', [UserController::class, 'publicCreateWithStudent']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
+// password reset
+Route::post('/password-reset/send-mail', [AuthController::class, 'sendMailPasswordReset']);
+Route::post('/password-reset', [AuthController::class, 'passowrdReset']);
+
+// hooks
+Route::post('/clicksign/hook', [ClicksignHooksController::class, 'hooksCallback']);
+
+
+/**
+ * client routes
+ */
+Route::group(['middleware' => ['client']], function () {
+
+    Route::get('/get-client-home', [HomeController::class, 'getClientHomeData']);
+
+    // user
+    Route::get('/user/client', [AuthController::class, 'getUser']);
+    Route::post('/users/upload-picture', [UserController::class, 'uploadPicture']);
+
+    // students
+    Route::get('/students/list-self', [StudentController::class, 'listBySelf']);
+    Route::get('/students/get-self/{id}', [StudentController::class, 'getBySelf']);
+    Route::put('/students/self-update/{id}', [StudentController::class, 'selfUpdate']);
+    Route::post('/students/upload-picture/{id}', [StudentController::class, 'uploadPicture']);
+
+    // contracts
+    Route::get('/contracts/list-self', [DocumentsController::class, 'listSelf']);
+
+});
+
+/**
+ * client and admin route
+ */
+Route::group(['midleware' => ['auth']], function () {
+
+    // user
+    Route::put('/users/self-update', [UserController::class, 'selfUpdate']);
+    Route::post('/users/password/update', [UserController::class, 'passwordUpdate']);
+
+
+    // posts
+    Route::get('/posts/list-active', [PostController::class, 'listActive']);
+});
+
+/**
+ * admin routes
+ */
 Route::group(['middleware' => ['admin']], function () {
     
     Route::get('/get-home', [HomeController::class, 'getHomeData']);
 
-    Route::get('/user', [AuthController::class, 'getUser']);
+    Route::get('/user/admin', [AuthController::class, 'getUser']);
 
     Route::get('/users/list', [UserController::class, 'list']);
     Route::get('/users', [UserController::class, 'get']);
@@ -47,7 +97,6 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/users/admin-password-update/{id}', [UserController::class, 'adminPasswordUpdate']);
     Route::post('/users/admin-upload-picture/{id}', [UserController::class, 'adminUploadPicture']);
     Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
-    Route::post('/users/password/update', [UserController::class, 'passwordUpdate']);
 
     //
     Route::get('/users/get-registration/{id}', [UserController::class, 'getNewRegistration']);
@@ -109,15 +158,3 @@ Route::group(['middleware' => ['admin']], function () {
 
     
 });
-
-// auth
-Route::post('/register', [UserController::class, 'publicCreateWithStudent']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-
-// password reset
-Route::post('/password-reset/send-mail', [AuthController::class, 'sendMailPasswordReset']);
-Route::post('/password-reset', [AuthController::class, 'passowrdReset']);
-
-// hooks
-Route::post('/clicksign/hook', [ClicksignHooksController::class, 'hooksCallback']);

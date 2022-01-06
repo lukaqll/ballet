@@ -42,7 +42,8 @@ class UserResource extends JsonResource
             'birthdate' => $this->birthdate,
             'cep' => $this->cep,
             'know_by' => $this->know_by,
-            'status_text' => $this->getStatusText()
+            'status_text' => $this->getStatusText(),
+            'fisrt_name' => $this->getFirstName(),
         ];
     }
 }

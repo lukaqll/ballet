@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\StudentResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 
 class DocumentsController extends Controller
@@ -107,6 +108,80 @@ class DocumentsController extends Controller
         try {
 
             $result = $this->contractsService->list($request->all(), ['status'], 'desc');
+            $response = [ 'status' => 'success', 'data' => ContractResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    public function viewDocument( $id ){
+
+        try {
+
+            $contract = $this->contractsService->find($id);
+
+            if( empty($contract) )
+                abort(404);
+
+            $document = $this->clicksignService->getDocument($contract);
+
+            if( $document->document->status == 'closed' ){
+                $url = $document->document->downloads->signed_file_url;
+            } else {
+                $url = $document->document->downloads->original_file_url;
+            }
+
+            return redirect($url);
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    public function signDocument( $id ){
+
+        try {
+
+            $contract = $this->contractsService->find($id);
+
+            if( empty($contract) )
+                abort(404);
+
+            $document = $this->clicksignService->getDocument($contract);
+
+            if( !empty( $document->document->signers ) ){
+                $signer = $document->document->signers[0];
+            } else {
+                return redirect()->back();
+            }
+
+            $url = $signer->url;
+
+            return redirect($url);
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    /**
+     * list all
+     * 
+     * @return  json
+     */
+    public function listSelf( Request $request )
+    {
+        try {
+
+            $user = auth('api')->user();
+            $result = $user->contracts;
             $response = [ 'status' => 'success', 'data' => ContractResource::collection($result) ];
             
         } catch ( ValidationException $e ){

@@ -37,6 +37,28 @@ class PostController extends Controller
     }
 
     /**
+     * list active posts
+     * 
+     * @return  json
+     */
+    public function listActive( Request $request )
+    {
+        try {
+
+            $dataFilter = $request->all();
+            $dataFilter['status'] = 'A';
+            $result = $this->postsService->list( $dataFilter, ['updated_at'], 'desc' );
+
+            $response = [ 'status' => 'success', 'data' => PostResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    /**
      * get by key and value
      * 
      * @return  json

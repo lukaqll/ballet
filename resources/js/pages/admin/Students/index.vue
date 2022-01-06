@@ -49,8 +49,8 @@
                                                 </b-badge>
                                             </td>
                                             <td>
-                                                <b-button variant="outline" size="sm" @click="e => editStudent(props.row.id)">
-                                                    <b-icon variant="primary" icon="pencil-square"></b-icon>
+                                                <b-button variant="light" size="sm" @click="e => editStudent(props.row.id)">
+                                                    <b-icon icon="pencil-square"></b-icon>
                                                 </b-button>
                                             </td>
                                         </template>
