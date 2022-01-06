@@ -3,7 +3,7 @@
         <div>
             <div class="row">
                 <div class="col-12">
-                    <b-card>
+                    <b-card class="border-0 shadow-sm">
                         
                         <b-form @submit.prevent="alterCredentials">
                             <div class="row">

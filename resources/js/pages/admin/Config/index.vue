@@ -3,7 +3,7 @@
 
         <div class="row">
             <div class="col-12">
-                <b-card>
+                <b-card class="border-0 shadow-sm">
 
                     <router-link tag="b-button" to='/admin/config/contract'>
                         <b-icon icon="file-earmark-medical"></b-icon>

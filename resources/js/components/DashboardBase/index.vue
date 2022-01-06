@@ -40,6 +40,23 @@
                 <div>                     
                     <div class="nav_list"> 
 
+                        <div class="nas_link w-100 my-4" v-if="user.id">
+                            <div class="row justify-content-center">
+                                <div class="col-6" v-if="user.picture">
+                                    <img class="img-fluid rounded" :src="user.picture" alt="pic">
+                                </div>
+                                <div class="col-12 text-center">
+                                    <p class=" text-white mt-2">
+                                        {{user.name}} <br>
+                                        <small class="text-white">
+                                            Desde: {{user.created_at_format}}
+                                        </small>
+                                    </p>
+                                </div>
+                                <hr class="border-white">
+                            </div>
+                        </div>
+
                         <router-link tag="a" class="nav_link" to='/' exact>
                             <b-icon icon="house"></b-icon>
                             Home

@@ -14,7 +14,7 @@
 
                             <!-- steps -->
                             <div class="col-12">
-                                <b-card>
+                                <b-card class="border-0 shadow-sm">
                                     <div class="stepper-wrapper">
                                         <div 
                                             v-for="step in steps" :key="step.index"
@@ -32,7 +32,7 @@
 
                             <!-- user data -->
                             <div :class="`col-12 my-2 form-step ${getStepHandle(0)}`">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
 
                                         <div class="col-12">
@@ -112,7 +112,7 @@
 
                             <!-- address -->
                             <div :class="`col-12 my-2 form-step ${getStepHandle(1)}`">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
                                         <div class="col-12 mt-3">
                                             <h4 class="h4">
@@ -173,7 +173,7 @@
 
                             <!-- student data -->
                             <div :class="`col-12 my-2 form-step ${getStepHandle(2)}`">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
                                         <div class="col-12">
                                             <h4 class="h4 mt-4">
@@ -263,7 +263,7 @@
 
                             <!-- know by -->
                             <div :class="`col-12 my-2 form-step ${getStepHandle(3)}`">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div>
@@ -284,7 +284,7 @@
 
                             <!-- files -->
                             <div :class="`col-12 my-2 form-step ${getStepHandle(4)}`">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
                                         <div class="col-12">
                                             <h4 class="h4 mt-4">
@@ -339,7 +339,7 @@
 
                             <!-- save -->
                             <div class="col-12 my-2">
-                                <b-card >
+                                <b-card class="border-0 shadow-sm">
                                     <div class="row">
                                         <div class="col-12 d-flex justify-content-between">
                                             <b-button variant="light" @click="currentStep--" v-if="currentStep > 0">

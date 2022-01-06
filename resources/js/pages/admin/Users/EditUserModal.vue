@@ -194,19 +194,21 @@
                     </div>
                 </div>
 
-                <div class="col-12 d-flex justify-content-between">
-                    <div>
-                        <b-button variant="light" @click="addAsSignatory" v-if="!user.signer_key">
-                            <b-icon icon="plus"/>
-                            Adicionar como signatário
-                        </b-button>
-                    </div>
-                    <div>
-                        <b-button @click="onHidden">Cancelar</b-button>
-                        <b-button variant="primary" @click="save">
-                            <b-icon icon="check"/>
-                            Salvar
-                        </b-button>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b-button variant="light" @click="addAsSignatory" v-if="!user.signer_key">
+                                <b-icon icon="plus"/>
+                                Adicionar como signatário
+                            </b-button>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <b-button @click="onHidden">Cancelar</b-button>
+                            <b-button variant="primary" @click="save">
+                                <b-icon icon="check"/>
+                                Salvar
+                            </b-button>
+                        </div>
                     </div>
                 </div>
                 

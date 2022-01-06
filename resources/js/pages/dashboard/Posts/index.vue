@@ -5,7 +5,7 @@
         
         <div class="row">
             <div class="col-md-12 mt-3">
-                <h3 class="p-3">Posts</h3>
+                <h3 class="pl-3">Posts</h3>
                 <hr>
             </div>
 
@@ -27,11 +27,12 @@
                                         :interval="6000"
                                         :controls="post.files.length > 1"
                                         :indicators="post.files.length > 1"
-                                        fade
+                                        slide
                                         @sliding-start="onSlideStart"
                                         @sliding-end="onSlideEnd"
                                     >
                                         <b-carousel-slide
+                                            slide
                                             v-for="src in post.files"
                                             :key="src.id"
                                             :img-src="`/storage/${src.src}`"

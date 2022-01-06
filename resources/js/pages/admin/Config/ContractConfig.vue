@@ -3,7 +3,7 @@
 
         <div class="row">
             <div class="col-12">
-                <b-card no-body>
+                <b-card no-body class="border-0 shadow-sm">
 
                     <b-card-header>
                         <h4>

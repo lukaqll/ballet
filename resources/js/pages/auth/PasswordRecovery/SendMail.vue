@@ -1,62 +1,71 @@
 <template>
-    <div class="d-flex flex-column justify-content-center bg-light" style="min-height: 100vh !important">
+    <commom-header>
 
-        <div class="w-100 d-flex justify-content-center">
+        <div class="d-flex flex-column justify-content-center bg-light" style="min-height: 100vh !important">
 
-            <b-card style="max-width: 30rem">
+            <div class="w-100 d-flex justify-content-center">
 
-                <template v-if="!sended">
-                    
-                    <b-form @submit.prevent="send">
-                        <div class="flex flex-wrap max-w-xl">
+                <b-card style="max-width: 30rem" class="border-0 shadow-sm">
 
-                            <b-row>
-                                <div class="col-12">
-                                    <div class="p-2 text-2xl text-gray-800 font-semibold"><h1>Resgatar sua senha</h1></div>
-                                </div>
-                                
-                                <div class="col-12">
-                                    <b-form-group>
-                                        <label>E-Mail</label>
-                                        <b-form-input placeholder="Informe seu email" type="email" v-model="email"/>
-                                    </b-form-group>
-                                </div>
+                    <template v-if="!sended">
+                        
+                        <b-form @submit.prevent="send">
+                            <div class="flex flex-wrap max-w-xl">
 
-                                <div class="col-12">
-                                    <b-button type="submit" class="btn-block" variant="primary">
-                                        <b-icon icon="envelope"></b-icon>
-                                        Enviar
-                                    </b-button>
+                                <b-row>
+                                    <div class="col-12">
+                                        <div class="p-2 text-2xl text-gray-800 font-semibold"><h1>Resgatar sua senha</h1></div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <b-form-group>
+                                            <label>E-Mail</label>
+                                            <b-form-input placeholder="Informe seu email" type="email" v-model="email"/>
+                                        </b-form-group>
+                                    </div>
 
-                                    <div class="mt-2">
-                                    <router-link tag="a" to='/login' >
-                                        Voltar para o login
-                                    </router-link>
-                                </div>
-                                </div>
-                            </b-row>
-                        </div> 
-                    </b-form>
-                </template>      
+                                    <div class="col-12">
+                                        <b-button type="submit" class="btn-block" variant="primary">
+                                            <b-icon icon="envelope"></b-icon>
+                                            Enviar
+                                        </b-button>
 
-                <template v-else>
-                    <div class="text-center">
-                        <h4 class="text-center">Um E-Mail foi enviado para {{ email }}</h4>
-                        <small>Verefique no seu E-Mail e acesse o link para recuperar sua senha</small>
-                        <b-button variant="primary" class="btn-block mt-2" @click="sended = false">
-                            Enviar Novamente
-                        </b-button>
-                    </div>
-                </template>
-            </b-card>
+                                        <div class="mt-2">
+                                        <router-link tag="a" to='/login' >
+                                            Voltar para o login
+                                        </router-link>
+                                    </div>
+                                    </div>
+                                </b-row>
+                            </div> 
+                        </b-form>
+                    </template>      
 
+                    <template v-else>
+                        <div class="text-center">
+                            <h4 class="text-center">Um E-Mail foi enviado para {{ email }}</h4>
+                            <small>
+                                Verifique no seu E-mail e acesse o link para recuperar sua senha. <br> 
+                                Não esqueça de verificar a caixa de Span e Lixo Eletrônico.
+                            </small>
+                            <b-button variant="primary" class="btn-block mt-2" @click="sended = false">
+                                Enviar Novamente
+                            </b-button>
+                        </div>
+                    </template>
+                </b-card>
+
+            </div>
         </div>
-    </div>
+    </commom-header>
 </template>
 
 <script>
 import common from '../../../common/common'
+import CommomHeader from "../../../components/CommomHeader"
+
 export default {
+    components: {CommomHeader},
     data: () => ({
         email: '',
         sended: false

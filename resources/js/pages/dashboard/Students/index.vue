@@ -11,11 +11,11 @@
             </div>
             <div class="col-12">
                 
-                <div class="row">
+                <div class="row justify-content-center">
 
                     <div class="col-md-4 my-2" v-for="student in students" :key="student.id">
 
-                        <b-card>
+                        <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-12" v-if="student.picture">
                                     <img :src="student.picture" alt="" class="img-fluid rounded">

@@ -26,14 +26,14 @@
 
             </div>
 
-            <div class="row mt-4">
+            <div class="row justify-content-center mt-4">
                 <div class="col-12">
-                    <h3>Aniversariantes do mês</h3>
+                    <h3 class="text-center">Aniversariantes do mês</h3>
                 </div>
                 
                 <template v-if="data.birthdays && data.birthdays.length">
                     <div class="col-md-3" v-for="student in data.birthdays" :key="student.id">
-                        <b-card>
+                        <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-12" v-if="student.picture">
                                     <img :src="`/storage/${student.picture}`" alt="avatar" class="img-fluid rounded">
@@ -49,7 +49,7 @@
                     </div>
                 </template>
                 <template v-else>
-                    <span>Nenhum Aniversariante</span>
+                    <span class="text-center">Nenhum Aniversariante</span>
                 </template>
             </div>
         </b-container>

@@ -7,7 +7,7 @@
                     <hr>
                 </div>
                 <div class="col-12">
-                    <b-card>
+                    <b-card class="border-0 shadow-sm">
                         
                         <div class="row my-2">
                             <div class="col-md-4" v-if="user.picture">

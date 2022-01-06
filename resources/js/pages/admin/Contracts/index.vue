@@ -7,7 +7,7 @@
 
             <div class="col-12">
                 <div>
-                    <b-card no-body>
+                    <b-card no-body class="border-0 shadow-sm">
 
                         <b-card-body>
                             <div class="row">

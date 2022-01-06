@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-12">
 
-                <b-card no-body>
+                <b-card no-body class="border-0 shadow-sm">
 
                     <b-card-body>
 
@@ -21,7 +21,7 @@
                         <div class="accordoin" role="tablist">
                             <div v-for="unit in units" :key="unit.id">
 
-                                <b-card no-body>
+                                <b-card no-body class="border-0 shadow-sm">
                                     <b-card-header>
                                         <div class="row">
                                             <div class="col-9" v-b-toggle="'un-'+unit.id">
@@ -43,7 +43,7 @@
                                             <div class="row">
 
                                                 <div class="col-md-4" v-for="cl in unit.classes" :key="cl.id">
-                                                    <b-card no-body>
+                                                    <b-card no-body class="border-0 shadow-sm">
                                                         <b-card-body>
                                                             <div class="row">
                                                                 <div class="col-9">
