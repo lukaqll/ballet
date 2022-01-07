@@ -10,7 +10,7 @@
 
                             <b-row>
                                 <div class="col-12">
-                                    <div class="p-2 text-2xl text-gray-800 font-semibold"><h1>Resgatar sua senha</h1></div>
+                                    <div class="p-2 text-2xl text-gray-800 font-semibold"><h1>Cadastre sua nova senha</h1></div>
                                 </div>
                                 
                                 <div class="col-12">
@@ -30,7 +30,7 @@
                                 <div class="col-12 mt-2">
                                     <b-button type="submit" variant="primary" class="btn-block">
                                         <b-icon icon="key"></b-icon>
-                                        Resgatar
+                                        Salvar
                                     </b-button>
                                 </div>
 
@@ -75,6 +75,8 @@ export default {
                 url: '/api/password-reset',
                 setError: true,
                 data: form,
+                savedAlert: true,
+                load: true,
                 success: (resp) => {
                     this.$router.push({name: 'login'})
                 },

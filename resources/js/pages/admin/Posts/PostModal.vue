@@ -8,66 +8,63 @@
             @hidden="onHidden" 
             @shown="onShown" 
         >
-            <b-form>
+            <div class="row">
 
-                <div class="row">
+                <div class="col-md-12">
+                    <b-form-group>
+                        <label>Título</label>
+                        <b-form-input placeholder="Título" v-model="post.title"/>
+                    </b-form-group>
+                </div>
 
-                    <div class="col-md-12">
-                        <b-form-group>
-                            <label>Título</label>
-                            <b-form-input placeholder="Título" v-model="post.title"/>
-                        </b-form-group>
-                    </div>
+                <div class="col-md-12">
+                    <b-form-group>
+                        <label>Descrição</label>
+                        <b-form-input placeholder="Descrição" v-model="post.description"/>
+                    </b-form-group>
+                </div>
 
-                    <div class="col-md-12">
-                        <b-form-group>
-                            <label>Descrição</label>
-                            <b-form-input placeholder="Descrição" v-model="post.description"/>
-                        </b-form-group>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="border rounded my-1 p-2">
-                            <label>Arquivos</label>
-                            <b-form-file
-                                multiple
-                                v-model="files"
-                                :state="Boolean(files.length)"
-                                placeholder="Escolha ou arraste um arquivo..."
-                                drop-placeholder="Solte aqui..."
-                            />
-                            <div class="mt-3">
-                                Arquivos Selecionados:
-                                <span v-for="file in files" :key="file.name">{{file.name}}, </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12" v-if="idPost">
-                        <div class="row">
-                            <div class="col-md-3 img-container" v-for="img in post.files" :key="img.id">
-                                <div class="btn-remove-image">
-                                    <b-button variant="danger" class="btn-sm p-0" @click="() => removeImage(img.id)">
-                                        <b-icon icon="trash"></b-icon>
-                                    </b-button>
-                                </div>
-                                <img :src="'/storage/'+img.src" alt="img" class="img-fluid rounded">
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-12 text-right">
-                        <div>
-                            <b-button @click="onHidden">Cancelar</b-button>
-                            <b-button variant="primary" @click="save">
-                                <b-icon icon="check"/>
-                                Salvar
-                            </b-button>
+                <div class="col-md-12">
+                    <div class="border rounded my-1 p-2">
+                        <label>Arquivos</label>
+                        <b-form-file
+                            multiple
+                            v-model="files"
+                            :state="Boolean(files.length)"
+                            placeholder="Escolha ou arraste um arquivo..."
+                            drop-placeholder="Solte aqui..."
+                        />
+                        <div class="mt-3">
+                            Arquivos Selecionados:
+                            <span v-for="file in files" :key="file.name">{{file.name}}, </span>
                         </div>
                     </div>
                 </div>
-            </b-form>
+
+                <div class="col-md-12" v-if="idPost">
+                    <div class="row">
+                        <div class="col-md-3 img-container" v-for="img in post.files" :key="img.id">
+                            <div class="btn-remove-image">
+                                <b-button variant="danger" class="btn-sm p-0" @click="() => removeImage(img.id)">
+                                    <b-icon icon="trash"></b-icon>
+                                </b-button>
+                            </div>
+                            <img :src="'/storage/'+img.src" alt="img" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 text-right">
+                    <div>
+                        <b-button @click="onHidden">Cancelar</b-button>
+                        <b-button variant="primary" @click="save">
+                            <b-icon icon="check"/>
+                            Salvar
+                        </b-button>
+                    </div>
+                </div>
+            </div>
         </b-modal>
 
     </div>

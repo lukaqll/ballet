@@ -15,8 +15,13 @@ class StudentClass extends Model
     protected $fillable = [
         'id',
         'id_student',
-        'id_class'
+        'id_class',
+        'approved_at'
     ];
 
     public $timestamps = false;
+
+    public function class(){
+        return $this->hasOne(ClassModel::class, 'id', 'id_class');
+    }
 }

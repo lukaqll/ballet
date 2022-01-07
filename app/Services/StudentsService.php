@@ -33,10 +33,30 @@ class StudentsService extends AbstractService
     public function updateStudentClasses( Student $student, array $classes ){
 
         $studentClassService = new StudentClassesService;
-        $studentClassService->deleteAllByStudent($student);
+        $studentClasses = $studentClassService->list(['id_student' => $student->id]);
+
         foreach( $classes as $idClass ){
-            $student->classes()->attach( $idClass );
+            
+            $isStudentClassExists = $studentClassService->get([
+                'id_student' => $student->id, 
+                'id_class' => $idClass
+            ]);
+
+            if( empty( $isStudentClassExists ) ){
+                $studentClassService->create([
+                    'id_student' => $student->id, 
+                    'id_class' => $idClass,
+                    'approved_at' => date('Y-m-d H:i:s')
+                ]);
+            }
         }
+
+        foreach( $studentClasses as $studentClass ){
+            if( !in_array($studentClass->id_class, $classes) ){
+                $studentClass->delete();
+            }
+        }
+
         return true;
     }
 

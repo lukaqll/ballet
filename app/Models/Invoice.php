@@ -24,4 +24,17 @@ class Invoice extends Model
     public function user(){
         return $this->hasOne( User::class, 'id', 'id_user' );
     }
+
+    public function getStatusText(){
+        $status = [
+            'A' => 'Aberto',
+            'P' => 'Pago',
+            'C' => 'Cancelado'
+        ];
+        return $status[$this->status];
+    }
+
+    public function getIsExpired(){
+        return (date($this->expires_at) < date('Y-m-d H:i:s')) && $this->status == 'A';
+    }
 }

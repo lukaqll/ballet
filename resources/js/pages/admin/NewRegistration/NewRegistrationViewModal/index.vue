@@ -33,18 +33,33 @@
                         </div>
                         <div class="col-md-4">
                             <b-form-group>
-                                <label>Telefone</label>
-                                <b-form-input disabled placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
-                            </b-form-group>
-                        </div>
-
-
-                        <div class="col-md-4">
-                            <b-form-group>
                                 <label>CPF</label>
                                 <b-form-input disabled class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
                             </b-form-group>
                         </div>
+
+                        <div class="col-md-4">
+                            <b-form-group>
+                                <label>Data de Nascimento</label>
+                                <b-form-input disabled type="date" v-model="user.birthdate"/>
+                            </b-form-group>
+                        </div> 
+                        <div class="col-md-4">
+                            <b-form-group>
+                                <label>Telefone</label>
+                                <b-form-input disabled placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
+                            </b-form-group>
+                        </div>
+                        <div class="col-md-4">
+                            <b-form-group>
+                                <label>WhatsApp</label>
+                                <select disabled class="form-control" v-model="user.is_whatsapp">
+                                    <option value="1">Sim</option>
+                                    <option value="0">Não</option>
+                                </select>
+                            </b-form-group>
+                        </div>
+                       
                         <div class="col-md-4">
                             <b-form-group>
                                 <label>RG</label>
@@ -57,13 +72,13 @@
                                 <b-form-select disabled :options="orgaosExpeditores" class="w-100" v-model="user.orgao_exp"></b-form-select>
                             </b-form-group>
                         </div>
-                        
                         <div class="col-md-4">
                             <b-form-group>
-                                <label>Data de Nascimento</label>
-                                <b-form-input disabled type="date" v-model="user.birthdate"/>
+                                <label>UF do Órgão Expeditor</label>
+                                <b-form-select disabled :options="ufsParam" class="w-100" v-model="user.uf_orgao_exp"></b-form-select>
                             </b-form-group>
-                        </div>  
+                        </div>
+                         
                         <div class="col-md-4">
                             <b-form-group>
                                 <label>Profissão</label>
@@ -153,19 +168,19 @@
                 <div class="col-md-12" v-if="user.student && user.student.id">
                     <div class="row">
 
-                        <div class="col-md-4" >
+                        <div class="col-md-6" >
                             <b-form-group>
                                 <label>Nome do aluno</label>
                                 <b-form-input disabled placeholder="Nome do Aluno" v-model="user.student.name"/>
                             </b-form-group>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-6">
                             <b-form-group>
                                 <label>Apelido</label>
                                 <b-form-input disabled placeholder="Apelido do Aluno" v-model="user.student.nick_name"/>
                             </b-form-group>
-                        </div>
-                        <div class="col-md-4">
+                        </div> -->
+                        <div class="col-md-6">
                             <b-form-group>
                                 <label>Data de Nascimento</label>
                                 <b-form-input disabled type="date" v-model="user.student.birthdate"/>
@@ -232,6 +247,7 @@
 import common from '../../../../common/common'
 
 import orgaosExpeditores from "../../../../params/orgaosExpeditores"
+import ufs from "../../../../params/ufs"
 export default {
     props: {
         visible: Boolean,
@@ -247,7 +263,10 @@ export default {
                 {value: 'ES', text: 'Espírito Santo'},
                 {value: 'MG', text: 'Minas Gerais'},
             ]
-        } 
+        },
+        ufsParam: function(){
+            return ufs
+        }
     },
     methods: {
         approve() {

@@ -27,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'phone',
+        'is_whatsapp',
         'cpf',
         'status',
         'is_admin',
@@ -41,6 +42,7 @@ class User extends Authenticatable implements JWTSubject
         'instagram',
         'rg',
         'orgao_exp',
+        'uf_orgao_exp',
         'profession',
         'birthdate',
         'cep',
@@ -116,5 +118,13 @@ class User extends Authenticatable implements JWTSubject
         } else {
             return $splitedName[0];
         }
+    }
+
+    public function openInvoices(){
+        return $this->hasMany(Invoice::class, 'id_user', 'id')->where('status', 'A');
+    }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class, 'id_user', 'id');
     }
 }

@@ -50,7 +50,7 @@ class AuthController extends Controller
     {
 
         $user = auth('api')->user();
-        $redirectTo = '/';
+        $redirectTo = '/home';
 
         if( $user->is_admin == 1 )
             $redirectTo = '/admin';

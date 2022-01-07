@@ -89,7 +89,6 @@ export default {
             return  [
                     {field: 'name', label: 'Nome'},
                     {field: 'status_text', label: 'status'},
-                    {field: 'nick_name', label: 'Apelido'},
                     {field: 'user.name', label: 'Usuário'},
                 ]
         },

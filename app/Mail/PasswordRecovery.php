@@ -34,7 +34,9 @@ class PasswordRecovery extends Mailable
      */
     public function build()
     {
-        $this->subject('Recuperação de senha Arte e Dança Ballet');
+        $isFirt = $this->passwordRecoveryToken->is_first == 1;
+
+        $this->subject( ($isFirt ? 'Cadastrar' : 'Recuperar') . " senha de acesso Ellegance Ballet");
         $this->to($this->user->email, $this->user->name);
 
         return $this->view('mail.passwordRecovery', [

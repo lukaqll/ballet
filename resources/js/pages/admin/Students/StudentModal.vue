@@ -8,160 +8,155 @@
             @hidden="onHidden" 
             @shown="onShown" 
         >
-            <b-form>
+            <div class="row">
 
-                <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
 
-                    <div class="col-md-8">
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <b-form-group>
-                                    <label>Usuário</label>
-                                    <v-select 
-                                        :options="usersOptions" 
-                                        label="text"
-                                        :reduce="user => user.value"
-                                        v-model="student.id_user"
-                                    ></v-select>
-                                </b-form-group>
-                            </div>
-
-                            <div class="col-md-12">
-                                <b-form-group>
-                                    <label>Nome</label>
-                                    <b-form-input placeholder="Nome"  v-model="student.name"/>
-                                </b-form-group>
-                            </div>
-                            <div class="col-md-6">
-                                <b-form-group>
-                                    <label>Apelido</label>
-                                    <b-form-input class="form-control" placeholder="Apelido" v-model="student.nick_name"/>
-                                </b-form-group>
-                            </div>
-                            <div class="col-md-6">
-                                <b-form-group>
-                                    <label>Aniversário</label>
-                                    <b-form-input type="date" v-model="student.birthdate"/>
-                                </b-form-group>
-                            </div>
+                        <div class="col-md-12">
+                            <b-form-group>
+                                <label>Usuário</label>
+                                <v-select 
+                                    :options="usersOptions" 
+                                    label="text"
+                                    :reduce="user => user.value"
+                                    v-model="student.id_user"
+                                ></v-select>
+                            </b-form-group>
                         </div>
-                    </div>
 
-                    <div class="col-md-4">
-                        <div class="row">
-
-                            <div class="col-12">
-                                <b-img v-if="student.id && student.picture" :src="student.picture" fluid alt="Student Image"></b-img>
-                            </div>
-                            <div class="col-12">
-                                <template v-if="student.id">
-                                    <b-button 
-                                        class="mt-2"
-                                        variant="outline-secondary"
-                                        @click="() => pictureModalShow = true"
-                                    >
-                                        {{student.picture ? 'Alterar' : 'Adicionar'}} imagem
-                                    </b-button>
-                                </template>
-
-                                <template v-else>
-                                    <div>
-                                        <b-form-file
-                                            v-model="student.picture"
-                                            :state="Boolean(student.picture)"
-                                            placeholder="Escolha ou arraste um arquivo..."
-                                            drop-placeholder="Solte um arquivo aqui..."
-                                        />
-                                    </div>
-                                </template>
-
-                            </div>
+                        <div class="col-md-12">
+                            <b-form-group>
+                                <label>Nome</label>
+                                <b-form-input placeholder="Nome"  v-model="student.name"/>
+                            </b-form-group>
                         </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <b-form-group>
-                            <label>Aulas</label>
-                            <div>
-                                <b-badge class="py-2 mr-1" variant="secondary" v-for="cl in student.classes" :key="cl.id">
-                                    <span>
-                                        {{cl.name}} - {{cl.unit_name}}
-                                    </span>
-                                    <b-icon icon="x" class="hover" @click="handleClassRemove($event, cl.id)"/>
-                                </b-badge>
-                                <b-button variant="primary" size="sm" @click="() => addClassModalShow = true">Adicionar</b-button>
-                            </div>
-                        </b-form-group>
-                    </div>
-
-                    <div class="col-md-12" v-if="student.id">
-                        <h5>
-                            Contratos
-                            <b-button variant="light" @click="createContract" class="btn-sm float-right">Gerar Contrato</b-button>
-                        </h5>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Status</th>
-                                    <th>Criado Em</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contract in student.contracts" :key="contract.id">
-                                    <td>{{contract.status_text}}</td>
-                                    <td>{{formartDate(contract.created_at)}}</td>
-                                    <td>
-                                        <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
-                                        <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm">
-                                            <b-icon icon="bell"/>
-                                        </b-button>
-                                        <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                            <b-icon icon="vector-pen"/>
-                                        </a>
-                                        <a :href="`/contracts/view/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                            <b-icon icon="download"/>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="col-12 text-right">
-                        <div>
-                            <b-button @click="onHidden">Cancelar</b-button>
-                            <b-button variant="primary" @click="save">
-                                <b-icon icon="check"/>
-                                Salvar
-                            </b-button>
+                        <!-- <div class="col-md-6">
+                            <b-form-group>
+                                <label>Apelido</label>
+                                <b-form-input class="form-control" placeholder="Apelido" v-model="student.nick_name"/>
+                            </b-form-group>
+                        </div> -->
+                        <div class="col-md-12">
+                            <b-form-group>
+                                <label>Aniversário</label>
+                                <b-form-input type="date" v-model="student.birthdate"/>
+                            </b-form-group>
                         </div>
                     </div>
                 </div>
-            </b-form>
+
+                <div class="col-md-4">
+                    <div class="row">
+
+                        <div class="col-12">
+                            <b-img v-if="student.id && student.picture" :src="student.picture" fluid alt="Student Image"></b-img>
+                        </div>
+                        <div class="col-12">
+                            <template v-if="student.id">
+                                <b-button 
+                                    class="mt-2"
+                                    variant="outline-secondary"
+                                    @click="() => pictureModalShow = true"
+                                >
+                                    {{student.picture ? 'Alterar' : 'Adicionar'}} imagem
+                                </b-button>
+                            </template>
+
+                            <template v-else>
+                                <div>
+                                    <b-form-file
+                                        v-model="student.picture"
+                                        :state="Boolean(student.picture)"
+                                        placeholder="Escolha ou arraste um arquivo..."
+                                        drop-placeholder="Solte um arquivo aqui..."
+                                    />
+                                </div>
+                            </template>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <b-form-group>
+                        <label>Aulas</label>
+                        <div>
+                            <b-badge class="py-2 mr-1" variant="secondary" v-for="cl in student.classes" :key="cl.id">
+                                <span>
+                                    {{cl.name}} - {{cl.unit_name}}
+                                </span>
+                                <b-icon icon="x" class="hover" @click="handleClassRemove($event, cl.id)"/>
+                            </b-badge>
+                            <b-button variant="primary" size="sm" @click="() => addClassModalShow = true">Adicionar</b-button>
+                        </div>
+                    </b-form-group>
+                </div>
+
+                <div class="col-md-12" v-if="student.id">
+                    <h5>
+                        Contratos
+                        <b-button variant="light" @click="createContract" class="btn-sm float-right">Gerar Contrato</b-button>
+                    </h5>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Criado Em</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="contract in student.contracts" :key="contract.id">
+                                <td>{{contract.status_text}}</td>
+                                <td>{{formartDate(contract.created_at)}}</td>
+                                <td>
+                                    <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
+                                    <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm">
+                                        <b-icon icon="bell"/>
+                                    </b-button>
+                                    <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
+                                        <b-icon icon="vector-pen"/>
+                                    </a>
+                                    <a :href="`/contracts/view/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
+                                        <b-icon icon="download"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-12 text-right">
+                    <div>
+                        <b-button @click="onHidden">Cancelar</b-button>
+                        <b-button variant="primary" @click="save">
+                            <b-icon icon="check"/>
+                            Salvar
+                        </b-button>
+                    </div>
+                </div>
+            </div>
         </b-modal>
 
         <b-modal hide-footer v-model="addClassModalShow" title="Vincular Aula">
-            <b-form>
-                <div class="row">
-                    <div class="col-12">
-                        <b-form-group>
-                            <label>Selecione uma aula</label>
-                            <b-form-select :options="classesOptions" v-model="toAddClass"></b-form-select>
-                        </b-form-group>
-                    </div>
-                    <div class="col-12 text-right">
-                        <div>
-                            <b-button @click="() => addClassModalShow = false">Cancelar</b-button>
-                            <b-button variant="primary" @click="addClass">
-                                <b-icon icon="check"/>
-                                Adicionar
-                            </b-button>
-                        </div>
+            <div class="row">
+                <div class="col-12">
+                    <b-form-group>
+                        <label>Selecione uma aula</label>
+                        <b-form-select :options="classesOptions" v-model="toAddClass"></b-form-select>
+                    </b-form-group>
+                </div>
+                <div class="col-12 text-right">
+                    <div>
+                        <b-button @click="() => addClassModalShow = false">Cancelar</b-button>
+                        <b-button variant="primary" @click="addClass">
+                            <b-icon icon="check"/>
+                            Adicionar
+                        </b-button>
                     </div>
                 </div>
-            </b-form>
+            </div>
         </b-modal>
 
         <b-modal hide-footer v-model="pictureModalShow">

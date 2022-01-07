@@ -49,10 +49,18 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <b-button variant="light" size="sm" @click="e => editUser(props.row.id)">
+                                                <b-button variant="light" size="sm" @click="e => editUser(props.row.id)" v-b-tooltip.hover title="Editar usuário">
                                                     <b-icon  icon="pencil-square"></b-icon>
                                                 </b-button>
-                                                <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = props.row.id">
+                                                <b-button 
+                                                    :variant="props.row.open_invoices && props.row.open_invoices.length ? 'danger' : 'light'" 
+                                                    size="sm" 
+                                                    @click="e => getUserInvoices(props.row.id)"
+                                                    v-b-tooltip.hover :title="`${props.row.open_invoices.length} faturas abertas`"
+                                                >
+                                                    <i class="fa fa-dollar-sign"></i>
+                                                </b-button>
+                                                <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = props.row.id" v-b-tooltip.hover title="Alterar senha">
                                                     <b-icon  icon="key"></b-icon>
                                                 </b-button>
                                             </td>
@@ -98,6 +106,13 @@
             @onSave="onPasswordUpdate"
         />
 
+        <user-invoices
+            :visible="idUserInvoice ? true : false"
+            :idUser="idUserInvoice"
+            @onHidden="() => idUserInvoice = null"
+        />
+
+
         
     </admin-base>
 </template>
@@ -110,9 +125,10 @@ import EditUserModal from './EditUserModal';
 import StudentModal from '../Students/StudentModal';
 import PasswordUpdateModal from './PasswordUpdateModal';
 import DataTable from "vue-materialize-datatable";
+import UserInvoices from "./UserInvoices";
 
 export default {
-    components: { AdminBase, NewUserModal, EditUserModal, StudentModal, PasswordUpdateModal,  DataTable },
+    components: { AdminBase, NewUserModal, EditUserModal, StudentModal, PasswordUpdateModal,  DataTable, UserInvoices },
 
     computed: {
         usersBindings(){
@@ -145,6 +161,8 @@ export default {
         editableStudentId: null,
         studentModalShow: false,
         filter: {},
+
+        idUserInvoice: null,
     }),
 
     methods: {
@@ -218,6 +236,9 @@ export default {
             this.editableStudentId = null
             this.studentModalShow = true
         },
+        getUserInvoices(idUser){
+            this.idUserInvoice = idUser
+        }
     }
 }
 </script>

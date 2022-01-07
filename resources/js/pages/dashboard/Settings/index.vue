@@ -38,6 +38,19 @@
                                 </div>
                                 <div class="col-md-4">
                                     <b-form-group>
+                                        <label>CPF</label>
+                                        <b-form-input disabled class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
+                                    </b-form-group>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <b-form-group>
+                                        <label>Data de Nascimento</label>
+                                        <b-form-input type="date" v-model="user.birthdate"/>
+                                    </b-form-group>
+                                </div>  
+                                <div class="col-md-4">
+                                    <b-form-group>
                                         <label>Telefone</label>
                                         <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
                                     </b-form-group>
@@ -45,10 +58,15 @@
 
                                 <div class="col-md-4">
                                     <b-form-group>
-                                        <label>CPF</label>
-                                        <b-form-input disabled class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
+                                        <label>WhatsApp</label>
+                                        <select class="form-control" v-model="user.is_whatsapp">
+                                            <option value="1">Sim</option>
+                                            <option value="0">Não</option>
+                                        </select>
                                     </b-form-group>
                                 </div>
+
+                                
                                 <div class="col-md-4">
                                     <b-form-group>
                                         <label>RG</label>
@@ -61,14 +79,15 @@
                                         <b-form-select :options="orgaosExpeditores" class="w-100" v-model="user.orgao_exp"></b-form-select>
                                     </b-form-group>
                                 </div>
-
-
                                 <div class="col-md-4">
                                     <b-form-group>
-                                        <label>Data de Nascimento</label>
-                                        <b-form-input type="date" v-model="user.birthdate"/>
+                                        <label>UF do Órgão Expeditor</label>
+                                        <b-form-select :options="ufsParam" class="w-100" v-model="user.uf_orgao_exp"></b-form-select>
                                     </b-form-group>
-                                </div>  
+                                </div>
+
+
+                                
                                 <div class="col-md-4">
                                     <b-form-group>
                                         <label>Profissão</label>
@@ -222,6 +241,7 @@
 import common from '../../../common/common'
 import DashboardBase from '../../../components/DashboardBase'
 import orgaosExpeditores from "../../../params/orgaosExpeditores"
+import ufs from "../../../params/ufs"
 
 export default {
     
@@ -229,6 +249,9 @@ export default {
     computed: {
         orgaosExpeditores: function(){
             return orgaosExpeditores
+        },
+        ufsParam: function(){
+            return ufs
         }
     },
     mounted: function() {

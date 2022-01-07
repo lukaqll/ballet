@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'cpf' => $this->cpf,
             'phone' => $this->phone,
+            'is_whatsapp' => $this->is_whatsapp,
             'status' => $this->status,
             'picture' =>  !empty($this->picture) ? '/storage/'.$this->picture : null,
             'signer_key' => $this->signer_key,
@@ -38,12 +39,15 @@ class UserResource extends JsonResource
             'instagram' => $this->instagram,
             'rg' => $this->rg,
             'orgao_exp' => $this->orgao_exp,
+            'uf_orgao_exp' => $this->uf_orgao_exp,
             'profession' => $this->profession,
             'birthdate' => $this->birthdate,
             'cep' => $this->cep,
             'know_by' => $this->know_by,
             'status_text' => $this->getStatusText(),
             'fisrt_name' => $this->getFirstName(),
+
+            'open_invoices' => $this->openInvoices
         ];
     }
 }

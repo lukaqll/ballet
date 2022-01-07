@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InvoiceResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -14,18 +15,36 @@ class InvoiceController extends Controller
     }
 
     /**
-     * list all
+     * list by user
      * 
      * @return  json
      */
-    public function list( Request $request )
+    public function listByUser( $id )
     {
         try {
 
-            $dataFilter = $request->all();
-            $result = $this->invoicesService->list( $dataFilter, ['id'] );
+            $result = $this->invoicesService->list( ['id_user' => $id], ['expires_at'] );
+            $response = [ 'status' => 'success', 'data' => InvoiceResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
 
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    /**
+     * list by self
+     * 
+     * @return  json
+     */
+    public function listSelf()
+    {
+        try {
+
+            $user = auth('api')->user();
+            $result = $this->invoicesService->list( ['id_user' => $user->id], ['expires_at'] );
+            $response = [ 'status' => 'success', 'data' => InvoiceResource::collection($result) ];
             
         } catch ( ValidationException $e ){
 
@@ -46,7 +65,7 @@ class InvoiceController extends Controller
             $dataFilter = $request->all();
             $result = $this->invoicesService->get( $dataFilter );
     
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($result) ];
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
@@ -64,7 +83,7 @@ class InvoiceController extends Controller
         try {
 
             $result = $this->invoicesService->get( ['id' => $id] );
-            $response = [ 'status' => 'success', 'data' => ($result) ];
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($result) ];
 
         } catch ( ValidationException $e ){
 
@@ -83,11 +102,20 @@ class InvoiceController extends Controller
         try {
 
             $validData = $request->validate([
-                'name' => 'required|string|unique:table',
+                'id_user' => 'required|integer|exists:users,id',
+                'expires_at' => 'required|date',
+                'value' => 'required|string'
             ]);
-            
+
+            if( $validData['expires_at'] < date('Y-m-d'))
+                throw ValidationException::withMessages(['A data de vencimento não pode ser menor que hoje']);
+
+            $validData['value'] = $this->unMaskMoney($validData['value']);            
+            $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
+            $validData['status'] = 'A';
+
             $created = $this->invoicesService->create( $validData );
-            $response = [ 'status' => 'success', 'data' => ($created) ];
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($created) ];
 
         } catch ( ValidationException $e ){
             
@@ -106,11 +134,23 @@ class InvoiceController extends Controller
 
         try {
             
+            $invoice = $this->invoicesService->find($id);
+            if($invoice->status != 'A')
+                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+
             $validData = $request->validate([
-                'name' => 'required|string|unique:table,name,'.$id,
+                'expires_at' => 'required|date',
+                'value' => 'required|string'
             ]);
+
+            if( $validData['expires_at'] < date('Y-m-d'))
+                throw ValidationException::withMessages(['A data de vencimento não pode ser menor que hoje']);
+                
+            $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
+            $validData['value'] = $this->unMaskMoney($validData['value']);            
+
             $updated = $this->invoicesService->updateById( $id, $validData);
-            $response = [ 'status' => 'success', 'data' => ($updated) ];
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
 
         } catch ( ValidationException $e ){
             
@@ -125,12 +165,16 @@ class InvoiceController extends Controller
      * 
      * @return  json
      */
-    public function delete( $id ){
+    public function cancelInvoice( $id ){
 
         try {
 
-            $deleted = $this->invoicesService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => ($deleted) ];
+            $invoice = $this->invoicesService->find($id);
+            if($invoice->status != 'A')
+                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+
+            $canceled = $this->invoicesService->updateById( $id, ['status' => 'C'] );
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($canceled) ];
 
         } catch ( ValidationException $e ){
             

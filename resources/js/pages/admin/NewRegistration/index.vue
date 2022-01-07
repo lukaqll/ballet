@@ -96,6 +96,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (users) => {
                     this.users = users
                 }
@@ -110,6 +111,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (user) => {
                     this.user = user
                 }

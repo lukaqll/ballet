@@ -32,7 +32,7 @@ class ClicksignService extends AbstractApiService
             'signer' => [
                 'email'         => $user->email,
                 'phone_number'  => $user->phone,
-                'auths'         => [ 'whatsapp' ],
+                'auths'         => $user->is_whatsapp ? ['whatsapp'] : ['sms'],
                 'name'          => $user->name,
                 'documentation' => $user->cpf,
 

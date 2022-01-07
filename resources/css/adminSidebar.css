@@ -31,7 +31,8 @@
     padding: 0 0;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    transition: .5s
+    transition: .5s;
+    /* padding-left: calc(var(--nav-width)) */
 }
 
 a {
@@ -88,7 +89,13 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: hidden
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+.l-navbar.show .nav{
+    overflow: auto;
+
 }
 
 .nav_logo,
@@ -132,6 +139,7 @@ a {
 .l-navbar.show {
     left: 0;
     width: calc(var(--nav-width) + 135px);
+    padding: 0;
 }
 
 .body-pd {
@@ -156,7 +164,7 @@ a {
 }
 
 @media screen and (min-width: 768px) {
-    #master-wrap-admim {
+    #master-wrap-admin {
         margin: calc(var(--header-height)) 0 0 0;
         padding-left: calc(var(--nav-width))
     }

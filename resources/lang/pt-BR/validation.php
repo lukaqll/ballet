@@ -185,6 +185,7 @@ return [
         'start'                     => 'Hora de Abertura',
         'end'                       => 'Hora de Fechamento',
         'notes'                     => 'Observação',
+        'expires_at'                => 'Vencimento',
         
         'id_user'                   => 'Usuário',
         'nick_name'                 => 'Apelido',
@@ -199,6 +200,7 @@ return [
         'user_street'   => 'Cidade do Usuário',
         'user_rg'       => 'RG do Usuário',
         'user_orgao_exp' => 'Órgão do Usuário',
+        'user_uf_orgao_exp' => 'UF do Órgão do Usuário',
         'user_birthdate' => 'Aniversário do Usuário',
         'user_cep'       => 'CEP do Usuário',
         'user_instagram' => 'Instagram do Usuário',

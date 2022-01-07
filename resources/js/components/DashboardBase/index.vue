@@ -11,7 +11,7 @@
                             <b-icon id="header-toggle" :class="sibarExpanded ? 'bx-x' : ''" icon="list" @click="toggleSidebar"></b-icon>
                         </span>
                     </b-nav-item>
-                    <router-link tag="b-nav-item" to="/" exact>
+                    <router-link tag="b-nav-item" to="/home" exact>
                         <span class="text-white">
                             <span>Ellegance Ballet</span>
                         </span>
@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <router-link tag="a" class="nav_link" to='/' exact>
+                        <router-link tag="a" class="nav_link" to='/home' exact>
                             <b-icon icon="house"></b-icon>
                             Home
                         </router-link>
@@ -70,6 +70,11 @@
                         <router-link tag="a" class="nav_link" to='/contratos'>
                             <b-icon icon="file-earmark-medical"></b-icon>
                             Contratos
+                        </router-link>
+
+                        <router-link tag="a" class="nav_link" to='/faturas'>
+                            <i class="fa fa-dollar-sign"></i>
+                            Minhas Faturas
                         </router-link>
 
                         <router-link tag="a" class="nav_link" to='/posts'>

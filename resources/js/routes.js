@@ -20,6 +20,7 @@ import ClientSettings from './pages/dashboard/Settings'
 import ClientStudents from './pages/dashboard/Students'
 import ClientContracts from './pages/dashboard/Contracts'
 import ClientPosts from './pages/dashboard/Posts'
+import ClientInvoices from './pages/dashboard/Invoices'
 
 const beforeAdminEnter = (to, form, next) => {
     common.request({
@@ -137,7 +138,7 @@ export default {
          */
         {
             name: 'client.home',
-            path: '/',
+            path: '/home',
             component: ClientHome,
             exact: true
         },
@@ -160,6 +161,11 @@ export default {
             name: 'client.settings',
             path: '/posts',
             component: ClientPosts,
+        },
+        {
+            name: 'client.settings',
+            path: '/faturas',
+            component: ClientInvoices,
         },
     ]
 }

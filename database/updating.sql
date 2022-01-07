@@ -1,3 +1,19 @@
+ALTER TABLE `ballet`.`invoices` 
+CHANGE COLUMN `updated_at` `updated_at` DATETIME NULL DEFAULT NULL ;
+
+ALTER TABLE `ballet`.`student_classes` 
+ADD COLUMN `approved_at` DATETIME NULL AFTER `id_class`;
+
+ALTER TABLE `ballet`.`users` 
+ADD COLUMN `is_whatsapp` TINYINT NULL DEFAULT '0' AFTER `phone`,
+ADD COLUMN `uf_orgao_exp` VARCHAR(45) NULL AFTER `orgao_exp`;
+
+ALTER TABLE `ballet`.`students` 
+CHANGE COLUMN `nick_name` `nick_name` VARCHAR(60) NULL ;
+
+
+------------------
+
 ALTER TABLE `users` 
 ADD COLUMN `signer_key` VARCHAR(45) NULL AFTER `is_admin`;
 

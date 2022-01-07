@@ -92,6 +92,7 @@ class UserController extends Controller
                 'user_email'    => 'required|string|email|unique:users,email',
                 'user_cpf'      => 'required|string|size:14|unique:users,cpf',
                 'user_phone'    => 'required|string',
+                'user_is_whatsapp' => 'nullable|integer',
                 'user_password' => 'nullable|string',
                 'user_password_confirmation' => 'nullable|string',
                 'user_picture' => 'nullable|image',
@@ -105,6 +106,7 @@ class UserController extends Controller
                 'user_address_complement' => 'nullable|string',
                 'user_instagram' => 'nullable|string',
                 'user_rg'         => 'required|string',
+                'user_uf_orgao_exp'  => 'required|string',
                 'user_orgao_exp'  => 'required|string',
                 'user_profession' => 'nullable|string',
                 'user_birthdate'  => 'required|string',
@@ -113,13 +115,14 @@ class UserController extends Controller
             ]);
             $userData = $this->replaceKey($userValidData, 'user_');
             $userData['status'] = 'A';
+            
             $user = $this->usersService->createUser($userData);
 
             // create student
             $studentValidData = $request->validate([
                 'student_id_class'  => 'required|integer|exists:classes,id',
                 'student_name'      => 'required|string',
-                'student_nick_name' => 'required|string',
+                // 'student_nick_name' => 'required|string',
                 'student_birthdate' => 'required|date',
                 'student_picture'   => 'nullable|image',
             ]);
@@ -158,7 +161,7 @@ class UserController extends Controller
                 'email' => 'required|string|email|unique:users,email,'.$id,
                 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
                 'phone' => 'required|string',
-
+                'is_whatsapp'   => 'nullable|integer',
                 'uf'       => 'required|string',
                 'city'     => 'required|string',
                 'district' => 'required|string',
@@ -168,10 +171,13 @@ class UserController extends Controller
                 'instagram' => 'nullable|string',
                 'rg'         => 'required|string',
                 'orgao_exp'  => 'required|string',
+                'uf_orgao_exp'  => 'required|string',
                 'profession' => 'nullable|string',
                 'birthdate'  => 'required|string',
                 'cep'        => 'required|string',
             ]);
+
+            $userData['is_whatsapp'] = empty($userData['is_whatsapp']) ? 0 : 1;
             $updated = $this->usersService->updateById( $id, $validData);
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
 
@@ -333,6 +339,7 @@ class UserController extends Controller
                 'user_email'    => 'required|string|email|unique:users,email',
                 'user_cpf'      => 'required|string|size:14|unique:users,cpf',
                 'user_phone'    => 'required|string',
+                'user_is_whatsapp'   => 'nullable|integer',
                 'user_password' => 'nullable|string',
                 'user_password_confirmation' => 'nullable|string',
                 'user_picture' => 'nullable|image',
@@ -347,6 +354,7 @@ class UserController extends Controller
                 'user_instagram' => 'nullable|string',
                 'user_rg'         => 'required|string',
                 'user_orgao_exp'  => 'required|string',
+                'user_uf_orgao_exp'  => 'required|string',
                 'user_profession' => 'nullable|string',
                 'user_birthdate'  => 'required|string',
                 'user_cep'        => 'required|string',
@@ -360,7 +368,7 @@ class UserController extends Controller
             $studentValidData = $request->validate([
                 'student_id_class'  => 'required|integer|exists:classes,id',
                 'student_name'      => 'required|string',
-                'student_nick_name' => 'required|string',
+                // 'student_nick_name' => 'required|string',
                 'student_birthdate' => 'required|date',
                 'student_picture'   => 'nullable|image',
                 'student_health_problem' => 'nullable|string',
@@ -466,7 +474,7 @@ class UserController extends Controller
                 // 'email' => 'required|string|email|unique:users,email,'.$id,
                 // 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
                 'phone' => 'required|string',
-
+                'is_whatsapp'   => 'nullable|integer',
                 'uf'       => 'required|string',
                 'city'     => 'required|string',
                 'district' => 'required|string',
@@ -480,6 +488,8 @@ class UserController extends Controller
                 'birthdate'  => 'required|string',
                 'cep'        => 'required|string',
             ]);
+
+            $userData['is_whatsapp'] = empty($userData['is_whatsapp']) ? 0 : 1;
             $updated = $this->usersService->updateById( $user->id, $validData);
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
 

@@ -21,7 +21,7 @@
                                     <img :src="student.picture" alt="" class="img-fluid rounded">
                                 </div>
                                 <div class="col-12">
-                                    <h4 class="text-center">{{ student.nick_name }}</h4>
+                                    <h4 class="text-center">{{ student.name }}</h4>
                                     <p>
                                         Aniversário: <b>{{student.birthdate_formated}}</b> <br>
                                         Status: <b>{{student.status_text}}</b> <br>

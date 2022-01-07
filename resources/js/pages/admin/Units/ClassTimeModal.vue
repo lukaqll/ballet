@@ -1,5 +1,5 @@
 <template>
-    <b-modal hide-footer :visible="visible" @hidden="onHidden" @shown="onShown" :title="'Aula: '+classModel.name">
+    <b-modal hide-footer :visible="visible" @hidden="onHidden" @shown="onShown" :title="classModel.name ? 'Aula: '+classModel.name : ''">
         <b-form @submit.prevent="save">
             <div class="row">
                 <div class="col-md-12">

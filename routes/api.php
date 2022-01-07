@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClicksignHooksController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\DocumentsController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\ParameterController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\StudentController;
@@ -63,6 +64,10 @@ Route::group(['middleware' => ['client']], function () {
 
     // contracts
     Route::get('/contracts/list-self', [DocumentsController::class, 'listSelf']);
+
+    // invoices
+    Route::get('/invoices/list-self', [InvoiceController::class, 'listSelf']);
+
 
 });
 
@@ -156,5 +161,10 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/posts/get/{id}', [PostController::class, 'getById']);
     Route::delete('/posts/remove-image/{id}', [PostController::class, 'removeImage']);
 
-    
+    // invoices
+    Route::get('/invoices/list-by-user/{id}', [InvoiceController::class, 'listByUser']);
+    Route::get('/invoices/get/{id}', [InvoiceController::class, 'getById']);
+    Route::put('/invoices/cancel/{id}', [InvoiceController::class, 'cancelInvoice']);
+    Route::put('/invoices/{id}', [InvoiceController::class, 'update']);
+    Route::post('/invoices', [InvoiceController::class, 'create']);
 });

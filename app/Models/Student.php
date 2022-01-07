@@ -37,6 +37,16 @@ class Student extends Model
         return $this->belongsToMany(ClassModel::class, StudentClass::class, 'id_student', 'id_class', 'id', 'id');
     }
 
+    public function approvedClasses(){
+        return $this->belongsToMany(ClassModel::class, StudentClass::class, 'id_student', 'id_class', 'id', 'id')
+                    ->where('approved_at', '!=', null);
+    }
+
+    public function approvedStudentClasses(){
+        return $this->hasMany(StudentClass::class, 'id_student', 'id')
+                    ->where('approved_at', '!=', null);
+    }
+
     public function openContract(){
         return $this->hasOne(Contract::class, 'id_student', 'id')
                     ->where('status', 'running');

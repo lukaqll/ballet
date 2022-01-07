@@ -130,7 +130,7 @@ class StudentController extends Controller
             $validData = $request->validate([
                 'id_user'   => 'required|integer|exists:users,id',
                 'name'      => 'required|string',
-                'nick_name' => 'required|string',
+                // 'nick_name' => 'required|string',
                 'birthdate' => 'required|date',
                 'classes'   => 'nullable|array',
                 'classes.*' => 'required|integer|exists:classes,id',
@@ -171,14 +171,14 @@ class StudentController extends Controller
             $validData = $request->validate([
                 'id_user'   => 'required|integer|exists:users,id',
                 'name'      => 'required|string',
-                'nick_name' => 'required|string',
+                // 'nick_name' => 'required|string',
                 'birthdate' => 'required|date',
                 'classes'   => 'nullable|array',
                 'classes.*' => 'required|integer|exists:classes,id',
-                'health_problem'   => 'nullable|string',
-                'food_restriction' => 'nullable|string',
-                'in_school'        => 'nullable|string',
-                'school_time'      => 'nullable|string',
+                'health_problem'   => 'nullable',
+                'food_restriction' => 'nullable',
+                'in_school'        => 'nullable',
+                'school_time'      => 'nullable',
             ]);
             $student = $this->studentsService->updateById( $id, $validData);
 
@@ -213,7 +213,7 @@ class StudentController extends Controller
             $validData = $request->validate([
                 'id_user'   => 'required|integer|exists:users,id',
                 'name'      => 'required|string',
-                'nick_name' => 'required|string',
+                // 'nick_name' => 'required|string',
                 'birthdate' => 'required|date',
                 'classes'   => 'nullable|array',
                 'classes.*' => 'required|integer|exists:classes,id',

@@ -1,6 +1,7 @@
 <?php 
  namespace App\Services;
 
+use App\Models\StudentClass;
 use App\Models\User;
 use App\Services\Api\ClicksignService;
 use Illuminate\Http\Request;
@@ -133,6 +134,11 @@ class UsersService extends AbstractService
 
         if( $student->status != 'MP' )
             throw ValidationException::withMessages(['este aluno não está pendente de matrícula']);
+
+        // approve class
+        $studentClass = new StudentClass;
+        $studentClass->where('id_student', $student->id)
+                     ->update(['approved_at' => date('Y-m-d H:i:s')]);
 
         // ativo
         $user->update(['status' => 'A']);

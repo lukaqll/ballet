@@ -20,6 +20,12 @@
                         </b-alert>
                     </router-link>
 
+                    <router-link v-if="data.user && data.user.open_invoices && data.user.open_invoices.length" to="/faturas" tag="span">
+                        <b-alert show dismissible variant="danger">
+                            Você possui <b>{{ data.user.open_invoices.length }}</b> Faturas abertas
+                        </b-alert>
+                    </router-link>
+
                 </div>
 
             </div>
