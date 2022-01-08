@@ -109,6 +109,7 @@ Route::group(['middleware' => ['admin']], function () {
 
 
     Route::get('/students/list', [StudentController::class, 'list']);
+    Route::get('/students/filter', [StudentController::class, 'filter']);
     Route::get('/students', [StudentController::class, 'get']);
     Route::get('/students/{id}', [StudentController::class, 'getById']);
     Route::post('/students', [StudentController::class, 'create']);

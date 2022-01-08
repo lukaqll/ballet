@@ -29,4 +29,9 @@ class ClassModel extends Model
         return $this->hasMany( ClassTime::class, 'id_class', 'id')
                     ->orderBy('weekday');
     }
+
+    public function students(){
+        return $this->hasMany(StudentClass::class, 'id_class', 'id' )
+                    ->where('approved_at', '!=', null);
+    }
 }

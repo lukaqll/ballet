@@ -64,6 +64,7 @@ export default {
                     type: 'put',
                     auth: true,
                     data: this.unit,
+                    load: true,
                     success: (resp) => {
                         this.unit = {}
                         this.$emit('onSave', resp)
@@ -77,6 +78,7 @@ export default {
                     type: 'post',
                     auth: true,
                     data: this.unit,
+                    load: true,
                     success: (resp) => {
                         this.unit = {}
                         this.$emit('onSave', resp)

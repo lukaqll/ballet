@@ -28,11 +28,11 @@
                                                 {{unit.name}}
                                             </div>
                                             <div class="col-3 text-right">
-                                                <b-button variant="outline" size="sm">
-                                                    <b-icon class="text-primary" icon="pencil-square" @click="editUnit($event, unit.id, unit.name)"></b-icon>
+                                                <b-button variant="light" size="sm" v-b-tooltip.hover title="Editar unidade" @click="editUnit($event, unit.id, unit.name)">
+                                                    <b-icon class="text-primary" icon="pencil-square" ></b-icon>
                                                 </b-button>
-                                                <b-button variant="outline" size="sm">
-                                                    <b-icon class="text-primary" icon="plus-square" @click="addClass($event, unit)"></b-icon>
+                                                <b-button variant="light" size="sm" v-b-tooltip.hover title="Adicionar aula" @click="addClass($event, unit)">
+                                                    <b-icon class="text-primary" icon="plus-square" ></b-icon>
                                                 </b-button>
                                             </div>
                                         </div>
@@ -46,18 +46,25 @@
                                                     <b-card no-body class="border-0 shadow-sm">
                                                         <b-card-body>
                                                             <div class="row">
-                                                                <div class="col-9">
+                                                                <div class="col-8">
                                                                     <h3>{{cl.name}}</h3>
                                                                 </div>
-                                                                <div class="col-3 text-right">
-                                                                    <b-icon icon="pencil-square" variant="primary" class="hover" @click="editClass($event, cl.id)"></b-icon>
-                                                                    <b-icon icon="calendar-plus" variant="primary" class="ml-2 hover" @click="addClassTime($event, cl)"></b-icon>
+                                                                <div class="col-4 text-right">
+                                                                    <b-button variant="light" size="sm" @click="editClass($event, cl.id)" v-b-tooltip.hover title="Editar aula">
+                                                                        <b-icon icon="pencil-square" variant="primary"></b-icon>
+                                                                    </b-button>
+                                                                    <b-button variant="light" size="sm" @click="addClassTime($event, cl)" v-b-tooltip.hover title="Adicionar horário">
+                                                                        <b-icon icon="calendar-plus" variant="primary" class="hover"></b-icon>
+                                                                    </b-button>
                                                                 </div>
                                                             </div>
 
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     <h5>R$ {{toMoney(cl.value)}}</h5>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <b-badge variant="primary" pill>{{cl.students_count}} alunos</b-badge>
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <b-list-group>
@@ -72,8 +79,12 @@
                                                                                     </b-row>
                                                                                 </div>
                                                                                 <div class="col-md-4 text-right">
-                                                                                    <b-icon icon="pencil-square" variant="primary" class="hover" @click="editClassTime($event, time.id)"></b-icon>
-                                                                                    <b-icon icon="trash" variant="danger" class="ml-2 hover" @click="deleteClassTime($event, time.id)"></b-icon>
+                                                                                    <b-button variant="light" size="sm" @click="editClassTime($event, time.id)" v-b-tooltip.hover title="Editar horário">
+                                                                                        <b-icon icon="pencil-square" variant="primary"></b-icon>
+                                                                                    </b-button>
+                                                                                    <b-button variant="light" size="sm" @click="deleteClassTime($event, time.id)" v-b-tooltip.hover title="Remover Horário">
+                                                                                        <b-icon icon="trash" variant="danger"></b-icon>
+                                                                                    </b-button>
                                                                                 </div>
                                                                             </div>
                                                                         </b-list-group-item>
@@ -172,6 +183,7 @@ export default {
                 url: '/api/units/list',
                 type: 'get',
                 auth: true,
+                load: true,
                 success: (units) => {
                     this.units = units
                 }
@@ -232,6 +244,7 @@ export default {
                         type: 'delete',
                         auth: true,
                         setError: true,
+                        load: true,
                         success: () => {
                             this.listUnits()
                         }

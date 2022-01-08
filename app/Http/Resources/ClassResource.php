@@ -16,10 +16,12 @@ class ClassResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'id_unit' => $this->id_unit,
             'name' => $this->name,
             'value' => $this->value,
             'unit_name' => $this->unit->name,
             'times' => ClassTimeResource::collection($this->times),
+            'students_count' => count($this->students)
         ];
     }
 }

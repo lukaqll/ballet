@@ -14,29 +14,32 @@
                                     <h3>Novas Matrículas</h3>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-md-4">
+                                    <div class="my-2">
+                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                    </div>
                                 </div>
                             </div>
                             <div>
 
                                 <div class="table-responsive" v-if="users.length">
-                                    <data-table
-                                        :rows="users"
-                                        :columns="usersBindings"
-                                        locale="br"
-                                        title=''
-                                        :perPage="[50, 100, 200]"
-                                        :clickable="false"
+
+                                    <b-table
+                                        :fields="tableFields"
+                                        :items="users"
+                                        :filter="tableFilter"
+                                        hover
                                     >
-                                        <th slot="thead-tr"></th>
-                                        <template slot="tbody-tr" slot-scope="props">
-                                            <td>
-                                                <b-button variant="light" size="sm" @click="e => viewRegistration(props.row.id)">
+                                        <template #cell(students)="row">
+                                                <span v-if="row.item.students.length == 1">{{ row.item.students[0].name }}</span>
+                                                <span v-else-if="row.item.students.length > 1">{{ row.item.students[0].name }} <b>+{{row.item.students.length - 1}}</b></span>
+                                        </template>
+                                        <template #cell(actions)="row">
+                                            <b-button variant="light" size="sm" @click="e => viewRegistration(row.item.id)">
                                                     <b-icon variant="primary" icon="eye"></b-icon>
                                                 </b-button>
-                                            </td>
                                         </template>
-                                    </data-table>
+                                    </b-table>
                                 </div>
                                 <div v-else>Nenhuma nova matrícula</div>
 
@@ -68,15 +71,16 @@ export default {
     components: { AdminBase, DataTable, NewRegistrationViewModal },
 
     computed: {
-        usersBindings(){
-            return  [
-                    {field: 'name', label: 'Nome'},
-                    {field: 'email', label: 'E-mail'},
-                    {field: 'cpf', label: 'CPF'},
-                    {field: 'phone', label: 'Tel'},
-                    {field: 'created_at_format', label: 'Registrado Em'},
-                ]
-        }
+        tableFields(){
+            return [
+                { key: 'name', label: 'Nome', sortable: true },
+                { key: 'email', label: 'E-mail', sortable: true },
+                { key: 'cpf', label: 'CPF', sortable: true },
+                { key: 'phone', label: 'Tel', sortable: true },
+                { key: 'created_at_format', label: 'Registrado Em', sortable: true },
+                { key: 'actions', label: '' },
+            ]
+        },
     },
 
        
@@ -87,6 +91,7 @@ export default {
     data: () => ({
         users: [],
         user: {},
+        tableFilter: ''
     }),
 
     methods: {

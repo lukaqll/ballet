@@ -36,6 +36,27 @@ class StudentController extends Controller
     }
 
     /**
+     * list all
+     * 
+     * @return  json
+     */
+    public function filter( Request $request )
+    {
+        try {
+
+            $dataFilter = $request->all();
+            $result = $this->studentsService->filter( $dataFilter, ['id'] );
+
+            $response = [ 'status' => 'success', 'data' => StudentResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    /**
      * get by key and value
      * 
      * @return  json

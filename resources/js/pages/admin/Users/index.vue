@@ -28,44 +28,54 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="my-2">
+                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                    </div>
+                                </div>
                             </div>
                             <div>
 
-                                <div class="table-responsive">
-                                    <data-table
-                                        :rows="users"
-                                        :columns="usersBindings"
-                                        locale="br"
-                                        title=''
-                                        :perPage="[50, 100, 200]"
-                                        :clickable="false"
+                                <div class="table-responsive" v-if="users.length">
+                                    <b-table
+                                        :fields="tableFields"
+                                        :items="users"
+                                        :filter="tableFilter"
+                                        hover
                                     >
-                                        <th slot="thead-tr"></th>
-                                        <th slot="thead-tr"></th>
-                                        <template slot="tbody-tr" slot-scope="props">
-                                            <td>
-                                                <span v-if="!props.row.signer_key" v-b-tooltip.hover title="Usuário não cadastrado como signatário">
+                                        <template #cell(students)="row">
+                                                <span v-if="row.item.students.length == 1">{{ row.item.students[0].name }}</span>
+                                                <span v-else-if="row.item.students.length > 1">{{ row.item.students[0].name }} <b>+{{row.item.students.length - 1}}</b></span>
+                                        </template>
+                                        <template #cell(alerts)="row">
+                                                <span v-if="!row.item.signer_key" v-b-tooltip.hover title="Usuário não cadastrado como signatário">
                                                     <b-icon icon='exclamation-triangle' variant="danger"/>
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <b-button variant="light" size="sm" @click="e => editUser(props.row.id)" v-b-tooltip.hover title="Editar usuário">
-                                                    <b-icon  icon="pencil-square"></b-icon>
-                                                </b-button>
-                                                <b-button 
-                                                    :variant="props.row.open_invoices && props.row.open_invoices.length ? 'danger' : 'light'" 
-                                                    size="sm" 
-                                                    @click="e => getUserInvoices(props.row.id)"
-                                                    v-b-tooltip.hover :title="`${props.row.open_invoices.length} faturas abertas`"
-                                                >
-                                                    <i class="fa fa-dollar-sign"></i>
-                                                </b-button>
-                                                <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = props.row.id" v-b-tooltip.hover title="Alterar senha">
-                                                    <b-icon  icon="key"></b-icon>
-                                                </b-button>
-                                            </td>
                                         </template>
-                                    </data-table>
+                                        <template #cell(actions)="row">
+                                            <b-button variant="light" size="sm" @click="e => editUser(row.item.id)" v-b-tooltip.hover title="Editar usuário">
+                                                <b-icon  icon="pencil-square"></b-icon>
+                                            </b-button>
+                                            <b-button 
+                                                :variant="row.item.open_invoices && row.item.open_invoices.length ? 'danger' : 'light'" 
+                                                size="sm" 
+                                                @click="e => getUserInvoices(row.item.id)"
+                                                v-b-tooltip.hover :title="`${row.item.open_invoices.length} faturas abertas`"
+                                            >
+                                                <i class="fa fa-dollar-sign"></i>
+                                            </b-button>
+                                            <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = row.item.id" v-b-tooltip.hover title="Alterar senha">
+                                                <b-icon  icon="key"></b-icon>
+                                            </b-button>
+                                        </template>
+                                    </b-table>
+
+                                </div>
+                                <div v-else>
+                                    <h6 class="text-center text-secondary">Nenhum resultado</h6>
+
+                                    
                                 </div>
 
                             </div>
@@ -131,13 +141,15 @@ export default {
     components: { AdminBase, NewUserModal, EditUserModal, StudentModal, PasswordUpdateModal,  DataTable, UserInvoices },
 
     computed: {
-        usersBindings(){
-            return  [
-                    {field: 'name', label: 'Nome'},
-                    {field: 'status_text', label: 'Status'},
-                    {field: 'email', label: 'E-mail'},
-                    {field: 'phone', label: 'Tel'},
-                ]
+        tableFields(){
+            return [
+                { key: 'name', label: 'Nome', sortable: true },
+                { key: 'status_text', label: 'Status', sortable: true },
+                { key: 'email', label: 'E-mail', sortable: true },
+                { key: 'students', label: '' },
+                { key: 'alerts', label: '' },
+                { key: 'actions', label: '' },
+            ]
         },
         status(){
             return [
@@ -161,6 +173,7 @@ export default {
         editableStudentId: null,
         studentModalShow: false,
         filter: {},
+        tableFilter: '',
 
         idUserInvoice: null,
     }),
@@ -178,6 +191,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (users) => {
                     this.users = users
                 }
@@ -197,6 +211,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (user) => {
                     this.editableUser = user
                 }

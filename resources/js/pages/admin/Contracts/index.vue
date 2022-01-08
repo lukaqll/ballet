@@ -28,35 +28,34 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="my-2">
+                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                    </div>
+                                </div>
                             </div>
                             <div>
 
                                 <div class="table-responsive" v-if="contracts.length">
-                                    <data-table
-                                        :rows="contracts"
-                                        :columns="contractsBindings"
-                                        locale="br"
-                                        title=''
-                                        :perPage="[50, 100, 200]"
-                                        :clickable="false"
+                                    <b-table
+                                        :fields="tableFields"
+                                        :items="contracts"
+                                        :filter="tableFilter"
+                                        hover
                                     >
-                                        <th slot="thead-tr"></th>
-                                        <template slot="tbody-tr" slot-scope="props">
-                                            <td>
-                                                <b-button v-if="props.row.status == 'running'" variant="danger" @click="() => cancelContract(props.row.id)" class="btn-sm" v-b-tooltip title="Cancelar contrato">Cancelar</b-button>
-                                                <b-button v-if="props.row.status == 'running'" variant="light" @click="() => notify(props.row.id)" class="btn-sm" v-b-tooltip title="Enviar notificação">
-                                                    <b-icon icon="bell"/>
-                                                </b-button>
-                                                <a :href="`/contracts/sign/${props.row.id}`" target="_blank" class="btn btn-light btn-sm" v-if="props.row.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                                    <b-icon icon="vector-pen"/>
-                                                </a>
-                                                <a :href="`/contracts/view/${props.row.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                                    <b-icon icon="download"/>
-                                                </a>
-
-                                            </td>
+                                        <template #cell(actions)="row">
+                                            <b-button v-if="row.item.status == 'running'" variant="danger" @click="() => cancelContract(row.item.id)" class="btn-sm" v-b-tooltip title="Cancelar contrato">Cancelar</b-button>
+                                            <b-button v-if="row.item.status == 'running'" variant="light" @click="() => notify(row.item.id)" class="btn-sm" v-b-tooltip title="Enviar notificação">
+                                                <b-icon icon="bell"/>
+                                            </b-button>
+                                            <a :href="`/contracts/sign/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-if="row.item.status == 'running'" v-b-tooltip title="Tela de assinatura">
+                                                <b-icon icon="vector-pen"/>
+                                            </a>
+                                            <a :href="`/contracts/view/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
+                                                <b-icon icon="download"/>
+                                            </a>
                                         </template>
-                                    </data-table>
+                                    </b-table>
                                 </div>
                                 <div v-else>Nenhum contrato ainda</div>
 
@@ -88,6 +87,15 @@ export default {
                 ]
         },
 
+        tableFields(){
+            return [
+                { key: 'user.name', label: 'Usuário', sortable: true },
+                { key: 'student.name', label: 'Aluno', sortable: true },
+                { key: 'status_text', label: 'Status', sortable: true },
+                { key: 'created_at_format', label: 'Criado Em', sortable: true },
+                { key: 'actions', label: '' },
+            ]
+        },
         status(){
             return [
                 {text: 'Abertos', value: 'running'},
@@ -104,7 +112,8 @@ export default {
 
     data: () => ({
         contracts: [],
-        filter: {}
+        filter: {},
+        tableFilter: ''
     }),
 
     methods: {

@@ -252,6 +252,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (student) => {
                     this.student = student
                 }

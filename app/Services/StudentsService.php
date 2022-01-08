@@ -87,4 +87,32 @@ class StudentsService extends AbstractService
         return $this->model->whereRaw("date_format(birthdate, '%m') = date_format(curdate(), '%m')")
                             ->orderBy('birthdate')->get();
     }
+
+    public function filter( array $filters ){
+
+        $findable = $this->model;
+
+        if( !empty($filters['status']) ){
+            $findable = $findable->where('status', $filters['status']);
+        }
+
+        if(  !empty($filters['id_unit']) || !empty($filters['id_class']) ){
+            $findable = $findable->join('student_classes AS sc', 'sc.id_student', 'students.id')
+                                 ->join('classes AS cl', 'cl.id', 'sc.id_class');
+        }   
+
+        if( !empty($filters['id_unit']) ){
+
+            $findable = $findable->join('units AS un', function( $join ) use($filters){
+                                        $join->on('un.id', 'cl.id_unit')
+                                             ->where('un.id', $filters['id_unit']);
+                                 });
+        }
+
+        if( !empty($filters['id_class']) ){
+            $findable = $findable->where('cl.id', $filters['id_class']);
+        }
+
+        return $findable->select('students.*')->get();
+    }
 }

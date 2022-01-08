@@ -32,7 +32,8 @@ class StudentResource extends JsonResource
             'food_restriction' => $this->food_restriction,
             'in_school' => $this->in_school,
             'school_time' => $this->school_time,
-            'status_text' => $this->getStatusText()
+            'status_text' => $this->getStatusText(),
+            'student_classes' => StudentClassResource::collection($this->studentClasses)
         ];
     }
 }

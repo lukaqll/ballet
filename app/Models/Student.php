@@ -47,6 +47,10 @@ class Student extends Model
                     ->where('approved_at', '!=', null);
     }
 
+    public function studentClasses(){
+        return $this->hasMany(StudentClass::class, 'id_student', 'id');
+    }
+
     public function openContract(){
         return $this->hasOne(Contract::class, 'id_student', 'id')
                     ->where('status', 'running');

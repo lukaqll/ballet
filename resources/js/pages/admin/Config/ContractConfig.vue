@@ -28,11 +28,16 @@
             </div>
         </div>
         
-        <b-modal title="Parâmetros" id="parameters-modal" v-model="parametersModal" hide-footer>
+        <b-modal size="lg" title="Parâmetros" id="parameters-modal" v-model="parametersModal" hide-footer>
             <b-alert show dismissible class="">
                 <small><b-icon icon="exclamation-triangle"/> É necessário o ':' no início na plavra-chave</small>
             </b-alert>
-            <b-table class="table-sm" :items="parameterWords"></b-table>
+            <div class="row">
+                <div class="col-4 my-2">
+                    <b-form-input v-model="filter" placeholder="Buscar"></b-form-input>
+                </div>
+            </div>
+            <b-table class="table-sm" :items="parameterWords" :filter="filter"></b-table>
         </b-modal>
     </admin-base>
 
@@ -59,6 +64,7 @@ export default {
         })
     },
     data: () => ({
+        filter: '',
         content: '',
         parametersModal: false,
         parameterWords: [
@@ -66,13 +72,29 @@ export default {
             { palavra_chave: 'Usuário', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
             {palavra_chave: ':nome_usuario', info: 'Nome do usuário responsável'},
             {palavra_chave: ':cpf_usuario', info: 'CPF do usuário'},
+            {palavra_chave: ':rg_usuario', info: 'RG do usuário'},
+            {palavra_chave: ':orgao_exp_usuario', info: 'Órgão expeditor do RG'},
+            {palavra_chave: ':uf_orgao_ex_usuario', info: 'UF do órgão expeditor'},
             {palavra_chave: ':email_usuario', info: 'E-Mail do usuário'},
             {palavra_chave: ':telefone_usuario', info: 'Telefone do usuário'},
+            {palavra_chave: ':nascimento_usuario', info: 'Data de nascimento do usuário'},
             {palavra_chave: ':desde_usuario', info: 'Data de criação do usuário'},
+            {palavra_chave: ':profissao_usuario', info: 'Profissão do usuário'},
+            {palavra_chave: ':instagram_usuario', info: 'Instagram do usuário'},
+            
+
+            { palavra_chave: 'Endereço', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
+            {palavra_chave: ':cep_usuario', info: 'CEP do usuário'},
+            {palavra_chave: ':uf_usuario', info: 'UF do usuário'},
+            {palavra_chave: ':cidade_usuario', info: 'Cidade do usuário'},
+            {palavra_chave: ':bairro_usuario', info: 'Bairro do usuário'},
+            {palavra_chave: ':rua_usuario', info: 'Rua do usuário'},
+            {palavra_chave: ':numero_endereco_usuario', info: 'Numero do endereço do usuário'},
+            {palavra_chave: ':complemento_usuario', info: 'Complemento do endereço do usuário'},
+            
 
             { palavra_chave: 'Aluno', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
             {palavra_chave: ':nome_aluno', info: 'Nome do aluno'},
-            {palavra_chave: ':apelido_aluno', info: 'Apelido do aluno'},
             {palavra_chave: ':nascimento_aluno', info: 'Data de nascimento do aluno'},
             {palavra_chave: ':desde_aluno', info: 'Data de criação do aluno'},
 

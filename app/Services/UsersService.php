@@ -132,25 +132,34 @@ class UsersService extends AbstractService
 
         $student = $user->pendentStudent;
 
-        if( $student->status != 'MP' )
-            throw ValidationException::withMessages(['este aluno não está pendente de matrícula']);
+        if( !empty($student) ){
 
-        // approve class
-        $studentClass = new StudentClass;
-        $studentClass->where('id_student', $student->id)
-                     ->update(['approved_at' => date('Y-m-d H:i:s')]);
+            if(  $student->status != 'MP' )
+                throw ValidationException::withMessages(['este aluno não está pendente de matrícula']);
+    
+            // approve class
+            $studentClass = new StudentClass;
+            $studentClass->where('id_student', $student->id)
+                         ->update(['approved_at' => date('Y-m-d H:i:s')]);
+
+            // contrato pendente
+            $student->update(['status' => 'CP']);
+        }
 
         // ativo
         $user->update(['status' => 'A']);
 
-        // contrato pendente
-        $student->update(['status' => 'CP']);
+        
 
         $clicksignService = new ClicksignService;
-        $clicksignService->createSignatory($user);
+        if( empty($user->signer_key) ){
+            $clicksignService->createSignatory($user);
+        }
 
         $documentService = new DocumentsService;
-        $documentService->generateContract( $student );
+        if(!empty($student) && empty($student->openContract) ){
+            $documentService->generateContract( $student );
+        }
 
         return $user;
     }
