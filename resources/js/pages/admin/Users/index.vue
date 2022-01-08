@@ -146,7 +146,7 @@ export default {
                 { key: 'name', label: 'Nome', sortable: true },
                 { key: 'status_text', label: 'Status', sortable: true },
                 { key: 'email', label: 'E-mail', sortable: true },
-                { key: 'students', label: '' },
+                { key: 'students', label: 'Alunos' },
                 { key: 'alerts', label: '' },
                 { key: 'actions', label: '' },
             ]
