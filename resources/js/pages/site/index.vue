@@ -123,7 +123,7 @@
                 <b-container>
                     <div class="row justify-content-center my-5">
                         <div class="col-md-12">
-                            <h3 class="text-center">Galeria</h3>
+                            <h3 class="text-center text-bold">Galeria</h3>
                         </div>
                         <div class="col-md-12">
                             <b-carousel
@@ -162,7 +162,7 @@
                 <b-container class="my-3">
                     <div class="row p-3 justify-content-center h-100">
                         <div class="col-md-12">
-                            <h3 class="text-center">Unidades</h3>
+                            <h3 class="text-center text-bold">Unidades</h3>
                         </div>
 
                         <div class="col-md-4 my-2" v-for="un in siteParam.units" :key="un.name">
