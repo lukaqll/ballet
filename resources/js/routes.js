@@ -14,6 +14,8 @@ import Register from './pages/Auth/Register'
 import NewRegistration from './pages/admin/NewRegistration'
 import Contracts from './pages/admin/Contracts'
 import Posts from './pages/admin/Posts'
+import Reports from './pages/admin/Reports'
+import ReportsKnowBy from './pages/admin/Reports/KnowBy.vue'
 
 import ClientHome from './pages/dashboard/Home'
 import ClientSettings from './pages/dashboard/Settings'
@@ -21,6 +23,8 @@ import ClientStudents from './pages/dashboard/Students'
 import ClientContracts from './pages/dashboard/Contracts'
 import ClientPosts from './pages/dashboard/Posts'
 import ClientInvoices from './pages/dashboard/Invoices'
+
+import SiteHome from './pages/site'
 
 const beforeAdminEnter = (to, form, next) => {
     common.request({
@@ -124,6 +128,18 @@ export default {
             path: '/admin/posts',
             component: Posts,
         },
+        {
+            name: 'reports',
+            path: '/admin/reports',
+            component: Reports,
+            exact: true
+        },
+        {
+            name: 'reports',
+            path: '/admin/reports/know-by',
+            component: ReportsKnowBy,
+            exact: true
+        },
 
         // register
         {
@@ -166,6 +182,16 @@ export default {
             name: 'client.settings',
             path: '/faturas',
             component: ClientInvoices,
+        },
+
+        /**
+         * site
+         */
+         {
+            name: 'site.home',
+            path: '/',
+            component: SiteHome,
+            exact: true
         },
     ]
 }

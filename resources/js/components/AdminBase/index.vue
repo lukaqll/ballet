@@ -75,6 +75,11 @@
                             Posts
                         </router-link>
 
+                        <router-link tag="a" class="nav_link" to='/admin/reports'>
+                            <b-icon icon="bar-chart-line"></b-icon>
+                            Relatórios
+                        </router-link>
+
                         <router-link tag="a" class="nav_link" to='/admin/settings'>
                             <b-icon icon="person-circle"></b-icon>
                             Minha Conta

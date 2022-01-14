@@ -109,6 +109,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (posts) => {
                     this.posts = posts
                 }

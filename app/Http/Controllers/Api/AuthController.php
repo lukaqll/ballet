@@ -69,7 +69,12 @@ class AuthController extends Controller
 
     public function getUser(){
         try {
-            $result = ['status' => 'success', 'data' => new UserResource(auth('api')->user())];
+
+            $user = auth('api')->user();
+            if( empty($user) )
+                throw ValidationException::withMessages(['Faça o login']);
+
+            $result = ['status' => 'success', 'data' => new UserResource($user)];
         } catch ( ValidationException $e ) {
             $result = ['status' => 'error', 'message' => $e->errors()];
         }

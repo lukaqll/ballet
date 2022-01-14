@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\ParameterController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ReportsController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Route;
  * public routes
  */
 Route::get('/classes/list', [ClassController::class, 'list']);
+Route::get('/gallery', [HomeController::class, 'getGallery']);
 
 // auth
 Route::post('/register', [UserController::class, 'publicCreateWithStudent']);
@@ -44,6 +46,7 @@ Route::post('/password-reset', [AuthController::class, 'passowrdReset']);
 // hooks
 Route::post('/clicksign/hook', [ClicksignHooksController::class, 'hooksCallback']);
 
+Route::get('/user/commom', [AuthController::class, 'getUser']);
 
 /**
  * client routes
@@ -102,6 +105,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/users/admin-password-update/{id}', [UserController::class, 'adminPasswordUpdate']);
     Route::post('/users/admin-upload-picture/{id}', [UserController::class, 'adminUploadPicture']);
     Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
+    Route::post('/users/inactivate/{id}', [UserController::class, 'inactivate']);
+    Route::post('/users/activate/{id}', [UserController::class, 'activate']);
 
     //
     Route::get('/users/get-registration/{id}', [UserController::class, 'getNewRegistration']);
@@ -168,4 +173,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/invoices/cancel/{id}', [InvoiceController::class, 'cancelInvoice']);
     Route::put('/invoices/{id}', [InvoiceController::class, 'update']);
     Route::post('/invoices', [InvoiceController::class, 'create']);
+
+    // reports
+    Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);
+
 });

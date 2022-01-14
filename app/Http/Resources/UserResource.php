@@ -16,6 +16,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'is_admin' => $this->is_admin,
             'name' => $this->name,
             'email' => $this->email,
             'cpf' => $this->cpf,
@@ -45,7 +46,7 @@ class UserResource extends JsonResource
             'cep' => $this->cep,
             'know_by' => $this->know_by,
             'status_text' => $this->getStatusText(),
-            'fisrt_name' => $this->getFirstName(),
+            'first_name' => $this->getFirstName(),
 
             'open_invoices' => $this->openInvoices
         ];

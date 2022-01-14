@@ -386,7 +386,7 @@ class UserController extends Controller
             $fileValidData = $request->validate([
                 'file_doc1' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
                 'file_doc2' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
-                'file_payment' => 'nullable|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
+                'file_payment' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
             ]);
             $files = $this->registerFilesSerivce->registerUpload( $user, $fileValidData );
 
@@ -513,6 +513,48 @@ class UserController extends Controller
             $updated = $this->usersService->uploadPicture($user, $userData['picture']);
             
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function inactivate( $id ) {
+        try {
+            
+
+            $user = $this->usersService->find($id);
+
+            if( $user->status == 'I' )
+                throw ValidationException::withMessages(['Usuário já inativado']);
+            
+            $updated = $user->update(['status' => 'I']);
+            
+            $response = [ 'status' => 'success', 'data' => new UserResource($user) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function activate( $id ) {
+        try {
+            
+
+            $user = $this->usersService->find($id);
+
+            if( $user->status == 'A' )
+                throw ValidationException::withMessages(['Usuário já ativo']);
+            
+            $updated = $user->update(['status' => 'A']);
+            
+            $response = [ 'status' => 'success', 'data' => new UserResource($user) ];
 
         } catch ( ValidationException $e ){
             

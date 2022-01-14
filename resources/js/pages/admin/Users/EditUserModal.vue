@@ -214,6 +214,16 @@
                                 <b-icon icon="plus"/>
                                 Adicionar como signatário
                             </b-button>
+
+                            <b-button variant="danger" @click="inactivate" v-if="user.status != 'I'">
+                                <b-icon icon="power"/>
+                                Inativar
+                            </b-button>
+                            <b-button variant="success" @click="activate" v-if="user.status == 'I'">
+                                <b-icon icon="power"/>
+                                Ativar
+                            </b-button>
+
                         </div>
                         <div class="col-md-6 text-right">
                             <b-button @click="onHidden">Cancelar</b-button>
@@ -341,7 +351,47 @@ export default {
                     this.$emit('reloadUser', data)
                 }
             })
-        }
+        },
+
+        inactivate() {
+            common.confirmAlert({
+                title: 'Inativar este usuário?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/users/inactivate/'+this.user.id,
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        savedAlert: true,
+                        success: (data) => {
+                            this.$emit('reloadUser', data)
+                            this.$emit('onSave', data)
+                        }
+                    })
+                }
+            })
+        },
+
+        activate() {
+            common.confirmAlert({
+                title: 'Ativar este usuário?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/users/activate/'+this.user.id,
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        savedAlert: true,
+                        success: (data) => {
+                            this.$emit('reloadUser', data)
+                            this.$emit('onSave', data)
+                        }
+                    })
+                }
+            })
+        },
 
     }
 }

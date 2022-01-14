@@ -33,7 +33,7 @@
 
                                     <router-link tag="b-button" to='/cadastro' class="btn-block btn-light">
                                         <b-icon icon="person-plus"></b-icon>
-                                        Cadastrar
+                                        Matricular
                                     </router-link>
 
                                     <div class="mt-2">

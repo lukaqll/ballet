@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use DirectoryIterator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class HomeController extends Controller
@@ -70,5 +72,31 @@ class HomeController extends Controller
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
         return response()->json( $response ); 
+    }
+
+    public function getGallery(){
+        try {
+
+            $result = [];
+            $dir_path = public_path() . '/site/images/gallery';
+            $dir = new DirectoryIterator($dir_path);
+            foreach ($dir as $fileinfo) {
+                if (!$fileinfo->isDot()) {
+                    $result[] = $dir->getFilename();
+                }
+                else {
+
+                }
+            }
+
+            $response = [ 'status' => 'success', 'data' => $result ];
+
+
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response ); 
+        
     }
 }

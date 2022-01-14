@@ -131,6 +131,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (contracts) => {
                     this.contracts = contracts
                 }

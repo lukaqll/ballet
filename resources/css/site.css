@@ -1,0 +1,33 @@
+.classes-container{
+    background-image: url('/site/images/bg-1.jpg');
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+.net-icon{
+    width: 5rem;
+    height: 5rem;
+    margin: .5rem;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.net-icon.instagram{
+    background-image: url('/site/images/network/instagram-logo.png');
+}
+.net-icon.facebook{
+    background-image: url('/site/images/network/facebook-logo.png');
+}
+.net-icon.whatsapp{
+    background-image: url('/site/images/network/whatsapp-logo.png');
+}
+
+.bg-light-pink{
+    background-color: #ffdbe3;
+}
+
+footer{
+    width: 100%;
+    min-height: 7rem;
+    background-color: #503e42;
+}

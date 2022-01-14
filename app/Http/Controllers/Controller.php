@@ -14,6 +14,7 @@ use App\Services\PasswordRecoveryService;
 use App\Services\PostSrcsService;
 use App\Services\PostsService;
 use App\Services\RegisterFilesSerivce;
+use App\Services\ReportsService;
 use App\Services\StudentsService;
 use App\Services\UnitsService;
 use App\Services\UsersService;
@@ -41,6 +42,7 @@ class Controller extends BaseController
     protected $documentsService;
     protected $contractsService;
     protected $registerFilesSerivce;
+    protected $repostsService;
     
     public function __construct()
     {
@@ -59,6 +61,7 @@ class Controller extends BaseController
         $this->documentsService = new DocumentsService;
         $this->contractsService = new ContractsService;
         $this->registerFilesSerivce = new RegisterFilesSerivce;
+        $this->repostsService = new ReportsService;
     }
 
     protected function unMaskMoney( string $str ){

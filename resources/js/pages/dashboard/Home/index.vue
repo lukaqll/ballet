@@ -5,7 +5,7 @@
             <div class="row">
 
                 <div class="col-md-12 pt-3" v-if="data.user">
-                    <h2 class="text-center text-secondary">Bem Vindo, {{ data.user.fisrt_name }}</h2>
+                    <h2 class="text-center text-secondary">Bem Vindo, {{ data.user.first_name }}</h2>
                 </div>
 
                 <div class="col-md-12 pt-3">

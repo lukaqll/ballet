@@ -21,7 +21,7 @@
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item-dropdown right>
                         <template #button-content>
-                            <em class="text-white">{{ user.fisrt_name }} </em>
+                            <em class="text-white">{{ user.first_name }} </em>
                         </template>
 
                         <b-dropdown-item @click="logout">

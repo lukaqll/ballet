@@ -214,5 +214,6 @@ return [
         'file_doc1' => 'Arquivo 1',
         'file_doc2' => 'Arquivo 2',
         'file_doc3' => 'Arquivo 3',
+        'file_payment' => 'Comprovante de Pagamento',
     ],
 ];
