@@ -17,6 +17,7 @@ class ContractResource extends JsonResource
         return [
             'id' => $this->id,
             'id_student' => $this->id_student,
+            'id_class' => $this->id_class,
             'key' => $this->key,
             'path' => $this->path,
             'status' => $this->status,
@@ -27,6 +28,9 @@ class ContractResource extends JsonResource
             'status_text' => $this->getStatusText(),
             'student' => $this->student,
             'user' => $this->student->user,
+
+            'student_class' => new StudentClassResource($this->studentClass),
+            'class' => $this->class
         ];
     }
 }

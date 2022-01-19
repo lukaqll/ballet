@@ -209,7 +209,7 @@ export default {
 
         getButton(){
             var options = {
-                whatsapp: "+5527998650476", // WhatsApp number
+                whatsapp: "+5528999258255", // WhatsApp number
                 call_to_action: "Envia-nos uma mensagem", // Call to action
                 position: "right", // Position may be 'right' or 'left'
             };

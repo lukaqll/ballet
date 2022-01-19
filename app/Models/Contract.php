@@ -15,6 +15,7 @@ class Contract extends Model
     protected $fillable = [
         'id',
         'id_student',
+        'id_class',
         'key',
         'path',
         'status',
@@ -24,6 +25,15 @@ class Contract extends Model
 
     public function student(){
         return $this->hasOne(Student::class, 'id', 'id_student');
+    }
+
+    public function class(){
+        return $this->hasOne(ClassModel::class, 'id', 'id_class');
+    }
+
+    public function studentClass(){
+        return $this->hasOne(StudentClass::class, 'id_class', 'id_class')
+                    ->where('student_classes.id_student', $this->id_student);
     }
 
     public function getStatusText(){

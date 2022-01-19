@@ -102,6 +102,13 @@ export default {
             {palavra_chave: ':data', info: 'Data atual'},
             {palavra_chave: ':data_hora', info: 'Data e hora atual'},
 
+            { palavra_chave: 'Aula', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
+            {palavra_chave: ':nome_aula', info: 'Nome da aula'},
+            {palavra_chave: ':nome_unidade', info: 'Nome da unidade na qual está vinculada a aula'},
+            {palavra_chave: ':valor_aula_real', info: 'Valor em real da aula (Ex.: 99,50)'},
+            {palavra_chave: ':valor_aula_extenso', info: 'Valor em real da aula por extenso (Ex.: noventa e nove reais e cinquenta centavos)'},
+
+
         ]
     }),
     methods: {

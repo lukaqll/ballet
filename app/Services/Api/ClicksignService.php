@@ -1,6 +1,7 @@
 <?php 
 namespace App\Services\Api;
 
+use App\Models\ClassModel;
 use App\Models\Contract;
 use App\Models\Student;
 use App\Models\User;
@@ -61,7 +62,7 @@ class ClicksignService extends AbstractApiService
     /**
      * create a document
      */
-    public function createDocument( Student $student, string $base64 ){
+    public function createDocument( Student $student, string $base64, ClassModel $class ){
 
         $user = $student->user;
 
@@ -96,6 +97,7 @@ class ClicksignService extends AbstractApiService
             $contractsService = new ContractsService;
             $contract = $contractsService->create([
                 'id_student' => $student->id,
+                'id_class' => $class->id,
                 'path' => $contractResponse->path,
                 'key' => $contractResponse->key,
                 'status' => $contractResponse->status,
@@ -242,6 +244,19 @@ class ClicksignService extends AbstractApiService
         }
 
         return true;
+    }
+
+    public function onContractCloseHandle(Contract $contract, $status){
+
+        $student = $contract->student;
+        $contract->update(['status' => $status]);
+        $student->update(['status' => 'A']);
+
+        $studentClass = $contract->studentClass;
+
+        if( !empty($studentClass) ){
+            $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
+        }
     }
 }
 

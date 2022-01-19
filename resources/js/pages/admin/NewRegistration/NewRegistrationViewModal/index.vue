@@ -174,16 +174,17 @@
                                 <b-form-input disabled placeholder="Nome do Aluno" v-model="user.student.name"/>
                             </b-form-group>
                         </div>
-                        <!-- <div class="col-md-6">
-                            <b-form-group>
-                                <label>Apelido</label>
-                                <b-form-input disabled placeholder="Apelido do Aluno" v-model="user.student.nick_name"/>
-                            </b-form-group>
-                        </div> -->
                         <div class="col-md-6">
                             <b-form-group>
                                 <label>Data de Nascimento</label>
                                 <b-form-input disabled type="date" v-model="user.student.birthdate"/>
+                            </b-form-group>
+                        </div>
+
+                        <div class="col-md-12">
+                            <b-form-group>
+                                <label>Aula Selecionada</label>
+                                <b-form-input disabled :value="user.student.pendent_classes.map(c=>c.name).join(', ')"/>
                             </b-form-group>
                         </div>
                         
@@ -213,6 +214,9 @@
                         </div>
 
                     </div>
+                </div>
+                <div v-else>
+                    <h5 class="text-center">Nenhum aluno</h5>
                 </div>
 
                 <div class="col-12">

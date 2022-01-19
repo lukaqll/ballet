@@ -67,15 +67,15 @@ class ClicksignHooksController extends Controller
 
                 case 'close': case 'auto_close': 
                     // documento é finalizado automaticamente logo após a última assinatura
-                    $contract->update(['status' => $docContract->status]);
-                    $student->update(['status' => 'A']);
+                    $this->clicksignService->onContractCloseHandle($contract, $docContract->status);
+
                 break;
 
                 case 'deadline': 
                     // Ocorre quando a data limite de assinatura de um documento for atingida (Se o documento contiver ao menos uma assinatura, ele é finalizado. Caso contrário, o documento é cancelado)
                     $contract->update(['status' => $docContract->status]);
                     if( $docContract->status == 'closed' ){
-                        $student->update(['status' => 'A']);
+                        $this->clicksignService->onContractCloseHandle($contract, $docContract->status);
                     }
                 break;
 

@@ -38,20 +38,25 @@ class DocumentsController extends Controller
     /**
      * create
      */
-    public function generate( $idStudent )
+    public function generate( $idStudent, $idClass )
     {
         try {
 
             $student = $this->studentsService->find( $idStudent );
-            $openContract = $student->openContract;
 
             if( $student->status == 'MP' )
                 throw ValidationException::withMessages(["Aluno com matrícula pendente, ao aprovar sua matrícula, será gerado o contrato e enviado para o E-mail {$student->user->email}"]);
 
-            if( !empty($openContract) )
-                throw ValidationException::withMessages(['Já existe um contrato para este aluno']);
 
-            $result = $this->documentsService->generateContract( $student );
+            $class = $this->classesService->find($idClass);
+            if( empty($class) )
+                throw ValidationException::withMessages(['Falha ao buscar aula']);
+
+            $isStudentClassExists = $this->studentClassesService->get(['id_class' => $idClass, 'id_student' => $idStudent]);
+            if( empty($isStudentClassExists) )
+                throw ValidationException::withMessages(['Aluno não matriculado nesta aula']);
+
+            $result = $this->documentsService->generateContract( $student, $class );
 
             $response = [ 'status' => 'success', 'data' => $result ];
             

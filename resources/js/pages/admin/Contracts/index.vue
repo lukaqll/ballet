@@ -78,19 +78,12 @@ export default {
     components: { AdminBase, DataTable },
 
     computed: {
-        contractsBindings(){
-            return  [
-                    {field: 'user.name', label: 'Usuário'},
-                    {field: 'student.name', label: 'Aluno'},
-                    {field: 'status_text', label: 'status'},
-                    {field: 'created_at_format', label: 'Criado Em'},
-                ]
-        },
 
         tableFields(){
             return [
                 { key: 'user.name', label: 'Usuário', sortable: true },
                 { key: 'student.name', label: 'Aluno', sortable: true },
+                { key: 'class.name', label: 'Aula', sortable: true },
                 { key: 'status_text', label: 'Status', sortable: true },
                 { key: 'created_at_format', label: 'Criado Em', sortable: true },
                 { key: 'actions', label: '' },

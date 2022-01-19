@@ -20,12 +20,6 @@
                                 <b-form-input placeholder="Nome"  v-model="student.name"/>
                             </b-form-group>
                         </div>
-                        <!-- <div class="col-md-6">
-                            <b-form-group>
-                                <label>Apelido</label>
-                                <b-form-input class="form-control" placeholder="Apelido" v-model="student.nick_name"/>
-                            </b-form-group>
-                        </div> -->
                         <div class="col-md-12">
                             <b-form-group>
                                 <label>Aniversário</label>
@@ -69,13 +63,26 @@
 
                 <div class="col-md-12">
                     <b-form-group>
-                        <label>Aulas</label>
-                        <div>
-                            <b-badge class="py-2 mr-1" variant="secondary" v-for="cl in student.classes" :key="cl.id">
-                                <span>
-                                    {{cl.name}} - {{cl.unit_name}}
-                                </span>
-                            </b-badge>
+                        <h5>Aulas</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Unidade</th>
+                                        <th>Valor R$</th>
+                                        <th>Aprovado Em</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="cl in student.student_classes" :key="cl.id">
+                                        <td>{{cl.class.name}}</td>
+                                        <td>{{cl.unit_name}}</td>
+                                        <td>{{toMoney(cl.class.value)}}</td>
+                                        <td>{{cl.approved_at ? formartDate(cl.approved_at) : 'Pendente de aprovação'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </b-form-group>
                 </div>
@@ -87,12 +94,14 @@
                             <tr>
                                 <th>Status</th>
                                 <th>Criado Em</th>
+                                <th>Aula</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="contract in student.contracts" :key="contract.id">
                                 <td>{{contract.status_text}}</td>
+                                <td>{{contract.class ? contract.class.name : '' }}</td>
                                 <td>{{formartDate(contract.created_at)}}</td>
                                 <td>
                                     <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
@@ -106,6 +115,7 @@
                         </tbody>
                     </table>
                 </div>
+                
 
                 <div class="col-12 text-right">
                     <div>

@@ -147,6 +147,10 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/contract/get-to-config', [ContractController::class, 'getContract']);
     Route::post('/contract/update', [ContractController::class, 'updateContract']);
 
+    // student classes
+    Route::post('/student-class/{idStudent}/{idClass}', [StudentController::class, 'addClass']);
+    Route::delete('/student-class/{idStudent}/{idClass}', [StudentController::class, 'removeClass']);
+
 
     /**
      * docs | clicksign
@@ -154,7 +158,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/users/add-signatory/{id}', [UserController::class, 'addSignatory']);
     Route::get('/contracts/list/{idStudent}', [UserController::class, 'listByStudent']);
     Route::post('/contracts/cancel/{id}', [DocumentsController::class, 'cancelContract']);
-    Route::post('/contracts/generate/{idStudent}', [DocumentsController::class, 'generate']);
+    Route::post('/contracts/generate/{idStudent}/{idClass}', [DocumentsController::class, 'generate']);
     Route::post('/contracts/notify/{id}', [DocumentsController::class, 'notify']);
 
     // contracts

@@ -20,7 +20,9 @@ class StudentClassResource extends JsonResource
             'id_student' => $this->id_student,
             'approved_at' => $this->approved_at,
             'approved_at_format' => date('d/m/Y', strtotime($this->approved_at)),
-            'class' => $this->class
+            'class' => $this->class,
+            'unit_name' => $this->class->unit->name,
+            'contract' => $this->contract
         ];
     }
 }

@@ -548,6 +548,12 @@ export default {
                     this.classes = classes.map(cl => (
                         {value: cl.id, text: `${cl.name}`})
                     )
+                },
+                error: () => {
+                    common.setError({
+                        title: 'Ops! Houve algum erro.',
+                        message: 'Por favor, recarregue a página e tente novamente'
+                    })
                 }
             })
         },

@@ -23,6 +23,9 @@
                                     </h5>
                                     <p>
                                         Aluno: <b>{{contract.student.name}}</b> <br>
+                                        <span v-if="contract.class">
+                                            Aula: <b>{{contract.class.name}}</b> <br>
+                                        </span>
                                         Gerado Em: <b>{{contract.created_at_format}}</b> <br>
                                     </p>
                                 </div>

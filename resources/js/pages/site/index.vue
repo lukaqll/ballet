@@ -104,13 +104,13 @@
             <section ref="aulas" id="aulas" class="classes-container my-5">
                 <b-container>
 
-                    <div class="row p-3 justify-content-center" style="top: 4rem; position: relative">
+                    <div class="row p-3 justify-content-center" style="top: 2rem; position: relative">
                         <div class="col-md-4 my-2" v-for="cl in siteParam.classes" :key="cl.name">
                             <b-card class="border-0 shadow">
                                 <h4>{{ cl.name }}</h4>
                                 <p>{{ cl.description }}</p>
                                 <h3>{{ cl.price }}</h3>
-                                <router-link tag="a" to="/cadastro" class="btn btn-block btn-secondary rounded-pill">Quero matricular</router-link>
+                                <a :href="`https://wa.me?phone=5528999258255&text=Olá, gostaria de me matricular na aula de ${cl.name}.`" target="_blank" class="btn btn-block btn-secondary rounded-pill">Quero matricular</a>
                             </b-card>
                         </div>
 

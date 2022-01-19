@@ -31,12 +31,6 @@
                                 <b-form-input placeholder="Nome"  v-model="student.name"/>
                             </b-form-group>
                         </div>
-                        <!-- <div class="col-md-6">
-                            <b-form-group>
-                                <label>Apelido</label>
-                                <b-form-input class="form-control" placeholder="Apelido" v-model="student.nick_name"/>
-                            </b-form-group>
-                        </div> -->
                         <div class="col-md-12">
                             <b-form-group>
                                 <label>Aniversário</label>
@@ -78,30 +72,49 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <b-form-group>
-                        <label>Aulas</label>
-                        <div>
-                            <b-badge class="py-2 mr-1" variant="secondary" v-for="cl in student.classes" :key="cl.id">
-                                <span>
-                                    {{cl.name}} - {{cl.unit_name}}
-                                </span>
-                                <b-icon icon="x" class="hover" @click="handleClassRemove($event, cl.id)"/>
-                            </b-badge>
-                            <b-button variant="primary" size="sm" @click="() => addClassModalShow = true">Adicionar</b-button>
-                        </div>
-                    </b-form-group>
+                <div class="col-md-12 my-4">
+                    <h5>
+                        Aulas
+                        <b-button variant="light"  @click="() => addClassModalShow = true" class="btn-sm float-right">Adicionar Aula</b-button>
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Unidade</th>
+                                    <th>Valor R$</th>
+                                    <th>Aprovado Em</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="cl in student.student_classes" :key="cl.id">
+                                    <td>{{cl.class.name}}</td>
+                                    <td>{{cl.unit_name}}</td>
+                                    <td>{{toMoney(cl.class.value)}}</td>
+                                    <td>{{cl.approved_at ? formartDate(cl.approved_at) : 'Não aprovado'}}</td>
+                                    <td>
+                                        <b-button variant="danger" size="sm" @click="() => removeClass(cl.class.id)">
+                                            <b-icon icon="x"/>
+                                        </b-button>
+                                        <b-button v-if="!cl.contract" variant="light" @click="() => createContract(cl.class.id)" class="btn-sm">
+                                            Gerar Contrato
+                                        </b-button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="col-md-12" v-if="student.id">
-                    <h5>
-                        Contratos
-                        <b-button variant="light" @click="createContract" class="btn-sm float-right">Gerar Contrato</b-button>
-                    </h5>
+                    <h5>Contratos</h5>
                     <table class="table table-sm">
                         <thead>
                             <tr>
                                 <th>Status</th>
+                                <th>Aula</th>
                                 <th>Criado Em</th>
                                 <th></th>
                             </tr>
@@ -109,7 +122,8 @@
                         <tbody>
                             <tr v-for="contract in student.contracts" :key="contract.id">
                                 <td>{{contract.status_text}}</td>
-                                <td>{{formartDate(contract.created_at)}}</td>
+                                <td>{{contract.class ? contract.class.name : '' }}</td>
+                                <td>{{contract.created_at_format}}</td>
                                 <td>
                                     <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
                                     <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm">
@@ -329,19 +343,45 @@ export default {
         toMoney(str){
             return common.toMoney(str)
         },
-        handleClassRemove(evt, idClass){
-            for( const index in this.student.classes) {
-                if( this.student.classes[index].id == idClass )
-                    this.student.classes.splice(index, 1)
-            }
+        removeClass(idClass){
+            common.confirmAlert({
+                title: 'Remover esta aula deste aluno?',
+                onConfirm: () => {
+                    common.request({
+                        url: `/api/student-class/${this.student.id}/${idClass}`,
+                        type: 'delete',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: (std) => {
+                            this.getStudent(this.student.id)
+                        }
+                    })
+                }
+            })
         },
         addClass(){
-            if( this.toAddClass ){
-
-                const toAddClass = this.classes.find(cl => cl.id == this.toAddClass)
-                this.student.classes.push( toAddClass )
-                this.toAddClass = null
-                this.addClassModalShow = false
+            if( this.toAddClass ){    
+                common.confirmAlert({
+                    title: 'Matricular este aula à este aluno?',
+                    message: `Será gerado um novo contrato se não haver.<br>
+                                A matricula será aprovada após a assinatura do contrato, <br>
+                                caso já haja um contrato assinado para esta aula, a aprovação será imediata.`,
+                    onConfirm: () => {
+                        common.request({
+                            url: `/api/student-class/${this.student.id}/${this.toAddClass}`,
+                            type: 'post',
+                            auth: true,
+                            setError: true,
+                            load: true,
+                            success: (std) => {
+                                this.getStudent(this.student.id)
+                                this.toAddClass = null
+                                this.addClassModalShow = false
+                            }
+                        })
+                    }
+                })          
             }
         },
         getUsers(){
@@ -399,12 +439,12 @@ export default {
             })
         },
 
-        createContract(){
+        createContract(idClass){
             common.confirmAlert({
                 title: 'Gerar novo contrato?',
                 onConfirm: () => {
                     common.request({
-                        url: '/api/contracts/generate/'+this.student.id,
+                        url: `/api/contracts/generate/${this.student.id}/${idClass}`,
                         type: 'post',
                         auth: true,
                         setError: true,

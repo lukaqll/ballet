@@ -1,11 +1,13 @@
 <?php 
 namespace App\Services;
 
+use App\Models\ClassModel;
+use App\Models\Contract;
 use App\Models\Student;
 use App\Services\Api\ClicksignService;
 use Illuminate\Support\Facades\Storage;
 use PDF;
-
+use WGenial\NumeroPorExtenso\NumeroPorExtenso;
 class DocumentsService
 {
     protected $model;
@@ -14,19 +16,22 @@ class DocumentsService
         
     }
 
-    public function generateContract( Student $student ){
+    public function generateContract( Student $student, ClassModel $class ){
 
-        $pdf = $this->getPdfInstance($student);
+        $pdf = $this->getPdfInstance( $student, $class );
         $base64 = 'data:application/pdf;base64,' . base64_encode($pdf);
 
         $clicksignService = new ClicksignService;
-        $contract = $clicksignService->createDocument( $student, $base64 );
+        $contract = $clicksignService->createDocument( $student, $base64, $class );
 
         return $contract;
     }
 
-    public function getPdfInstance( Student $student ){
+    public function getPdfInstance( Student $student, ClassModel $class ){
+        
         $parametesService = new ParametersService;
+        $extenso = new NumeroPorExtenso;
+
         $contentText = $parametesService->getContract()->value;
 
         $user = $student->user;
@@ -62,8 +67,22 @@ class DocumentsService
         $contentText = str_replace( ':data', date('d/m/Y'), $contentText);
         $contentText = str_replace( ':data_hora', date('d/m/Y H:i'), $contentText);
 
+        // class
+        $contentText = str_replace( ':nome_aula', $class->name, $contentText);
+        $contentText = str_replace( ':nome_unidade', $class->unit->name, $contentText);
+        $contentText = str_replace( ':valor_aula_real', number_format($class->value, 2, ',', ''), $contentText);
+
+        if( floatval($class->value) > 0 ){
+            $contentText = str_replace( ':valor_aula_extenso', $extenso->converter($class->value), $contentText);
+        } else {
+            $contentText = str_replace( ':valor_aula_extenso', 'zero reais', $contentText);
+        }
+
+
         $pdf = PDF::loadHTML($contentText);
 
         return $pdf->stream();
     }
+
+    
 }

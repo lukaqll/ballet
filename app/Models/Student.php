@@ -42,6 +42,11 @@ class Student extends Model
                     ->where('approved_at', '!=', null);
     }
 
+    public function pendentClasses(){
+        return $this->belongsToMany(ClassModel::class, StudentClass::class, 'id_student', 'id_class', 'id', 'id')
+                    ->where('approved_at', null);
+    }
+
     public function approvedStudentClasses(){
         return $this->hasMany(StudentClass::class, 'id_student', 'id')
                     ->where('approved_at', '!=', null);

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-navbar class="header" id="header">
+        <b-navbar class="header commom-header" id="header">
             <b-navbar-nav>
                 <b-nav-item @click="$router.back()">
                     <span class="text-white">

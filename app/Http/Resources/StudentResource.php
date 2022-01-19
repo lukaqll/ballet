@@ -33,7 +33,8 @@ class StudentResource extends JsonResource
             'in_school' => $this->in_school,
             'school_time' => $this->school_time,
             'status_text' => $this->getStatusText(),
-            'student_classes' => StudentClassResource::collection($this->studentClasses)
+            'student_classes' => StudentClassResource::collection($this->studentClasses),
+            'pendent_classes' => ClassResource::collection($this->pendentClasses)
         ];
     }
 }

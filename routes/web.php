@@ -5,7 +5,6 @@ use App\Services\PasswordRecoveryService;
 use App\Services\UsersService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,7 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test-doc', [DocumentsController::class, 'generate']);
+Route::get('/php-test', function(){
+
+    echo phpinfo();
+});
+
 Route::get('/contracts/view/{id}', [DocumentsController::class, 'viewDocument']);
 Route::get('/contracts/sign/{id}', [DocumentsController::class, 'signDocument']);
 

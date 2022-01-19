@@ -1,3 +1,17 @@
+ALTER TABLE `ballet`.`contracts` 
+ADD COLUMN `id_class` INT NULL AFTER `id_student`,
+ADD COLUMN `contractscol` VARCHAR(45) NULL AFTER `updated_at`,
+ADD INDEX `fk_contract_class_idx` (`id_class` ASC);
+;
+ALTER TABLE `ballet`.`contracts` 
+ADD CONSTRAINT `fk_contract_class`
+  FOREIGN KEY (`id_class`)
+  REFERENCES `ballet`.`classes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+---------------
+
 ALTER TABLE `ballet`.`invoices` 
 CHANGE COLUMN `updated_at` `updated_at` DATETIME NULL DEFAULT NULL ;
 

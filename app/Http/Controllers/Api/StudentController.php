@@ -5,6 +5,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StudentResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
@@ -153,8 +154,8 @@ class StudentController extends Controller
                 'name'      => 'required|string',
                 // 'nick_name' => 'required|string',
                 'birthdate' => 'required|date',
-                'classes'   => 'nullable|array',
-                'classes.*' => 'required|integer|exists:classes,id',
+                // 'classes'   => 'nullable|array',
+                // 'classes.*' => 'required|integer|exists:classes,id',
                 'picture'   => 'nullable|image',
                 'health_problem'   => 'nullable|string',
                 'food_restriction' => 'nullable|string',
@@ -164,8 +165,8 @@ class StudentController extends Controller
             $validData['status'] = 'A';           
             $student = $this->studentsService->create( $validData );
 
-            if( isset($validData['classes']) )
-                $this->studentsService->updateStudentClasses( $student, $validData['classes'] );            
+            // if( isset($validData['classes']) )
+            //     $this->studentsService->updateStudentClasses( $student, $validData['classes'] );            
 
             if( isset($validData['picture']) )
                 $this->studentsService->uploadPicture($student, $validData['picture']);
@@ -194,8 +195,8 @@ class StudentController extends Controller
                 'name'      => 'required|string',
                 // 'nick_name' => 'required|string',
                 'birthdate' => 'required|date',
-                'classes'   => 'nullable|array',
-                'classes.*' => 'required|integer|exists:classes,id',
+                // 'classes'   => 'nullable|array',
+                // 'classes.*' => 'required|integer|exists:classes,id',
                 'health_problem'   => 'nullable',
                 'food_restriction' => 'nullable',
                 'in_school'        => 'nullable',
@@ -203,8 +204,8 @@ class StudentController extends Controller
             ]);
             $student = $this->studentsService->updateById( $id, $validData);
 
-            if( isset($validData['classes']) )
-                $this->studentsService->updateStudentClasses( $student, $validData['classes'] );
+            // if( isset($validData['classes']) )
+            //     $this->studentsService->updateStudentClasses( $student, $validData['classes'] );
             
             $response = [ 'status' => 'success', 'data' => new StudentResource($student) ];
 
@@ -316,6 +317,80 @@ class StudentController extends Controller
 
         } catch ( ValidationException $e ){
             
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function addClass($idStudent, $idClass){
+
+        try {
+
+            DB::beginTransaction();
+            $student = $this->studentsService->find($idStudent);
+            if( empty($student) )
+                throw ValidationException::withMessages(['Falha ao encontrar aluno']);
+
+            $class = $this->classesService->find($idClass);
+            if( empty($class) )
+                throw ValidationException::withMessages(['Falha ao encontrar aula']);
+
+            $isStudentClassExists = $this->studentClassesService->get(['id_class' => $idClass, 'id_student' => $idStudent]);
+            if( !empty($isStudentClassExists) )
+                throw ValidationException::withMessages(['Aluno já matriculado nesta aula']);
+
+            $studentClass = $this->studentClassesService->create([
+                'id_student' => $idStudent,
+                'id_class'   => $idClass
+            ]);
+
+            // create a contract if not exists
+            if( empty($studentClass->notCanceledContract) ){
+                $contractResult = $this->documentsService->generateContract( $student, $class );
+            } else {
+
+                // approve
+                $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
+            }
+
+            $response = [ 'status' => 'success', 'data' => new StudentResource($student) ];
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function removeClass($idStudent, $idClass){
+
+        try {
+
+            DB::beginTransaction();
+
+            $student = $this->studentsService->find($idStudent);
+            if( empty($student) )
+                throw ValidationException::withMessages(['Falha ao encontrar aluno']);
+
+            $class = $this->classesService->find($idClass);
+            if( empty($class) )
+                throw ValidationException::withMessages(['Falha ao encontrar aula']);
+
+            $isStudentClassExists = $this->studentClassesService->get(['id_class' => $idClass, 'id_student' => $idStudent]);
+            if( empty($isStudentClassExists) )
+                throw ValidationException::withMessages(['Aluno não matriculado nesta aula']);
+
+            if( !empty($isStudentClassExists->openContract))
+                throw ValidationException::withMessages(['Existe um contrato aberto deste aulo para esta aula']);
+
+            $isStudentClassExists->delete();
+
+            $response = [ 'status' => 'success', 'data' => new StudentResource($student) ];
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 
