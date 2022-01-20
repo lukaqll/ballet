@@ -33,11 +33,11 @@
                 <small><b-icon icon="exclamation-triangle"/> É necessário o ':' no início na plavra-chave</small>
             </b-alert>
             <div class="row">
-                <div class="col-4 my-2">
+                <div class="col-md-4 my-2">
                     <b-form-input v-model="filter" placeholder="Buscar"></b-form-input>
                 </div>
             </div>
-            <b-table class="table-sm" :items="parameterWords" :filter="filter"></b-table>
+            <b-table class="table-sm table-hover" :items="parameterWords" :filter="filter"></b-table>
         </b-modal>
     </admin-base>
 
@@ -114,17 +114,17 @@ export default {
     methods: {
         save(){
             common.request({
-            url: '/api/contract/update',
-            type: 'post',
-            setError: true,
-            load: true,
-            auth: true,
-            savedAlert: true,
-            data: {content: this.content},
-            success: (resp) => {
-                this.content = resp.value
-            }
-        })
+                url: '/api/contract/update',
+                type: 'post',
+                setError: true,
+                load: true,
+                auth: true,
+                savedAlert: true,
+                data: {content: this.content},
+                success: (resp) => {
+                    this.content = resp.value
+                }
+            })
         }
     }
 

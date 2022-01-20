@@ -11,7 +11,7 @@
 
             <div class="col-md-12">
 
-                <div class="row">
+                <div class="row" v-if="posts.length">
                     <div class="col-md-4 my-2" v-for="post in posts" :key="post.id">
                         <component :is="'div'">
                             <div class="row">
@@ -50,6 +50,7 @@
                         </component>
                     </div>
                 </div>
+                <h5 v-else class="text-center text-secondary">Nenhum post ainda</h5>
 
             </div>
         </div>

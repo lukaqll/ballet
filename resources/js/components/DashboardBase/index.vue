@@ -1,6 +1,6 @@
 <template>
 
-    <div id="master-wrap" class="body-pd">
+    <div id="master-wrap" class="body-pd dashboard-base">
         <b-navbar class="header" id="header">
 
             <b-collapse id="nav-collapse" is-nav>
@@ -85,7 +85,12 @@
                         <router-link tag="a" class="nav_link" to='/minha-conta'>
                             <b-icon icon="person-circle"></b-icon>
                             Minha Conta
-                        </router-link>                        
+                        </router-link>     
+
+                        <a class="nav_link" href="#" @click="logout">
+                            <b-icon icon="power"></b-icon>
+                            Sair
+                        </a>                        
                     </div>
                 </div>
             </nav>

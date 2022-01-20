@@ -54,9 +54,6 @@ a {
     transition: .5s
 }
 
-.commom-header{
-    background-color: #e979c4;
-}
 .header_toggle {
     color: #000000;
     font-size: 1.5rem;
@@ -127,7 +124,7 @@ a {
 .nav_link {
     position: relative;
     color: var(--first-color-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: .5rem;
     transition: .3s
 }
 
@@ -206,4 +203,21 @@ a {
 
 .dropdown-toggle::after {
     margin-left: 0
+}
+
+.commom-header{
+    background-color: #e979c4;
+}
+.dashboard-base .header{
+    background-color: #e979c4;
+}
+
+.dashboard-base .l-navbar{
+    background-color: #e979c4;
+}
+.dashboard-base .l-navbar .nav_link{
+    color: #48273d;
+}
+.dashboard-base .l-navbar .nav_link.active{
+    color: #fff;
 }
