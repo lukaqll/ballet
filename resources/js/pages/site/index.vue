@@ -105,15 +105,21 @@
                 <b-container>
 
                     <div class="row p-3 justify-content-center" style="top: 2rem; position: relative">
+                        <h3 class="text-center text-bold">Aulas</h3>
                         <div class="col-md-4 my-2" v-for="cl in siteParam.classes" :key="cl.name">
-                            <b-card class="border-0 shadow">
-                                <h4>{{ cl.name }}</h4>
-                                <p>{{ cl.description }}</p>
-                                <h3>{{ cl.price }}</h3>
-                                <a :href="`https://wa.me?phone=5528999258255&text=Olá, gostaria de me matricular na aula de ${cl.name}.`" target="_blank" class="btn btn-block btn-secondary rounded-pill">Quero matricular</a>
+                            <b-card class="border-0 shadow" no-body>
+                                <b-card-body>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h4>{{ cl.name }}</h4>
+                                            <p>{{ cl.description }}</p>
+                                            <h3>{{ cl.price }}</h3>
+                                            <a :href="`https://wa.me?phone=5528999258255&text=Olá, gostaria de me matricular na aula de ${cl.name}.`" target="_blank" class="btn btn-block btn-secondary rounded-pill">Quero matricular</a>
+                                        </div>
+                                    </div>
+                                </b-card-body>
                             </b-card>
                         </div>
-
                     </div>
                 </b-container>
             </section>
@@ -166,16 +172,18 @@
                         </div>
 
                         <div class="col-md-4 my-2" v-for="un in siteParam.units" :key="un.name">
-                            <b-card class="border-0 h-100 shadow-sm bg-light-pink">
-                                <h5>
-                                    <i class="fa fa-map-marker-alt"></i>
-                                    {{ un.name }}
-                                </h5>
-                                <p>
-                                    {{ un.address }}
-                                    <br>
-                                    {{ un.phone }}
-                                </p>
+                            <b-card class="border-0 h-100 shadow-sm bg-light-pink" no-body>
+                                <b-card-body>
+                                    <h5>
+                                        <i class="fa fa-map-marker-alt"></i>
+                                        {{ un.name }}
+                                    </h5>
+                                    <p>
+                                        {{ un.address }}
+                                        <br>
+                                        {{ un.phone }}
+                                    </p>
+                                </b-card-body>
                             </b-card>
                         </div>
 
@@ -220,7 +228,6 @@ export default {
         slide: 0,
         sliding: null
     }),
-
     mounted(){
         this.getGallery()
     },

@@ -35,12 +35,19 @@
                                         <b-icon icon="person-plus"></b-icon>
                                         Matricular
                                     </router-link> -->
+                                    <router-link tag="b-button" to='/' exact class="btn-block btn-light">
+                                        <b-icon icon="globe"></b-icon>
+                                        Ir para o site
+                                    </router-link>
 
-                                    <div class="mt-2">
+                                    <div class="my-2">
                                         <router-link tag="a" to='/password-recovery' >
                                             Esqueci minha senha
                                         </router-link>
                                     </div>
+
+                                    
+
                                 </div>
                             </b-row>
                         </div> 
