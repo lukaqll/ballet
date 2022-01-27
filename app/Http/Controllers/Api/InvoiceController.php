@@ -197,8 +197,10 @@ class InvoiceController extends Controller
             if( !empty($invoice->reference) ){
                 $this->mercadoPagoService->cancelPayment($invoice->reference);
             }
-            
-            $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_manual']);
+
+            if( !empty($invoice->openPayment) ){
+                $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_manual']);
+            }
 
             $cancelled = $this->invoicesService->updateById( $id, ['status' => 'C'] );
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($cancelled) ];
