@@ -272,7 +272,13 @@ class InvoicesService extends AbstractService
     public function sendInvoiceMail(Invoice $invoice){
 
         // JobsInvoiceMail::dispatch($invoice)->delay(now()->addSeconds('15'));
-        JobsInvoiceMail::dispatch($invoice);
+        // JobsInvoiceMail::dispatch($invoice);
+        try {
+
+            Mail::sand(new InvoiceMail($invoice));
+        } catch (Exception $e){
+
+        }
 
     }
 }
