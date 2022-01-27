@@ -109,13 +109,13 @@
                                             </div>
                                             
                                                 
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <b-form-group>
                                                     <label>Profissão</label>
                                                     <b-form-input class="form-control" placeholder="Sua Profissão" v-model="user.profession"/>
                                                 </b-form-group>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <b-form-group>
                                                     <label>Instagram</label>
                                                     <b-form-input class="form-control" placeholder="Instagram para marcação do aluno em posts" v-model="user.instagram"/>
@@ -225,7 +225,7 @@
                                             
                                             <div class="col-md-4">
                                                 <b-form-group>
-                                                    <label>Algum problema de saúde?</label>
+                                                    <label>Possui doença ou lesão preexistente?</label>
                                                     <b-form-select :options="sampleOptions" class="w-100" v-model="student.has_health_problem"></b-form-select>
                                                 </b-form-group>
                                             </div>
@@ -265,7 +265,14 @@
                                                 </b-form-group>
                                             </div>
 
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
+                                                <b-form-group>
+                                                    <label>Cidade da aula desejada</label>
+                                                    <b-form-select :options="units" class="w-100" v-model="idUnit"></b-form-select>
+                                                </b-form-group>
+                                            </div>
+
+                                            <div class="col-md-6">
                                                 <b-form-group>
                                                     <label>Em qual aula deseja ingressar?</label>
                                                     <b-form-select :options="classes" class="w-100" v-model="student.id_class"></b-form-select>
@@ -413,9 +420,11 @@ export default {
 
     components: {CommomHeader},
     data: () => ({
+        idUnit: null,
         user: {},
         student: {},
         classes: [],
+        units: [],
         files: {},
         sendPasswordMail: false,
         ufs: [
@@ -447,8 +456,9 @@ export default {
         isVisible: Boolean,
     },
     mounted: function() {
-        this.getClasses()
+        this.getUnits()
     },
+
     computed: {
         orgaosExpeditores: function(){
             return orgaosExpeditores
@@ -483,6 +493,14 @@ export default {
             if( val != 1 )
                 this.student.school_time = null
         },
+        idUnit: function(id){
+            this.student = {...this.student, id_class: null}
+            if(id){
+                this.getClasses(id)
+            } else {
+                this.classes = []
+            }
+        }
     },
     methods: {
         onHidden(){
@@ -538,14 +556,28 @@ export default {
                 onConfirm: this.save
             })
         },
-        getClasses(){
+        getClasses(idUnit){
             common.request({
-                url: '/api/classes/list',
+                url: '/api/classes/list?id_unit='+idUnit,
                 type: 'get',
                 auth: true,
                 setError: true,
                 success: (classes) => {
                     this.classes = classes.map(cl => (
+                        {value: cl.id, text: `${cl.name} (${cl.team})`})
+                    )
+                },
+            })
+        },
+
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units.map(cl => (
                         {value: cl.id, text: `${cl.name}`})
                     )
                 },

@@ -86,6 +86,7 @@ class ClassController extends Controller
             $validData = $request->validate([
                 'id_unit' => 'required|integer|exists:units,id',
                 'name' => 'required|string',
+                'team' => 'nullable|string',
                 'value' => 'required|string',
             ]);
             $validData['value'] = $this->unMaskMoney($validData['value']);
@@ -113,6 +114,7 @@ class ClassController extends Controller
             $validData = $request->validate([
                 'id_unit' => 'required|integer|exists:units,id',
                 'name' => 'required|string',
+                'team' => 'nullable|string',
                 'value' => 'required|string',
             ]);
             $validData['value'] = $this->unMaskMoney($validData['value']);

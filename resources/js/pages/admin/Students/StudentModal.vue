@@ -82,6 +82,7 @@
                             <thead>
                                 <tr>
                                     <th>Nome</th>
+                                    <th>Turma</th>
                                     <th>Unidade</th>
                                     <th>Valor R$</th>
                                     <th>Aprovado Em</th>
@@ -91,6 +92,7 @@
                             <tbody>
                                 <tr v-for="cl in student.student_classes" :key="cl.id">
                                     <td>{{cl.class.name}}</td>
+                                    <td>{{cl.class.team}}</td>
                                     <td>{{cl.unit_name}}</td>
                                     <td>{{toMoney(cl.class.value)}}</td>
                                     <td>{{cl.approved_at ? formartDate(cl.approved_at) : 'Não aprovado'}}</td>
@@ -122,11 +124,11 @@
                         <tbody>
                             <tr v-for="contract in student.contracts" :key="contract.id">
                                 <td>{{contract.status_text}}</td>
-                                <td>{{contract.class ? contract.class.name : '' }}</td>
+                                <td>{{contract.class ? `${contract.class.name} (${contract.class.team})` : '' }}</td>
                                 <td>{{contract.created_at_format}}</td>
                                 <td>
                                     <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
-                                    <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm">
+                                    <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm" v-b-tooltip title="Enviar notificações de contrato">
                                         <b-icon icon="bell"/>
                                     </b-button>
                                     <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
@@ -236,7 +238,7 @@ export default {
             let options = []
             for( const cl of this.classes ){
                 if( this.student.classes && !this.student.classes.find( _cl => _cl.id == cl.id ) ){
-                    options.push({value: cl.id, text: `${cl.name} - ${cl.unit_name}`})
+                    options.push({value: cl.id, text: `${cl.name} (${cl.team}) - ${cl.unit_name}`})
                 }
             }
             return options

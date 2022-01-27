@@ -19,6 +19,13 @@
 
                 <div class="col-12">
                     <b-form-group>	
+                        <label>Turma</label>
+                        <b-form-input v-model="classModel.team"/>
+                    </b-form-group>
+                </div>
+
+                <div class="col-12">
+                    <b-form-group>	
                         <label>Valor</label>
                         <b-form-input v-model="classModel.value" v-money="moneyMask"/>
                     </b-form-group>

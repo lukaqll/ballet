@@ -6,6 +6,7 @@ use App\Models\Contract;
 use App\Models\Student;
 use App\Models\User;
 use App\Services\ContractsService;
+use App\Services\InvoicesService;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
@@ -105,6 +106,7 @@ class ClicksignService extends AbstractApiService
             $student->update(['status' => 'CP']);
 
             $result = $this->addSignatoryInDoc($student->user, $contract);
+
             return $contract;
             
         } else {
@@ -249,6 +251,8 @@ class ClicksignService extends AbstractApiService
     public function onContractCloseHandle(Contract $contract, $status){
 
         $student = $contract->student;
+        $invoicesService = new InvoicesService;
+
         $contract->update(['status' => $status]);
         $student->update(['status' => 'A']);
 
@@ -256,7 +260,9 @@ class ClicksignService extends AbstractApiService
 
         if( !empty($studentClass) ){
             $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
+            $invoicesService->generateClassInvoice($studentClass);
         }
+
     }
 }
 

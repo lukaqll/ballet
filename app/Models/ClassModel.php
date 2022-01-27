@@ -16,7 +16,8 @@ class ClassModel extends Model
         'id',
         'id_unit',
         'name',
-        'value'
+        'value',
+        'team'
     ];
 
     public $timestamps = false;

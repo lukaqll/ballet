@@ -27,7 +27,8 @@ class StudentClass extends Model
 
     public function contract(){
         return $this->hasOne(Contract::class, 'id_class', 'id_class')
-                    ->where('contracts.id_student', $this->id_student);
+                    ->where('contracts.id_student', $this->id_student)
+                    ->where('status', '!=', 'canceled');
     }
 
     public function notCanceledContract(){
@@ -40,5 +41,9 @@ class StudentClass extends Model
         return $this->hasOne(Contract::class, 'id_class', 'id_class')
                     ->where('contracts.id_student', $this->id_student)
                     ->where('contracts.status', 'running');
+    }
+
+    public function student(){
+        return $this->hasOne(Student::class, 'id', 'id_student');
     }
 }

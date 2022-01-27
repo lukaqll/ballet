@@ -1,10 +1,16 @@
 <?php 
  namespace App\Services;
 
+use App\Jobs\InvoiceMail as JobsInvoiceMail;
+use App\Mail\InvoiceMail;
+use App\Models\ClassModel;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
+use App\Models\StudentClass;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class InvoicesService extends AbstractService
 {
@@ -99,7 +105,8 @@ class InvoicesService extends AbstractService
 
                 // get class
                 $class = $studentClass->class;
-                $value += $this->proportionalCalc( $studentClass->approved_at, $now, $class->value );
+                $value += $this->proportionalCalc( $studentClass->approved_at, $now, $class );
+                $value += $class->value;
             }
         }
         
@@ -117,7 +124,7 @@ class InvoicesService extends AbstractService
     public function generateInvoiceToUser( User $user ){
 
         // first day of month
-        $now = date('Y-m-01');
+        $now = date('Y-m-05');
         $curMonth = date('Y-m', strtotime($now));
         
         // expires at day 10
@@ -143,8 +150,40 @@ class InvoicesService extends AbstractService
             'reference'  => '',
             'expires_at' => $expiration
         ];
+
+        // echo "\n $invoiceValue total \n"; die;
+
+        $invoice = $this->create($invoiceData);
+        $this->sendInvoiceMail($invoice);
+
+        return $invoice;
+    }
+
+    public function generateClassInvoice( StudentClass $studentClass ){
+
+        $student = $studentClass->student;
+        $user = $student->user;
+
+        $now = date('Y-m-d');
+        $nextInvoiceDate = date('Y-m-05', strtotime('+1 month', strtotime($now)));
+
+        // expires at day 3
+        $expiration = date('Y-m-d 23:59:59', strtotime('+2 days', strtotime($now)));
+
+        $invoiceValue = $this->proportionalCalc( $now, $nextInvoiceDate, $studentClass->class );
+
+        // create invoice
+        $invoiceData = [
+            'id_user'    => $user->id,
+            'value'      => $invoiceValue,
+            'status'     => 'A',
+            'reference'  => '',
+            'expires_at' => $expiration
+        ];
+
         $invoice = $this->create($invoiceData);
 
+        $this->sendInvoiceMail($invoice);
         return $invoice;
     }
 
@@ -157,19 +196,83 @@ class InvoicesService extends AbstractService
      * 
      * @return float
      */
-    public function proportionalCalc( string $startDate, string $endDate, float $value ){
+    public function proportionalCalc( string $startDate, string $endDate, ClassModel $class ){
 
-        $startDatetime = date_create( $startDate );
-        $endDatetime   = date_create( $endDate );
+        $monthStart = date('Y-m-05', strtotime($startDate));
+        $monthEnd = date('Y-m-t', strtotime($monthStart));
 
-        $interval = date_diff($startDatetime, $endDatetime);
+        // amount of classes by month
+        $amounInMonth = $this->getAmountOfClassByPeriod( $monthStart, $monthEnd, $class );
 
-        $valuePerDay = $value / 30;
+        // amount of classes by period
+        $amountInPeriod = $this->getAmountOfClassByPeriod( $startDate, $endDate, $class );
 
-        $newValue = $valuePerDay * $interval->format('%a');
-        if( $newValue > $value )
-            return $value;
+        // value of each class
+        $valuePerClass = floatval($class->value) / $amounInMonth;
 
-        return round($newValue, 2);
+        // total value by period
+        $total = $valuePerClass * $amountInPeriod;
+
+        // echo "\n $startDate a $endDate";
+        // echo "\n $amounInMonth aulas neste mês";
+        // echo "\n $amountInPeriod aulas neste período";
+        // echo "\n $valuePerClass reais por aula";
+
+        return round($total, 2);
+    }
+
+
+    public function getAmountOfClassByPeriod( string $startDate, string $endDate, ClassModel $class ){
+
+        $dates = [
+            [
+                'date' => $startDate,
+                'weekday' => intval(date('N', strtotime($startDate)))-1
+            ]
+        ];
+
+        // days in interval
+        while( end($dates)['date'] < $endDate ){
+            $dt = date('Y-m-d', strtotime('+1 day', strtotime(end($dates)['date'])));
+            $dates[] = [
+                'date' => $dt,
+                'weekday' => intval(date('N', strtotime($dt)))-1
+            ];
+        }
+
+        // amount of classes in period
+        $classQtd = 0;
+        foreach( $class->times as $time ){
+
+            foreach( $dates as $date ){
+
+                if( $date['weekday'] == $time->weekday )
+                    $classQtd++;
+            }
+        }
+
+        return $classQtd;
+    }
+
+        /**
+     * when a payment was executed
+     */
+    public function onInvoicePayHandle( InvoicePayment $ticket ){
+
+        $userService = new UsersService;
+
+        // update invoice status
+        $ticket->invoice->update(['status' => 'P']);
+
+        // verify store status
+        $user = $ticket->invoice->user;
+        $userService->verifyUserStatus( $user );
+    }
+
+    public function sendInvoiceMail(Invoice $invoice){
+
+        // JobsInvoiceMail::dispatch($invoice)->delay(now()->addSeconds('15'));
+        JobsInvoiceMail::dispatch($invoice);
+
     }
 }

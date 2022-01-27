@@ -1,3 +1,10 @@
+ALTER TABLE `ballet`.`classes` 
+CHANGE COLUMN `name` `name` VARCHAR(225) NOT NULL ;
+ALTER TABLE `ballet`.`classes` 
+ADD COLUMN `team` VARCHAR(60) NULL AFTER `value`;
+
+-----------------
+
 ALTER TABLE `ballet`.`contracts` 
 ADD COLUMN `id_class` INT NULL AFTER `id_student`,
 ADD COLUMN `contractscol` VARCHAR(45) NULL AFTER `updated_at`,

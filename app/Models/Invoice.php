@@ -37,4 +37,9 @@ class Invoice extends Model
     public function getIsExpired(){
         return (date($this->expires_at) < date('Y-m-d H:i:s')) && $this->status == 'A';
     }
+
+    public function openPayment(){
+        return $this->hasOne(InvoicePayment::class, 'id_invoice', 'id')
+                    ->where('invoice_payment.status', 'pending');
+    }
 }

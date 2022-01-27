@@ -34,18 +34,15 @@
                 
                     <b-navbar-nav right v-if="!user">
                         <b-form inline @submit.prevent="login">
-                            <b-form-input size='sm' placeholder="Seu E-mail" type="email" class="border-0 rounded-pill mr-1" v-model="loginData.email"></b-form-input>
-                            <b-form-input size='sm' placeholder="Sua Senha" type="password" class="border-0 rounded-pill mr-1" v-model="loginData.password"></b-form-input>
+                            <b-form-input size='sm' required placeholder="Seu E-mail" type="email" class="border-0 rounded-pill mr-1" v-model="loginData.email"></b-form-input>
+                            <b-form-input size='sm' required placeholder="Sua Senha" type="password" class="border-0 rounded-pill mr-1" v-model="loginData.password"></b-form-input>
                             <button class="btn btn-sm btn-link text-white" @click="login">
                                 Entrar
                             </button>
                         </b-form>
-                        <b-nav-item>
-                            <router-link tag="a" to="/cadastro" class="btn btn-sm btn-outline-light rounded-pill">
-                                <b-icon icon="person-plus"></b-icon>
-                                Matricular
-                            </router-link>
-                        </b-nav-item>
+                        <a href='https://wa.me?phone=5528999258255&text=Olá, gostaria de me matricular na Ellegance Ballet.' target="_blank" class="btn btn-sm btn-outline-light rounded-pill">
+                            Matricular
+                        </a>
                     </b-navbar-nav>
 
                     <b-navbar-nav v-else>

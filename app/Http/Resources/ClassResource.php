@@ -18,6 +18,7 @@ class ClassResource extends JsonResource
             'id' => $this->id,
             'id_unit' => $this->id_unit,
             'name' => $this->name,
+            'team' => $this->team,
             'value' => $this->value,
             'unit_name' => $this->unit->name,
             'times' => ClassTimeResource::collection($this->times),

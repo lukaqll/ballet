@@ -64,8 +64,8 @@ class DocumentsService
         $contentText = str_replace( ':desde_aluno', date('d/m/Y', strtotime($student->created_at)), $contentText);
 
         // general
-        $contentText = str_replace( ':data', date('d/m/Y'), $contentText);
         $contentText = str_replace( ':data_hora', date('d/m/Y H:i'), $contentText);
+        $contentText = str_replace( ':data', date('d/m/Y'), $contentText);
 
         // class
         $contentText = str_replace( ':nome_aula', $class->name, $contentText);

@@ -31,7 +31,9 @@
                                     </p>
                                 </div>
                                 <div class="col-12">
-                                    
+                                    <a v-if="invoice.status == 'A'" :href="`/invoice-payment/get/${invoice.id}`" target="_blank" class="btn btn-light btn-block">
+                                        Ver Boleto
+                                    </a>
                                 </div>
                             </div>
                         </b-card>

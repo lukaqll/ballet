@@ -59,7 +59,7 @@
                                         hover
                                     >
                                         <template #cell(classes)="row">
-                                            <b-badge class="mr-1" pill v-for="cl in row.item.student_classes" :key="cl.id" :variant="cl.approved_at ? 'secondary' : 'danger'">{{cl.class.name}}</b-badge>
+                                            <b-badge class="mr-1" pill v-for="cl in row.item.student_classes" :key="cl.id" :variant="cl.approved_at ? 'secondary' : 'danger'">{{cl.class.name}} ({{cl.class.team}})</b-badge>
                                         </template>
                                         <template #cell(contracts)="row">
                                             <b-badge pill v-if="row.item.open_contracts_count" variant="danger">
@@ -134,7 +134,7 @@ export default {
         },
 
         classesOptions(){
-            return this.classes.map(cl => ({ html: `${cl.name} (${cl.unit_name})`, value: cl.id }))
+            return this.classes.map(cl => ({ html: `${cl.name} (${cl.team}) (${cl.unit_name})`, value: cl.id }))
         }
     },
 

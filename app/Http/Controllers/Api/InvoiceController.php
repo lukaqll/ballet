@@ -4,7 +4,10 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
+use App\Mail\InvoiceMail;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class InvoiceController extends Controller
@@ -104,7 +107,8 @@ class InvoiceController extends Controller
             $validData = $request->validate([
                 'id_user' => 'required|integer|exists:users,id',
                 'expires_at' => 'required|date',
-                'value' => 'required|string'
+                'value' => 'required|string',
+                'send_mail' => 'nullable'
             ]);
 
             if( $validData['expires_at'] < date('Y-m-d'))
@@ -115,6 +119,10 @@ class InvoiceController extends Controller
             $validData['status'] = 'A';
 
             $created = $this->invoicesService->create( $validData );
+
+            if( !empty($validData['send_mail']) ){
+                $this->invoicesService->sendInvoiceMail($created);
+            }
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($created) ];
 
         } catch ( ValidationException $e ){
@@ -140,16 +148,29 @@ class InvoiceController extends Controller
 
             $validData = $request->validate([
                 'expires_at' => 'required|date',
-                'value' => 'required|string'
+                'value' => 'required|string',
+                'send_mail' => 'nullable'
             ]);
+
+            $validData['value'] = $this->unMaskMoney($validData['value']);            
+
+            if( date('Y-m-d', strtotime($validData['expires_at'])) != date('Y-m-d', strtotime($invoice->expires_at)) || floatval($validData['value']) != floatval($invoice->value) ){
+                $invoice->update(['reference' => null]);
+                if( $invoice->openPayment ){
+                    $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_update']);
+                }
+            }
 
             if( $validData['expires_at'] < date('Y-m-d'))
                 throw ValidationException::withMessages(['A data de vencimento não pode ser menor que hoje']);
                 
             $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
-            $validData['value'] = $this->unMaskMoney($validData['value']);            
 
             $updated = $this->invoicesService->updateById( $id, $validData);
+
+            if( !empty($validData['send_mail']) ){
+                $this->invoicesService->sendInvoiceMail($invoice);
+            }
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
 
         } catch ( ValidationException $e ){
@@ -173,8 +194,11 @@ class InvoiceController extends Controller
             if($invoice->status != 'A')
                 throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
 
-            $canceled = $this->invoicesService->updateById( $id, ['status' => 'C'] );
-            $response = [ 'status' => 'success', 'data' => new InvoiceResource($canceled) ];
+            $this->mercadoPagoService->cancelPayment($invoice->reference);
+            $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_manual']);
+
+            $cancelled = $this->invoicesService->updateById( $id, ['status' => 'C'] );
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($cancelled) ];
 
         } catch ( ValidationException $e ){
             
@@ -182,5 +206,50 @@ class InvoiceController extends Controller
         }
 
         return response()->json( $response );
+    }
+
+
+    public function getInvoicePayment( $id ){
+
+        try {
+
+            $invoice = $this->invoicesService->find($id);
+            
+            if($invoice->status != 'A')
+                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+    
+            $invoicePayment = $invoice->openPayment;
+    
+            if( !empty($invoicePayment) ){
+    
+                $payment = $this->mercadoPagoService->getPayment( $invoicePayment->reference );
+    
+                // verify expiration
+                if( strtotime($payment->date_of_expiration) < strtotime(date('Y-m-d H:i:s')) ){
+    
+                    // create a new payment
+                    $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_expired']);
+                    $payment = $this->mercadoPagoService->createTicket( $invoice );
+    
+                    // update invoice reference
+                    $invoice->update(['reference' => $payment->id]);
+                }
+    
+                
+            } else {
+                $payment = $this->mercadoPagoService->createTicket( $invoice );
+            }
+            
+            // show PDF
+            return redirect($payment->transaction_details->external_resource_url);
+        } catch (Exception $e){
+            
+            return view('errors.general-error', [
+                'backTo' => '/faturas',
+                'title'  => 'Ops... Houve um erro',
+                'message'=> $e->getMessage()
+            ]);
+        }
+
     }
 }

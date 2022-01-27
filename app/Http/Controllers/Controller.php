@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Api\ClicksignService;
+use App\Services\Api\MercadoPagoService;
 use App\Services\ClassesService;
 use App\Services\ClassTimesService;
 use App\Services\ContractsService;
@@ -45,6 +46,7 @@ class Controller extends BaseController
     protected $registerFilesSerivce;
     protected $repostsService;
     protected $studentClassesService;
+    protected $mercadoPagoService;
     
     public function __construct()
     {
@@ -65,6 +67,7 @@ class Controller extends BaseController
         $this->registerFilesSerivce = new RegisterFilesSerivce;
         $this->repostsService = new ReportsService;
         $this->studentClassesService = new StudentClassesService;
+        $this->mercadoPagoService = new MercadoPagoService;
     }
 
     protected function unMaskMoney( string $str ){

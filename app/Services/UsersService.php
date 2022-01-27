@@ -159,4 +159,49 @@ class UsersService extends AbstractService
         
         return $user;
     }
+
+    public function verifyUserName(string $name){
+
+        if( empty($name))
+            throw ValidationException::withMessages(['Informe o nome']);
+            
+        $nameParts = explode(' ', $name);
+
+        if( empty($nameParts) || count($nameParts) <= 1 )
+            throw ValidationException::withMessages(['Informe o nome completo']);
+
+    }
+
+    public function verifyUserStatus(User $user){
+
+        $openInvoices = $user->openInvoices;
+
+        // mais de uma fatura aberta
+        if( count($openInvoices) > 1 ){
+
+            foreach( $openInvoices as $openInvoice ){
+                if( $openInvoice->getIsExpired() ){
+                    $user->update(['status' => 'P']);
+                    continue;
+                }
+            }
+        } 
+
+        // uma fatura aberta
+        else if ( count($openInvoices) == 1 ){
+            $expiredInvoice = $openInvoices[0];
+            $expirationDateLimit = date('Y-m-d H:i:s', strtotime('+5 day', strtotime(date('Y-m-d H:i:s')) ));
+
+            if( $expiredInvoice->expres_at > $expirationDateLimit ){
+                $user->update(['status' => 'P']);
+            } else {
+                $user->update(['status' => 'A']);
+            }
+        } 
+         // nenhuma fatura aberta
+        else {
+            $user->update(['status' => 'A']);
+        }
+
+    }
 }

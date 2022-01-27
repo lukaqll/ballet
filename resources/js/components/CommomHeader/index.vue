@@ -11,9 +11,9 @@
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item>
-                    <span class="text-white">
+                    <router-link tag="span" to='/' exact class="text-white">
                         Ellegance Ballet
-                    </span>
+                    </router-link>
                 </b-nav-item>
             </b-navbar-nav>
         </b-navbar>

@@ -36,6 +36,9 @@
                                     <b-badge v-if="invoice.is_expired" variant="danger">Vencida</b-badge>
                                 </td>
                                 <td>
+                                    <a :href="`/invoice-payment/get/${invoice.id}`" target="_blank" class="btn btn-sm btn-link">
+                                        Ver Boleto
+                                    </a>
                                     <b-button v-if="invoice.status == 'A'" variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">Cancelar</b-button>
                                     <b-button variant="light" v-if="invoice.status == 'A'" size="sm" @click="() => editInvoice(invoice.id)">
                                         <b-icon icon="pencil-square"></b-icon>

@@ -115,6 +115,7 @@ class UserController extends Controller
             ]);
             $userData = $this->replaceKey($userValidData, 'user_');
             $userData['status'] = 'A';
+            $this->usersService->verifyUserName($userData['name']);
             
             $user = $this->usersService->createUser($userData);
 
@@ -177,6 +178,7 @@ class UserController extends Controller
                 'cep'        => 'required|string',
             ]);
 
+            $this->usersService->verifyUserName($validData['name']);
             $userData['is_whatsapp'] = empty($userData['is_whatsapp']) ? 0 : 1;
             $updated = $this->usersService->updateById( $id, $validData);
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
@@ -362,6 +364,7 @@ class UserController extends Controller
             ]);
             $userData = $this->replaceKey($userValidData, 'user_');
             $userData['status'] = 'MP';
+            $this->usersService->verifyUserName($userData['name']);
             $user = $this->usersService->publicCreateUser($userData);
 
             // create student
@@ -489,7 +492,8 @@ class UserController extends Controller
                 'cep'        => 'required|string',
             ]);
 
-            $userData['is_whatsapp'] = empty($userData['is_whatsapp']) ? 0 : 1;
+            $this->usersService->verifyUserName($validData['name']);
+            $validData['is_whatsapp'] = empty($validData['is_whatsapp']) ? 0 : 1;
             $updated = $this->usersService->updateById( $user->id, $validData);
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
 

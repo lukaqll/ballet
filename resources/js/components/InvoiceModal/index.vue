@@ -29,6 +29,14 @@
                 </b-form-group>
             </div>
 
+            <div class="col-md-12">
+                <b-form-group>
+                    <b-form-checkbox v-model="invoice.send_mail" name="check-button" switch>
+                        Enviar E-mail de aviso de nova fatura
+                    </b-form-checkbox>
+                </b-form-group>
+            </div>
+
             <div class="col-12 text-right">
                 <b-button @click="onHidden">Cancelar</b-button>
                 <b-button @click="save" variant="primary">
@@ -81,15 +89,21 @@ export default {
 
             if( this.idInvoice ){
 
-                common.request({
-                    url: '/api/invoices/'+this.idInvoice,
-                    type: 'put',
-                    auth: true,
-                    data: this.invoice,
-                    setError: true,
-                    load: true,
-                    success: (resp) => {
-                        this.$emit('onSave', resp)
+                common.confirmAlert({
+                    title: 'Alterar esta fatura?',
+                    message: 'Caso haja um boleto gerado e o valor ou data de vencimento for alterada, o boleto será cancelado para a geração de outro atualizado.',
+                    onConfirm: () => {
+                        common.request({
+                            url: '/api/invoices/'+this.idInvoice,
+                            type: 'put',
+                            auth: true,
+                            data: this.invoice,
+                            setError: true,
+                            load: true,
+                            success: (resp) => {
+                                this.$emit('onSave', resp)
+                            }
+                        })
                     }
                 })
 

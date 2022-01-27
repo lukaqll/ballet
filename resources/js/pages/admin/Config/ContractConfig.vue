@@ -99,8 +99,8 @@ export default {
             {palavra_chave: ':desde_aluno', info: 'Data de criação do aluno'},
 
             { palavra_chave: 'Geral', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
-            {palavra_chave: ':data', info: 'Data atual'},
-            {palavra_chave: ':data_hora', info: 'Data e hora atual'},
+            {palavra_chave: ':data', info: 'Data atual (dd/mm/yyyy)'},
+            {palavra_chave: ':data_hora', info: 'Data e hora atual (dd/mm/yyyy hh:mm)'},
 
             { palavra_chave: 'Aula', info: '', _cellVariants: { palavra_chave: 'secondary', info: 'secondary' } },
             {palavra_chave: ':nome_aula', info: 'Nome da aula'},

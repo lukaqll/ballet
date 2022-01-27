@@ -47,7 +47,8 @@
                                                         <b-card-body>
                                                             <div class="row">
                                                                 <div class="col-8">
-                                                                    <h3>{{cl.name}}</h3>
+                                                                    <h4>{{cl.name}}</h4>
+                                                                    <span class="text-secondary">{{cl.team}}</span>
                                                                 </div>
                                                                 <div class="col-4 text-right">
                                                                     <b-button variant="light" size="sm" @click="editClass($event, cl.id)" v-b-tooltip.hover title="Editar aula">
