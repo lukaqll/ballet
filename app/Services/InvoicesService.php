@@ -275,7 +275,7 @@ class InvoicesService extends AbstractService
         // JobsInvoiceMail::dispatch($invoice);
         try {
 
-            Mail::sand(new InvoiceMail($invoice));
+            Mail::send(new InvoiceMail($invoice));
         } catch (Exception $e){
 
         }
