@@ -250,17 +250,21 @@ class ClicksignService extends AbstractApiService
 
     public function onContractCloseHandle(Contract $contract, $status){
 
-        $student = $contract->student;
         $invoicesService = new InvoicesService;
 
-        $contract->update(['status' => $status]);
-        $student->update(['status' => 'A']);
+        if( $contract->status != $status ){
 
-        $studentClass = $contract->studentClass;
+            $student = $contract->student;
 
-        if( !empty($studentClass) ){
-            $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
-            $invoicesService->generateClassInvoice($studentClass);
+            $contract->update(['status' => $status]);
+            $student->update(['status' => 'A']);
+    
+            $studentClass = $contract->studentClass;
+    
+            if( !empty($studentClass) ){
+                $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
+                $invoicesService->generateClassInvoice($studentClass);
+            }
         }
 
     }
