@@ -233,7 +233,7 @@
                                             <div class="col-md-8">
                                                 <b-form-group>
                                                     <label>Qual?</label>
-                                                    <b-form-input placeholder="Problema de saúde" :disabled="student.has_health_problem != 1" class="w-100" v-model="student.health_problem"></b-form-input>
+                                                    <b-form-input placeholder="Doença ou lesão preexistente" :disabled="student.has_health_problem != 1" class="w-100" v-model="student.health_problem"></b-form-input>
                                                 </b-form-group>
                                             </div>
 
