@@ -64,6 +64,7 @@ export default {
                     auth: true,
                     data: this.classTime,
                     setError: true,
+                    load: true,
                     success: (resp) => {
                         this.$emit('onSave', resp)
                     }
@@ -77,6 +78,7 @@ export default {
                     auth: true,
                     data: this.classTime,
                     setError: true,
+                    load: true,
                     success: (resp) => {
                         this.$emit('onSave', resp)
                     }
@@ -89,6 +91,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
+                load: true,
                 success: (classTIme) => {
                     this.classTime = classTIme
                 }

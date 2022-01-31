@@ -124,11 +124,11 @@ class InvoicesService extends AbstractService
     public function generateInvoiceToUser( User $user ){
 
         // first day of month
-        $now = date('Y-m-05');
+        $now = date('Y-m-01');
         $curMonth = date('Y-m', strtotime($now));
         
         // expires at day 10
-        $expiration = date('Y-m-d 23:59:59', strtotime('+9 days', strtotime($now)));
+        $expiration = date('Y-m-d 23:59:59', strtotime('+4 days', strtotime($now)));
 
         // get invoice from current month
         $isInvoiceMonthExists = $this->model->where('status', '!=', 'C')
@@ -165,7 +165,7 @@ class InvoicesService extends AbstractService
         $user = $student->user;
 
         $now = date('Y-m-d');
-        $nextInvoiceDate = date('Y-m-05', strtotime('+1 month', strtotime($now)));
+        $nextInvoiceDate = date('Y-m-01', strtotime('+1 month', strtotime($now)));
 
         // expires at day 3
         $expiration = date('Y-m-d 23:59:59', strtotime('+2 days', strtotime($now)));
@@ -181,10 +181,15 @@ class InvoicesService extends AbstractService
             'expires_at' => $expiration
         ];
 
-        $invoice = $this->create($invoiceData);
+        if( floatval($invoiceValue) > 3.49 ){
 
-        $this->sendInvoiceMail($invoice);
-        return $invoice;
+            $invoice = $this->create($invoiceData);
+            $this->sendInvoiceMail($invoice);
+    
+            return $invoice;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -198,7 +203,7 @@ class InvoicesService extends AbstractService
      */
     public function proportionalCalc( string $startDate, string $endDate, ClassModel $class ){
 
-        $monthStart = date('Y-m-05', strtotime($startDate));
+        $monthStart = date('Y-m-01', strtotime($startDate));
         $monthEnd = date('Y-m-t', strtotime($monthStart));
 
         // amount of classes by month

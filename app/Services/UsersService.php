@@ -1,6 +1,12 @@
 <?php 
  namespace App\Services;
 
+use App\Models\Contract;
+use App\Models\Invoice;
+use App\Models\InvoicePayment;
+use App\Models\PasswordRecovery;
+use App\Models\RegisterFile;
+use App\Models\Student;
 use App\Models\StudentClass;
 use App\Models\User;
 use App\Services\Api\ClicksignService;
@@ -202,6 +208,37 @@ class UsersService extends AbstractService
         else {
             $user->update(['status' => 'A']);
         }
+
+    }
+
+
+    public function delete(int $id){
+        
+        $user = $this->find($id);
+
+        if(empty($user))
+            throw ValidationException::withMessages(['Falha ao buscar usuário']);
+
+        $students = Student::where('id_user', $user->id)->get();
+
+        // delete invoices
+        $invoices = Invoice::where('id_user', $user->id)->get();
+        foreach($invoices as $invoice){
+            InvoicePayment::where('id_invoice', $invoice->id)->delete();
+            Invoice::find($invoice->id)->delete();
+        }
+
+        // delete student
+        foreach($students as $student){
+
+            StudentClass::where('id_student', $student->id)->delete();
+            Contract::where('id_student', $student->id)->delete();
+            Student::find($student->id)->delete();
+        }
+
+        PasswordRecovery::where('id_user', $user->id)->delete();
+        RegisterFile::where('id_user', $user->id)->delete();
+        return User::find($user->id)->delete();
 
     }
 }

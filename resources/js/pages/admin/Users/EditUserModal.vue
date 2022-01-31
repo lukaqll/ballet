@@ -224,6 +224,11 @@
                                 Ativar
                             </b-button>
 
+                            <b-button variant="light" @click="() => $bvModal.show('delete-confirmation')">
+                                <b-icon icon="trash"/>
+                                Deletar
+                            </b-button>
+
                         </div>
                         <div class="col-md-6 text-right">
                             <b-button @click="onHidden">Cancelar</b-button>
@@ -266,6 +271,24 @@
                 </div>
             </b-form>
         </b-modal>
+
+        <b-modal hide-footer id="delete-confirmation">
+            <div>
+                <h2 class="text-center">Deseja deletar este usuário?</h2>
+                <p class="text-center">
+                    Esta ação será irreversível
+                    <br>
+                    Digite a palavra 'confirmar' para deletar
+                </p>
+                <b-form-input v-model="confirmationDelete"></b-form-input>
+                <div class="text-right mt-3">
+                    <b-button @click="() => {$bvModal.hide('delete-confirmation'); confirmationDelete=''}">Cancelar</b-button>
+                    <b-button variant="danger" @click="deleteUser">
+                        Deletar
+                    </b-button>
+                </div>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -273,12 +296,15 @@
 import common from '../../../common/common'
 import orgaosExpeditores from "../../../params/orgaosExpeditores"
 import ufs from "../../../params/ufs"
+import Swal from 'sweetalert2'
+
 export default {
 
     data: () => ({
         classes: [],
         pictureModalShow: false,
         picture: null,
+        confirmationDelete: '',
         ufs: [
             {value: 'ES', text: 'Espírito Santo'},
             {value: 'MG', text: 'Minas Gerais'},
@@ -392,6 +418,31 @@ export default {
                 }
             })
         },
+
+        deleteUser() {
+
+            if( this.confirmationDelete != 'confirmar' ){
+                common.setError({
+                    message: 'Informe o termo correto para confirmar'
+                })
+                return
+            }
+
+            common.request({
+                url: '/api/users/'+this.user.id,
+                type: 'delete',
+                auth: true,
+                setError: true,
+                load: true,
+                data: {
+                    confirmation: this.confirmationDelete
+                },
+                success: (data) => {
+                    this.$emit('onSave', data)
+                    $bvModal.hide('delete-confirmation')
+                }
+            })
+        }
 
     }
 }

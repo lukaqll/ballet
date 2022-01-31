@@ -111,6 +111,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
     Route::post('/users/inactivate/{id}', [UserController::class, 'inactivate']);
     Route::post('/users/activate/{id}', [UserController::class, 'activate']);
+    Route::delete('/users/{id}', [UserController::class, 'delete']);
 
     //
     Route::get('/users/get-registration/{id}', [UserController::class, 'getNewRegistration']);
@@ -137,6 +138,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/classes/{id}', [ClassController::class, 'getById']);
     Route::post('/classes', [ClassController::class, 'create']);
     Route::put('/classes/{id}', [ClassController::class, 'update']);
+    Route::delete('/classes/{id}', [ClassController::class, 'delete']);
 
     // class times
     Route::get('/class-time/list', [ClassTimeController::class, 'list']);

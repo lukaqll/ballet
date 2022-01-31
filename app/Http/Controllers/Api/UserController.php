@@ -196,15 +196,19 @@ class UserController extends Controller
      * 
      * @return  json
      */
-    public function delete( $id ){
+    public function delete( $id, Request $request ){
 
         try {
+            DB::beginTransaction();
 
-            $deleted = $this->usersService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => new UserResource($deleted) ];
+            if( $request->input('confirmation') != 'confirmar' )
+                throw ValidationException::withMessages(['Confirme a remoção do usuário']);
 
+            $deleted = $this->usersService->delete( $id ); 
+            $response = [ 'status' => 'success', 'data' => $deleted ];
+            DB::commit();
         } catch ( ValidationException $e ){
-            
+            DB::rollBack();
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 
@@ -567,6 +571,7 @@ class UserController extends Controller
 
         return response()->json( $response );
     }
+
 }
 
 

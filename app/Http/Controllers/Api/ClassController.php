@@ -5,6 +5,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ClassResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ClassController extends Controller
@@ -138,12 +139,12 @@ class ClassController extends Controller
     public function delete( $id ){
 
         try {
-
-            $deleted = $this->classesService->deleteById( $id );
-            $response = [ 'status' => 'success', 'data' => new ClassResource($deleted) ];
-
+            DB::beginTransaction();
+            $deleted = $this->classesService->delete( $id );
+            $response = [ 'status' => 'success', 'data' => ($deleted) ];
+            DB::commit();
         } catch ( ValidationException $e ){
-            
+            DB::rollBack();
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 

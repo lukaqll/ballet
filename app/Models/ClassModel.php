@@ -35,4 +35,8 @@ class ClassModel extends Model
         return $this->hasMany(StudentClass::class, 'id_class', 'id' )
                     ->where('approved_at', '!=', null);
     }
+
+    public function contracts(){
+        return $this->hasMany(Contract::class, 'id_class', 'id');
+    }
 }

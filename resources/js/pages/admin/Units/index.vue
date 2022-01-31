@@ -41,7 +41,8 @@
                                         <b-card-body>
                                             
                                             <div class="row">
-
+                                                
+                                                <!-- classes -->
                                                 <div class="col-md-4" v-for="cl in unit.classes" :key="cl.id">
                                                     <b-card no-body class="border-0 shadow-sm">
                                                         <b-card-body>
@@ -51,12 +52,26 @@
                                                                     <span class="text-secondary">{{cl.team}}</span>
                                                                 </div>
                                                                 <div class="col-4 text-right">
-                                                                    <b-button variant="light" size="sm" @click="editClass($event, cl.id)" v-b-tooltip.hover title="Editar aula">
-                                                                        <b-icon icon="pencil-square" variant="primary"></b-icon>
-                                                                    </b-button>
-                                                                    <b-button variant="light" size="sm" @click="addClassTime($event, cl)" v-b-tooltip.hover title="Adicionar horário">
-                                                                        <b-icon icon="calendar-plus" variant="primary" class="hover"></b-icon>
-                                                                    </b-button>
+                                                                    <div>
+                                                                        <b-dropdown :id="'dropdown-'+cl.id" size="sm" variant='light'>
+                                                                            <template #button-content >
+                                                                                <b-icon icon="three-dots-vertical"></b-icon>
+                                                                            </template>
+                                                                            <b-dropdown-item @click="editClass($event, cl.id)">
+                                                                                <b-icon icon="pencil-square"></b-icon>
+                                                                                Editar Aula
+                                                                            </b-dropdown-item>
+                                                                            <b-dropdown-item @click="addClassTime($event, cl.id)">
+                                                                                <b-icon icon="calendar-plus"></b-icon>
+                                                                                Adicionar Hrário
+                                                                            </b-dropdown-item>
+                                                                            <b-dropdown-item @click="deleteClass($event, cl.id)">
+                                                                                <b-icon icon="trash"></b-icon>
+                                                                                Deletar Aula
+                                                                            </b-dropdown-item>
+                                                                        </b-dropdown>
+                                                                    </div>
+
                                                                 </div>
                                                             </div>
 
@@ -69,6 +84,8 @@
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <b-list-group>
+
+                                                                        <!-- times -->
                                                                         <b-list-group-item v-for="time in cl.times" :key="time.id">
                                                                             <div class="row align-items-center">
                                                                                 <div class="col-md-8">
@@ -89,12 +106,14 @@
                                                                                 </div>
                                                                             </div>
                                                                         </b-list-group-item>
+                                                                        <!-- end times -->
                                                                     </b-list-group>
                                                                 </div>
                                                             </div>
                                                         </b-card-body>
                                                     </b-card>
                                                 </div>
+                                                <!-- end classes -->
                                             </div>
                                         </b-card-body>
                                     </b-collapse>
@@ -238,10 +257,27 @@ export default {
         },
         deleteClassTime(evt, idClassTime){
             common.confirmAlert({
-                title: 'Deseja deletar este registro?',
+                title: 'Deseja deletar este horário?',
                 onConfirm: () => {
                     common.request({
                         url: '/api/class-time/'+idClassTime,
+                        type: 'delete',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: () => {
+                            this.listUnits()
+                        }
+                    })
+                }
+            })
+        },
+        deleteClass(evt, idClass){
+            common.confirmAlert({
+                title: 'Deseja deletar esta aula?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/classes/'+idClass,
                         type: 'delete',
                         auth: true,
                         setError: true,

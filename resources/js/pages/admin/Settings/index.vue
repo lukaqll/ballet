@@ -89,6 +89,7 @@ export default {
             url: '/api/user/admin',
             auth: true,
             setError: true,
+            load: true,
             success: (resp) => {
                 this.user = resp
             }
@@ -108,6 +109,7 @@ export default {
                 setError: true,
                 savedAlert: true,
                 data: this.user,
+                load: true,
                 success: (resp) => {
                     this.user = resp
                 }
@@ -126,6 +128,7 @@ export default {
                 setError: true,
                 savedAlert: true,
                 data: this.passwordForm,
+                load: true,
                 success: (resp) => {
                     this.passwordForm = {}
                     this.modalPassowrdShow = false
