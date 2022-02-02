@@ -190,12 +190,6 @@
                         </div>
                         <div class="col-md-6">
                             <b-form-group>
-                                <label>Apelido</label>
-                                <b-form-input placeholder="Apelido do Aluno" v-model="student.nick_name"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-6">
-                            <b-form-group>
                                 <label>Data de Nascimento</label>
                                 <b-form-input type="date" v-model="student.birthdate"/>
                             </b-form-group>

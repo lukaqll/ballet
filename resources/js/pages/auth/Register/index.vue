@@ -558,7 +558,7 @@ export default {
         },
         getClasses(idUnit){
             common.request({
-                url: '/api/classes/list?id_unit='+idUnit,
+                url: '/api/classes/public-list?id_unit='+idUnit,
                 type: 'get',
                 auth: true,
                 setError: true,

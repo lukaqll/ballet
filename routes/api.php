@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
  * public routes
  */
 Route::get('/classes/list', [ClassController::class, 'list']);
+Route::get('/classes/public-list', [ClassController::class, 'publicList']);
 Route::get('/gallery', [HomeController::class, 'getGallery']);
 Route::get('/units/list', [UnitController::class, 'list']);
 
@@ -137,6 +138,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/classes', [ClassController::class, 'get']);
     Route::get('/classes/{id}', [ClassController::class, 'getById']);
     Route::post('/classes', [ClassController::class, 'create']);
+    Route::post('/classes/toggle-full/{id}', [ClassController::class, 'toggleFull']);
     Route::put('/classes/{id}', [ClassController::class, 'update']);
     Route::delete('/classes/{id}', [ClassController::class, 'delete']);
 

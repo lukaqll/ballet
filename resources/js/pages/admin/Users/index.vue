@@ -37,7 +37,7 @@
                             </div>
                             <div>
 
-                                <div class="table-responsive" v-if="users.length">
+                                <div class="table-responsive" style="overflow: inherit;" v-if="users.length">
                                     <b-table
                                         :fields="tableFields"
                                         :items="users"
@@ -52,22 +52,33 @@
                                                 <span v-if="!row.item.signer_key" v-b-tooltip.hover title="Usuário não cadastrado como signatário">
                                                     <b-icon icon='exclamation-triangle' variant="danger"/>
                                                 </span>
+                                                <span v-if="row.item.open_invoices && row.item.open_invoices.length">
+                                                    <i class="fa fa-dollar-sign"></i>
+                                                </span>
                                         </template>
                                         <template #cell(actions)="row">
-                                            <b-button variant="light" size="sm" @click="e => editUser(row.item.id)" v-b-tooltip.hover title="Editar usuário">
-                                                <b-icon  icon="pencil-square"></b-icon>
-                                            </b-button>
-                                            <b-button 
-                                                :variant="row.item.open_invoices && row.item.open_invoices.length ? 'danger' : 'light'" 
-                                                size="sm" 
-                                                @click="e => getUserInvoices(row.item.id)"
-                                                v-b-tooltip.hover :title="`${row.item.open_invoices.length} faturas abertas`"
-                                            >
-                                                <i class="fa fa-dollar-sign"></i>
-                                            </b-button>
-                                            <b-button variant="light" size="sm" @click="() => toPasswordUpdateId = row.item.id" v-b-tooltip.hover title="Alterar senha">
-                                                <b-icon  icon="key"></b-icon>
-                                            </b-button>
+
+                                            <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
+                                                <template #button-content >
+                                                    <b-icon icon="three-dots-vertical"></b-icon>
+                                                </template>
+                                                <b-dropdown-item @click="e => editUser(row.item.id)">
+                                                    <b-icon icon="pencil-square"></b-icon> Editar
+                                                </b-dropdown-item>
+
+                                                <b-dropdown-item @click="e => getUserInvoices(row.item.id)">
+                                                    <i class="fa fa-dollar-sign"></i> Faturas 
+                                                    <b v-if="row.item.open_invoices.length">
+                                                        ({{row.item.open_invoices.length}} faturas abertas)
+                                                    </b>
+                                                </b-dropdown-item>
+
+                                                <b-dropdown-item @click="() => toPasswordUpdateId = row.item.id">
+                                                    <b-icon icon="key"></b-icon> Alterar Senha
+                                                </b-dropdown-item>
+
+                                            </b-dropdown>
+
                                         </template>
                                     </b-table>
 

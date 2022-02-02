@@ -52,7 +52,9 @@ class UsersService extends AbstractService
         $data['password'] = bcrypt($data['password']);
             
         $user = $this->model->create($data);
-        $this->uploadPicture($user, $data['picture']);
+        if(!empty($data['picture'])){
+            $this->uploadPicture($user, $data['picture']);
+        }
 
         return $user;
     }

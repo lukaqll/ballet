@@ -20,6 +20,7 @@ class ClassResource extends JsonResource
             'name' => $this->name,
             'team' => $this->team,
             'value' => $this->value,
+            'full' => $this->full,
             'unit_name' => $this->unit->name,
             'times' => ClassTimeResource::collection($this->times),
             'students_count' => count($this->students)

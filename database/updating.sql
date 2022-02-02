@@ -1,4 +1,9 @@
 ALTER TABLE `ballet`.`classes` 
+ADD COLUMN `full` TINYINT NULL DEFAULT 0 AFTER `team`;
+
+-------------------
+
+ALTER TABLE `ballet`.`classes` 
 CHANGE COLUMN `name` `name` VARCHAR(225) NOT NULL ;
 ALTER TABLE `ballet`.`classes` 
 ADD COLUMN `team` VARCHAR(60) NULL AFTER `value`;

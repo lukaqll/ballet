@@ -37,6 +37,29 @@ class ClassController extends Controller
     }
 
     /**
+     * public list
+     * 
+     * @return  json
+     */
+    public function publicList( Request $request )
+    {
+        try {
+
+            $dataFilter = $request->all();
+            $result = $this->classesService->list( $dataFilter, ['id'] )->where('full', '!=', 1);
+
+            $response = [ 'status' => 'success', 'data' => ClassResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    
+
+    /**
      * get by key and value
      * 
      * @return  json
@@ -145,6 +168,27 @@ class ClassController extends Controller
             DB::commit();
         } catch ( ValidationException $e ){
             DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function toggleFull( $id ){
+        try {
+            
+            $class = $this->classesService->find($id);
+            $isFull = 0;
+            if( $class->full == 1 ){
+                $isFull = 0;
+            } else {
+                $isFull = 1;
+            }
+
+            $updated = $this->classesService->updateById($id, ['full' => $isFull]);
+            $response = [ 'status' => 'success', 'data' => ($updated) ];
+            
+        } catch ( ValidationException $e ){
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 

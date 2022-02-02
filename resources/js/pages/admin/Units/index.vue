@@ -69,6 +69,16 @@
                                                                                 <b-icon icon="trash"></b-icon>
                                                                                 Deletar Aula
                                                                             </b-dropdown-item>
+
+                                                                            <b-dropdown-item @click="() => toggleFull(cl.id)" v-if="!cl.full">
+                                                                                <b-icon icon="battery-full"></b-icon>
+                                                                                Marcar como lotada
+                                                                            </b-dropdown-item>
+                                                                            <b-dropdown-item @click="() => toggleFull(cl.id)" v-else>
+                                                                                <b-icon icon="battery"></b-icon>
+                                                                                Liberar Aula
+                                                                            </b-dropdown-item>
+
                                                                         </b-dropdown>
                                                                     </div>
 
@@ -81,6 +91,7 @@
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <b-badge variant="primary" pill>{{cl.students_count}} alunos</b-badge>
+                                                                    <b-badge variant="danger" v-if="cl.full" pill>Lotada</b-badge>
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <b-list-group>
@@ -288,7 +299,21 @@ export default {
                     })
                 }
             })
+        },
+        
+        toggleFull(idClass){
+            common.request({
+                url: '/api/classes/toggle-full/'+idClass,
+                type: 'post',
+                auth: true,
+                setError: true,
+                load: true,
+                success: () => {
+                    this.listUnits()
+                }
+            })
         }
+
     }
 }
 </script>
