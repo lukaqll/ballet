@@ -67,7 +67,11 @@ class InvoicesService extends AbstractService
             try {
 
                 $invoice = $this->generateInvoiceToUser( $user );
-                echo "\n -> fatura gerada | R$ {$invoice->value}";
+                if( $invoice ){
+                    echo "\n -> fatura gerada | R$ {$invoice->value}";
+                } else {
+                    echo "\n -> fatura não gerada";
+                }
 
             } catch ( Exception $e ){
                 echo "\n -> {$e->getMessage()}";
@@ -142,6 +146,10 @@ class InvoicesService extends AbstractService
         // calc proportional
         $invoiceValue = $this->getInvoiceValue($user, $now);
         
+        if( $invoiceValue < 3.49 ){
+            return false;
+        }
+
         // create invoice
         $invoiceData = [
             'id_user'    => $user->id,
@@ -216,7 +224,7 @@ class InvoicesService extends AbstractService
         $valuePerClass = floatval($class->value) / $amounInMonth;
 
         // total value by period
-        $total = $valuePerClass * $amountInPeriod;
+        $total = $valuePerClass * ($amountInPeriod - 1);
 
         // echo "\n $startDate a $endDate";
         // echo "\n $amounInMonth aulas neste mês";

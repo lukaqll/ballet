@@ -44,7 +44,7 @@ class RegistrationResource extends JsonResource
             'cep' => $this->cep,
 
             'student' => new StudentResource($this->pendentStudent),
-            'register_files' => $this->RegisterFiles,
+            'register_files' => RegisterFileResource::collection($this->RegisterFiles),
             'know_by' => $this->know_by,
         ];
     }

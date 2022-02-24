@@ -25,4 +25,14 @@ class RegisterFile extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function getExtention(){
+
+        $extArray = explode('.', $this->name);
+        if( empty($extArray) ){
+            return null;
+        }
+
+        return end($extArray);
+    }
 }

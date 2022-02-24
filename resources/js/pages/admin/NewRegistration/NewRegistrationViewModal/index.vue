@@ -230,7 +230,11 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-4" v-for="file in user.register_files" :key="file.id">
-                            <img :src="'/storage/'+file.name" alt="file" class="img-fluid">
+                            <component 
+                                :is="file.extention == 'pdf' ? 'embed' : 'img'" 
+                                :src="'/storage/'+file.name" alt="file" 
+                                :class="file.extention == 'pdf' ? 'w-100 h-100' : 'img-fluid'"
+                            ></component>
                         </div>
                     </div>
                 </div>
