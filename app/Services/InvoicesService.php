@@ -132,7 +132,7 @@ class InvoicesService extends AbstractService
         $curMonth = date('Y-m', strtotime($now));
         
         // expires at day 10
-        $expiration = date('Y-m-d 23:59:59', strtotime('+4 days', strtotime($now)));
+        $expiration = date('Y-m-d 23:59:59', strtotime('+7 days', strtotime($now)));
 
         // get invoice from current month
         $isInvoiceMonthExists = $this->model->where('status', '!=', 'C')
@@ -173,7 +173,7 @@ class InvoicesService extends AbstractService
         $user = $student->user;
 
         $now = date('Y-m-d');
-        $nextInvoiceDate = date('Y-m-01', strtotime('+1 month', strtotime($now)));
+        $nextInvoiceDate = date('Y-m-08', strtotime('+1 month', strtotime($now)));
 
         // expires at day 3
         $expiration = date('Y-m-d 23:59:59', strtotime('+2 days', strtotime($now)));

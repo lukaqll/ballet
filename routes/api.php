@@ -188,4 +188,10 @@ Route::group(['middleware' => ['admin']], function () {
     // reports
     Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);
 
+
+    // signer config
+    Route::post('/signer-config/save', [ParameterController::class, 'saveSigner']);
+    Route::get('/signer-config/get', [ParameterController::class, 'getSigner']);
+
+
 });

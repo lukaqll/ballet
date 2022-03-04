@@ -7,6 +7,8 @@ use App\Models\Student;
 use App\Models\User;
 use App\Services\ContractsService;
 use App\Services\InvoicesService;
+use App\Services\ParametersService;
+use App\Services\UsersService;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
@@ -28,14 +30,14 @@ class ClicksignService extends AbstractApiService
     /**
      * create signatory
      */
-    public function createSignatory( User $user ){
+    public function createSignatory( $user ){
 
         $data = [
             'signer' => [
+                'name'          => $user->name,
                 'email'         => $user->email,
                 'phone_number'  => $user->phone,
                 'auths'         => $user->is_whatsapp ? ['whatsapp'] : ['sms'],
-                'name'          => $user->name,
                 'documentation' => $user->cpf,
 
                 'official_document_enabled' => true
@@ -53,7 +55,40 @@ class ClicksignService extends AbstractApiService
         if( $response['status'] == 'success' ){
             # code
             $signer = $response['data']->signer;
-            $user->update(['signer_key' => $signer->key]);
+
+            if( $user instanceof User ){
+                $user->update(['signer_key' => $signer->key]);
+            } else {
+                $user->signer_key = $signer->key;
+            }
+
+            return $user;
+        } else {
+            throw ValidationException::withMessages($response['message']);
+        }
+    }
+
+    /**
+     * delete signatory
+     */
+    public function deleteSignatory( $sign_key ){
+
+        $url = "/signers/".$sign_key;
+
+        $userService = new UsersService;
+        $response = $this->request('swlwrw', $url, [
+            'query' => [
+                'access_token' => $this->accesToken
+            ]
+        ]);
+
+        if( $response['status'] == 'success' ){
+
+            $user = $userService->get(['sign_key' => $sign_key]);
+            if( !empty($user) ){
+                $user->update(['signer_key' => null]);
+            }
+
             return $user;
         } else {
             throw ValidationException::withMessages($response['message']);
@@ -66,6 +101,8 @@ class ClicksignService extends AbstractApiService
     public function createDocument( Student $student, string $base64, ClassModel $class ){
 
         $user = $student->user;
+
+        $parametersService = new ParametersService;
 
         if( empty($user->signer_key) )
             throw ValidationException::withMessages(['O usuário responsavel não está cadastrado como signatário']);
@@ -105,7 +142,15 @@ class ClicksignService extends AbstractApiService
             ]);
             $student->update(['status' => 'CP']);
 
-            $result = $this->addSignatoryInDoc($student->user, $contract);
+            $result = $this->addSignatoryInDoc($student->user, $contract, 'contractor');
+
+            // add default signer in doc
+            $defaultSigner = $parametersService->getSigner(true);
+            if( empty($defaultSigner->signer_key) )
+                throw ValidationException::withMessages(['Signatário padrão não configurado']);
+
+            $this->addSignatoryInDoc($defaultSigner, $contract, 'contractee');
+
 
             return $contract;
             
@@ -119,13 +164,13 @@ class ClicksignService extends AbstractApiService
     /**
      * add signatory in document
      */
-    public function addSignatoryInDoc(User $user, Contract $contract){
+    public function addSignatoryInDoc( $user, Contract $contract, $signAs = 'contractor'){
 
         $data = [
             'list' => [
                 'document_key' => $contract->key,
                 'signer_key' => $user->signer_key,
-                'sign_as' => 'sign',
+                'sign_as' => $signAs,
                 'message' => "Olá {$user->name}, assine este contrato para concluir sua matrícula na Ellegance Ballet."
             ]
         ];

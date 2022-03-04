@@ -9,6 +9,11 @@
                         <b-icon icon="file-earmark-medical"></b-icon>
                         Configurar Contrato
                     </router-link>
+
+                    <router-link tag="b-button" to='/admin/config/signer'>
+                        <b-icon icon="person"></b-icon>
+                        Configurar Signatário
+                    </router-link>
                 </b-card>
             </div>
         </div>

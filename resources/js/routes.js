@@ -10,6 +10,7 @@ import PasswordReset from './pages/auth/PasswordRecovery/PasswordReset'
 import SendMail from './pages/auth/PasswordRecovery/SendMail'
 import Config from './pages/admin/Config'
 import ContractConfig from './pages/admin/Config/ContractConfig'
+import SignerConfig from './pages/admin/Config/SignerConfig'
 import Register from './pages/auth/Register'
 import NewRegistration from './pages/admin/NewRegistration'
 import Contracts from './pages/admin/Contracts'
@@ -114,6 +115,11 @@ export default {
             component: ContractConfig,
         },
         {
+            name: 'signer_config',
+            path: '/admin/config/signer',
+            component: SignerConfig,
+        },
+        {
             name: 'new_users',
             path: '/admin/new-users',
             component: NewRegistration,
@@ -143,10 +149,11 @@ export default {
 
         // register
         {
-            name: 'contract_config',
+            name: 'cadastro',
             path: '/cadastro',
             component: Register
         },
+        
 
 
         /**
@@ -164,22 +171,22 @@ export default {
             component: ClientSettings,
         },
         {
-            name: 'client.settings',
+            name: 'client.students',
             path: '/alunos',
             component: ClientStudents,
         },
         {
-            name: 'client.settings',
+            name: 'client.contracts',
             path: '/contratos',
             component: ClientContracts,
         },
         {
-            name: 'client.settings',
+            name: 'client.posts',
             path: '/posts',
             component: ClientPosts,
         },
         {
-            name: 'client.settings',
+            name: 'client.invoices',
             path: '/faturas',
             component: ClientInvoices,
         },

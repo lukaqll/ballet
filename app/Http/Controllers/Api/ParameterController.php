@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ParameterController extends Controller
@@ -149,6 +150,52 @@ class ParameterController extends Controller
 
             $contract = $this->parametersService->getContract();
             $response = [ 'status' => 'success', 'data' => $contract ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+
+    /**
+     * save signer
+     */
+    public function saveSigner(Request $request){
+        try {
+
+            DB::beginTransaction();
+
+            $validData = $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|string',
+                'phone' => 'required|string',
+                'cpf' => 'required|string',
+            ]);
+
+            $result = $this->parametersService->saveSigner($validData);
+            $response = [ 'status' => 'success', 'data' => $result ];
+
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    /**
+     * get signer
+     */
+    public function getSigner( Request $request ){
+        try {
+
+            $result = $this->parametersService->getSigner();
+            $response = [ 'status' => 'success', 'data' => $result ];
 
         } catch ( ValidationException $e ){
             

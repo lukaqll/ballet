@@ -160,7 +160,13 @@ class DocumentsController extends Controller
             $document = $this->clicksignService->getDocument($contract);
 
             if( !empty( $document->document->signers ) ){
-                $signer = $document->document->signers[0];
+
+                if( !empty($document->document->signers[1]) ){
+                    $signer = $document->document->signers[1]; 
+                } else {
+                    $signer = $document->document->signers[0]; 
+                }
+
             } else {
                 return redirect()->back();
             }

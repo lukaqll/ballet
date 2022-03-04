@@ -2,6 +2,10 @@
  namespace App\Services;
 
 use App\Models\Parameter;
+use App\Models\User;
+use App\Services\Api\ClicksignService;
+use Illuminate\Validation\ValidationException;
+use stdClass;
 
 class ParametersService extends AbstractService
 {
@@ -32,4 +36,76 @@ class ParametersService extends AbstractService
     }
 
     
+    public function saveSigner( $data ){
+
+        $wasUpdated = false;
+
+        $clickSignService = new ClicksignService;
+
+        foreach( $data as $att => $value ){
+
+            $attibuteExists = $this->get(['operation' => 'signer', 'attribute' => $value]);
+
+            if( !empty($attibuteExists) ){
+
+                if( $attibuteExists->value != $value ){
+                    $attibuteExists->update(['value' => $value]);
+                    $wasUpdated = true;
+                }
+
+            } else {
+                $this->create([
+                    'operation' => 'signer',
+                    'attribute' => $att,
+                    'value' => $value
+                ]);
+            }
+        }
+
+        $sign = $this->getSigner(true);
+
+        // foi atualizado
+        if( $wasUpdated ){
+            $clickSignService->deleteSignatory( $sign->sign_key );
+            $this->get(['operation' => 'signer', 'attribute' => 'signer_key'])->delete();
+        }
+
+        $created = $clickSignService->createSignatory( $sign );
+
+        if( empty($created->signer_key) ){
+            throw ValidationException::withMessages(['Falha ao adicionar signatário']);
+        }
+        
+        $this->create([
+            'operation' => 'signer',
+            'attribute' => 'signer_key',
+            'value' => $created->signer_key
+        ]);
+
+    }
+
+
+    public function getSigner( $asObject = false ){
+
+        $allData = $this->list(['operation' => 'signer']);
+
+        if( $asObject ){
+            $signerData = new stdClass;
+            $signerData->is_whatsapp = false;
+        } else {
+            $signerData = [];
+        }
+
+
+        foreach( $allData as $param ){
+
+            if( $asObject ){
+                $signerData->{$param->attribute} = $param->value;
+            } else {
+                $signerData[ $param->attribute ] = $param->value;
+            }
+        }
+
+        return $signerData;
+    }
 }
