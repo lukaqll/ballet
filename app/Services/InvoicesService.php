@@ -173,7 +173,7 @@ class InvoicesService extends AbstractService
         $user = $student->user;
 
         $now = date('Y-m-d');
-        $nextInvoiceDate = date('Y-m-08', strtotime('+1 month', strtotime($now)));
+        $nextInvoiceDate = date('Y-m-01', strtotime('+1 month', strtotime($now)));
 
         // expires at day 3
         $expiration = date('Y-m-d 23:59:59', strtotime('+2 days', strtotime($now)));
@@ -192,7 +192,7 @@ class InvoicesService extends AbstractService
         if( floatval($invoiceValue) > 3.49 ){
 
             $invoice = $this->create($invoiceData);
-            $this->sendInvoiceMail($invoice);
+            // $this->sendInvoiceMail($invoice);
     
             return $invoice;
         } else {
@@ -224,7 +224,7 @@ class InvoicesService extends AbstractService
         $valuePerClass = floatval($class->value) / $amounInMonth;
 
         // total value by period
-        $total = $valuePerClass * ($amountInPeriod - 1);
+        $total = $valuePerClass * ($amountInPeriod);
 
         // echo "\n $startDate a $endDate";
         // echo "\n $amounInMonth aulas neste mês";
