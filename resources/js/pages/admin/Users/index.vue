@@ -20,11 +20,17 @@
                                 <div class="col-12">
                                     <div class="row">
                                         <div class="col-md-3">
+                                            <label>Status</label>
                                             <b-form-select :options="status" class="w-100" v-model="filter.status"></b-form-select>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
+                                            <label>Unidade</label>
+                                            <b-form-select :options="unitsOptions" class="w-100" v-model="filter.id_unit"></b-form-select>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 2rem">
                                             <b-button @click="getUsers">Buscar</b-button>
                                             <b-button variant="danger" @click="filter = {}">Limpar</b-button>
+                                            <b>{{ users.length }} resultados</b>
                                         </div>
                                     </div>
                                 </div>
@@ -40,7 +46,7 @@
                                 <div class="table-responsive" style="overflow: inherit;" v-if="users.length">
                                     <b-table
                                         :fields="tableFields"
-                                        :items="users"
+                                        :items="usersTable"
                                         :filter="tableFilter"
                                         hover
                                     >
@@ -168,12 +174,22 @@ export default {
                 {text: 'Inativo', value: 'I'},
                 {text: 'Matrícula Pendente', value: 'MP'},
             ]
+        },
+        unitsOptions(){
+            return this.units.map(un => ({ text: un.name, value: un.id }))
+        },
+        usersTable(){
+
+            return this.users.map((user) => {
+                return {...user, _rowVariant: user.open_invoices && user.open_invoices.length ? 'danger' : null}
+            })
         }
     },
 
        
     mounted: function(){
         this.getUsers()
+        this.getUnits()
     },
 
     data: () => ({
@@ -185,6 +201,7 @@ export default {
         studentModalShow: false,
         filter: {},
         tableFilter: '',
+        units: [],
 
         idUserInvoice: null,
     }),
@@ -264,7 +281,18 @@ export default {
         },
         getUserInvoices(idUser){
             this.idUserInvoice = idUser
-        }
+        },
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units
+                }
+            })
+        },
     }
 }
 </script>

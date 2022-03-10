@@ -230,6 +230,9 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-4" v-for="file in user.register_files" :key="file.id">
+                            <a class="btn btn-sm btn-light position-absolute" target="_blank" :href="'/storage/'+file.name">
+                                <b-icon icon="eye"></b-icon>
+                            </a>
                             <component 
                                 :is="file.extention == 'pdf' ? 'embed' : 'img'" 
                                 :src="'/storage/'+file.name" alt="file" 

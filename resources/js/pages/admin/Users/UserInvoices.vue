@@ -36,13 +36,28 @@
                                     <b-badge v-if="invoice.is_expired" variant="danger">Vencida</b-badge>
                                 </td>
                                 <td>
-                                    <a :href="`/invoice-payment/get/${invoice.id}`" target="_blank" class="btn btn-sm btn-link">
-                                        Ver Boleto
-                                    </a>
-                                    <b-button v-if="invoice.status == 'A'" variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">Cancelar</b-button>
-                                    <b-button variant="light" v-if="invoice.status == 'A'" size="sm" @click="() => editInvoice(invoice.id)">
-                                        <b-icon icon="pencil-square"></b-icon>
-                                    </b-button>
+
+                                    <b-dropdown :id="'dropdown-'+invoice.id" size="sm" variant='light'>
+                                        <template #button-content >
+                                            <b-icon icon="three-dots-vertical"></b-icon>
+                                        </template>
+
+                                        <b-dropdown-item @click="() => openWindow(`/invoice-payment/get/${invoice.id}`)" v-if="invoice.status == 'A'">
+                                            Ver Boleto
+                                        </b-dropdown-item>
+
+                                        <b-dropdown-item v-if="invoice.status == 'A'" variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">
+                                            Cancelar
+                                        </b-dropdown-item>
+
+                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => editInvoice(invoice.id)">
+                                            Editar
+                                        </b-dropdown-item>
+
+                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => payInvoice(invoice.id)">
+                                            Baixa Manual
+                                        </b-dropdown-item>
+                                    </b-dropdown>
                                 </td>
                             </tr>
                         </tbody>
@@ -136,6 +151,26 @@ export default {
             this.editableInvoice = null
             this.showInvoiceModal = true
             this.idUserInvoice = this.idUser
+        },
+        openWindow(url){
+            window.open(url,'_blank');
+        },
+        payInvoice(id){
+            common.confirmAlert({
+                title: 'Deseja baixar manualmente esta fatura?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/invoices/pay-manually/'+id,
+                        type: 'post',
+                        auth: true,
+                        load: true,
+                        setError: true,
+                        success: (resp) => {
+                            this.getInvoices(this.idUser)
+                        }
+                    })
+                }
+            })
         }
     }
 }

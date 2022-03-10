@@ -91,6 +91,8 @@ Route::group(['midleware' => ['auth']], function () {
 
     // posts
     Route::get('/posts/list-active', [PostController::class, 'listActive']);
+    Route::get('/files/get-registration/{idUser}', [UserController::class, 'getRegistrationFiles']);
+
 });
 
 /**
@@ -184,6 +186,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/invoices/cancel/{id}', [InvoiceController::class, 'cancelInvoice']);
     Route::put('/invoices/{id}', [InvoiceController::class, 'update']);
     Route::post('/invoices', [InvoiceController::class, 'create']);
+    Route::post('/invoices/pay-manually/{id}', [InvoiceController::class, 'payManually']);
 
     // reports
     Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);

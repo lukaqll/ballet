@@ -46,7 +46,7 @@ class InvoiceController extends Controller
         try {
 
             $user = auth('api')->user();
-            $result = $this->invoicesService->list( ['id_user' => $user->id], ['expires_at'] );
+            $result = $this->invoicesService->list( ['id_user' => $user->id], ['expires_at'] )->where('status', '!=', 'C');
             $response = [ 'status' => 'success', 'data' => InvoiceResource::collection($result) ];
             
         } catch ( ValidationException $e ){
@@ -255,6 +255,36 @@ class InvoiceController extends Controller
                 'message'=> $e->getMessage()
             ]);
         }
+    }
 
+
+    /**
+     * payManually
+     */
+    public function payManually($id){
+
+        try {
+
+            $invoice = $this->invoicesService->find($id);
+            if($invoice->status != 'A')
+                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+
+            if( !empty($invoice->reference) ){
+                $this->mercadoPagoService->cancelPayment($invoice->reference);
+            }
+
+            if( !empty($invoice->openPayment) ){
+                $invoice->openPayment->update(['status' => 'payd', 'status_detail' => 'payd_manual']);
+            }
+
+            $updated = $this->invoicesService->updateById( $id, ['status' => 'PM'] );
+            $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
     }
 }

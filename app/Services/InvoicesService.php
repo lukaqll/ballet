@@ -211,8 +211,8 @@ class InvoicesService extends AbstractService
      */
     public function proportionalCalc( string $startDate, string $endDate, ClassModel $class ){
 
-        $monthStart = date('Y-m-01', strtotime($startDate));
-        $monthEnd = date('Y-m-t', strtotime($monthStart));
+        $monthStart = date('Y-m-08', strtotime($startDate));
+        $monthEnd = date('Y-m-07', strtotime('+1 month', strtotime($monthStart)));
 
         // amount of classes by month
         $amounInMonth = $this->getAmountOfClassByPeriod( $monthStart, $monthEnd, $class );

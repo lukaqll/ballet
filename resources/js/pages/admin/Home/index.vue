@@ -32,7 +32,7 @@
                 </div>
                 
                 <template v-if="data.birthdays && data.birthdays.length">
-                    <div class="col-md-3" v-for="student in data.birthdays" :key="student.id">
+                    <div class="col-md-3 mb-3" v-for="student in data.birthdays" :key="student.id">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-12" v-if="student.picture">

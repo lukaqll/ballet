@@ -103,7 +103,24 @@ class UsersService extends AbstractService
      */
     public function listClients( $filters = [] ){
     
-        return $this->list($filters)->where('is_admin', 0);
+        $findable = User::where('is_admin', 0);
+        
+        if( !empty($filters['status']) ){
+            $findable = $findable->where('users.status', $filters['status']);
+        }
+
+        if( !empty($filters['id_unit']) ){
+
+            $findable = $findable->join('students', 'students.id_user', 'users.id')
+                                 ->join('student_classes', 'student_classes.id_student', 'students.id')
+                                 ->join('classes', 'classes.id', 'student_classes.id_class')
+                                 ->join('units', function($join) use($filters){
+                                    $join->on('units.id', 'classes.id_unit')
+                                         ->where('units.id', $filters['id_unit']);
+                                 });
+        }
+        
+        return $findable->select('users.*')->get();
     }
 
     /**
@@ -185,7 +202,7 @@ class UsersService extends AbstractService
         $openInvoices = $user->openInvoices;
 
         // mais de uma fatura aberta
-        if( count($openInvoices) > 1 ){
+        if( !empty($openInvoices) ){
 
             foreach( $openInvoices as $openInvoice ){
                 if( $openInvoice->getIsExpired() ){
@@ -195,18 +212,7 @@ class UsersService extends AbstractService
             }
         } 
 
-        // uma fatura aberta
-        else if ( count($openInvoices) == 1 ){
-            $expiredInvoice = $openInvoices[0];
-            $expirationDateLimit = date('Y-m-d H:i:s', strtotime('+5 day', strtotime(date('Y-m-d H:i:s')) ));
-
-            if( $expiredInvoice->expres_at > $expirationDateLimit ){
-                $user->update(['status' => 'P']);
-            } else {
-                $user->update(['status' => 'A']);
-            }
-        } 
-         // nenhuma fatura aberta
+        // nenhuma fatura aberta
         else {
             $user->update(['status' => 'A']);
         }

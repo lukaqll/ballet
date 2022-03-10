@@ -99,12 +99,18 @@
                         <div class="col-6" v-if="user.picture">
                             <b-img :src="user.picture" fluid alt="User Image"></b-img>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12">
                             <b-button 
                                 variant="outline-secondary"
                                 @click="() => pictureModalShow = true"
                             >
                                 {{user.picture ? 'Alterar' : 'Adicionar'}} imagem
+                            </b-button>
+                            <b-button
+                                variant="outline-secondary"
+                                @click="getFiles"
+                            >
+                                Arquivos
                             </b-button>
                         </div>
                     </div>
@@ -272,7 +278,7 @@
             </b-form>
         </b-modal>
 
-        <b-modal hide-footer id="delete-confirmation">
+        <b-modal  hide-footer id="delete-confirmation">
             <div>
                 <h2 class="text-center">Deseja deletar este usuário?</h2>
                 <p class="text-center">
@@ -288,6 +294,22 @@
                     </b-button>
                 </div>
             </div>
+        </b-modal>
+
+        <b-modal size="lg" title="Arquivos" hide-footer id="registration-files">
+            <div class="row" v-if="registrationFiles.length">
+                <div class="col-md-4"  v-for="file in registrationFiles" :key="file.id">
+                    <a class="btn btn-sm btn-light position-absolute" target="_blank" :href="'/storage/'+file.name">
+                        <b-icon icon="eye"></b-icon>
+                    </a>
+                    <component 
+                        :is="file.extention == 'pdf' ? 'embed' : 'img'" 
+                        :src="'/storage/'+file.name" alt="file" 
+                        :class="file.extention == 'pdf' ? 'w-100 h-100' : 'img-fluid'"
+                    ></component>
+                </div>
+            </div>
+            <h3 class="text-center" v-else>Nenhum Arquivo</h3>
         </b-modal>
     </div>
 </template>
@@ -308,7 +330,8 @@ export default {
         ufs: [
             {value: 'ES', text: 'Espírito Santo'},
             {value: 'MG', text: 'Minas Gerais'},
-        ]
+        ],
+        registrationFiles: []
     }),
     props: {
         isVisible: Boolean,
@@ -439,11 +462,23 @@ export default {
                 },
                 success: (data) => {
                     this.$emit('onSave', data)
-                    $bvModal.hide('delete-confirmation')
+                    this.$bvModal.hide('delete-confirmation')
+                }
+            })
+        },
+        getFiles() {
+            common.request({
+                url: '/api/files/get-registration/'+this.user.id,
+                type: 'get',
+                auth: true,
+                setError: true,
+                load: true,
+                success: (data) => {
+                    this.registrationFiles = data
+                    this.$bvModal.show('registration-files')
                 }
             })
         }
-
     }
 }
 </script>

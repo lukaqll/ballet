@@ -29,7 +29,8 @@ class Invoice extends Model
         $status = [
             'A' => 'Aberto',
             'P' => 'Pago',
-            'C' => 'Cancelado'
+            'C' => 'Cancelado',
+            'PM' => 'Baixa Manual',
         ];
         return $status[$this->status];
     }

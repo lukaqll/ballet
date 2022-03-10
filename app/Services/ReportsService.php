@@ -22,6 +22,7 @@ class ReportsService extends AbstractService
                 trim(know_by) as name, count(id) as count from users
                 where know_by is not null
             group by trim(know_by)
+            having count(id) > 1
             order by count(id) desc
         ");
     }

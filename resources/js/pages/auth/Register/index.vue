@@ -519,8 +519,15 @@ export default {
                 if( attr == 'know_by_opt' ){
                     attr = 'know_by'
                     val = this.user.know_by_opt
-                    if( this.user.know_by_opt == 0 )
+                    if( this.user.know_by_opt == 0 ){
+
+                        if( !this.user.know_by ){
+                            common.setError({title: 'Informe onde nos conheceu'})
+                            return
+                        }
+
                         val = this.user.know_by
+                    }
                 } 
 
                 formData.append(`user_${attr}`, val)

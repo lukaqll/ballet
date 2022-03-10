@@ -3,6 +3,7 @@
  namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RegisterFileResource;
 use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -572,6 +573,21 @@ class UserController extends Controller
         return response()->json( $response );
     }
 
+    public function getRegistrationFiles( $idUser ){
+
+        try {
+
+            $result = $this->registerFilesSerivce->list(['id_user' => $idUser]);
+
+            $response = [ 'status' => 'success', 'data' => RegisterFileResource::collection($result) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
 }
 
 
