@@ -99,6 +99,7 @@ class User extends Authenticatable implements JWTSubject
             'A' => 'Ativo',
             'I' => 'Inativo',
             'MP' => 'Matrícula Pendente',
+            'P' => 'Inadimplente',
         ];
     }
 
