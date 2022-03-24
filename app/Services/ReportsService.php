@@ -37,10 +37,10 @@ class ReportsService extends AbstractService
             group by month;
         ");
 
-        $months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dev'];
+        $months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Des'];
         foreach( $result as &$item ){
 
-            $monthText = $months[ intval(date('m', strtotime($item->month))) ];
+            $monthText = $months[ intval(date('m', strtotime($item->month)))+1 ];
             $dateText = $monthText . ' de ' . date('Y', strtotime($item->month));
             $item->month = $dateText;
         }
