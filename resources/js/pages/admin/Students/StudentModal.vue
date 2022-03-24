@@ -8,141 +8,178 @@
             @hidden="onHidden" 
             @shown="onShown" 
         >
-            <div class="row">
 
-                <div class="col-md-8">
-                    <div class="row">
+            <div>
+                <b-tabs>
+                    <b-tab title="Geral">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
 
-                        <div class="col-md-12">
-                            <b-form-group>
-                                <label>Usuário</label>
-                                <v-select 
-                                    :options="usersOptions" 
-                                    label="text"
-                                    :reduce="user => user.value"
-                                    v-model="student.id_user"
-                                ></v-select>
-                            </b-form-group>
-                        </div>
+                                    <div class="col-md-12">
+                                        <b-form-group>
+                                            <label>Usuário</label>
+                                            <v-select 
+                                                :options="usersOptions" 
+                                                label="text"
+                                                :reduce="user => user.value"
+                                                v-model="student.id_user"
+                                            ></v-select>
+                                        </b-form-group>
+                                    </div>
 
-                        <div class="col-md-12">
-                            <b-form-group>
-                                <label>Nome</label>
-                                <b-form-input placeholder="Nome"  v-model="student.name"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-12">
-                            <b-form-group>
-                                <label>Aniversário</label>
-                                <b-form-input type="date" v-model="student.birthdate"/>
-                            </b-form-group>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="row">
-
-                        <div class="col-12">
-                            <b-img v-if="student.id && student.picture" :src="student.picture" fluid alt="Student Image"></b-img>
-                        </div>
-                        <div class="col-12">
-                            <template v-if="student.id">
-                                <b-button 
-                                    class="mt-2"
-                                    variant="outline-secondary"
-                                    @click="() => pictureModalShow = true"
-                                >
-                                    {{student.picture ? 'Alterar' : 'Adicionar'}} imagem
-                                </b-button>
-                            </template>
-
-                            <template v-else>
-                                <div>
-                                    <b-form-file
-                                        v-model="student.picture"
-                                        :state="Boolean(student.picture)"
-                                        placeholder="Escolha ou arraste um arquivo..."
-                                        drop-placeholder="Solte um arquivo aqui..."
-                                    />
+                                    <div class="col-md-12">
+                                        <b-form-group>
+                                            <label>Nome</label>
+                                            <b-form-input placeholder="Nome"  v-model="student.name"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <b-form-group>
+                                            <label>Aniversário</label>
+                                            <b-form-input type="date" v-model="student.birthdate"/>
+                                        </b-form-group>
+                                    </div>
                                 </div>
-                            </template>
+                            </div>
 
+                            <div class="col-md-4">
+                                <div class="row">
+
+                                    <div class="col-12">
+                                        <b-img v-if="student.id && student.picture" :src="student.picture" fluid alt="Student Image"></b-img>
+                                    </div>
+                                    <div class="col-12">
+                                        <template v-if="student.id">
+                                            <b-button 
+                                                class="mt-2"
+                                                variant="outline-secondary"
+                                                @click="() => pictureModalShow = true"
+                                            >
+                                                {{student.picture ? 'Alterar' : 'Adicionar'}} imagem
+                                            </b-button>
+                                        </template>
+
+                                        <template v-else>
+                                            <div>
+                                                <b-form-file
+                                                    v-model="student.picture"
+                                                    :state="Boolean(student.picture)"
+                                                    placeholder="Escolha ou arraste um arquivo..."
+                                                    drop-placeholder="Solte um arquivo aqui..."
+                                                />
+                                            </div>
+                                        </template>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Problema de saúde</label>
+                                    <b-form-input v-if="student.health_problem" disabled placeholder="Problema de saúde" class="w-100" v-model="student.health_problem"/>
+                                    <span v-else> <br> Nenhum problema de saúde</span>
+                                </b-form-group>
+                            </div>
+
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Restrição alimentar</label>
+                                    <b-form-input v-if="student.food_restriction" disabled placeholder="Retrição alimentar" class="w-100" v-model="student.food_restriction"/>
+                                    <span v-else> <br> Nenhuma restrição alimentar</span>
+                                </b-form-group>
+                            </div>
+
+                            
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Ensino regular</label>
+                                    <b-form-input v-if="student.school_time" disabled placeholder="Ex.: de segunda à sexta, matutino"  class="w-100" v-model="student.school_time"></b-form-input>
+                                    <span v-else> <br> Não está no ensino regular</span>
+                                </b-form-group>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12 my-4">
-                    <h5>
-                        Aulas
-                        <b-button variant="light"  @click="() => addClassModalShow = true" class="btn-sm float-right">Adicionar Aula</b-button>
-                    </h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Turma</th>
-                                    <th>Unidade</th>
-                                    <th>Valor R$</th>
-                                    <th>Aprovado Em</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="cl in student.student_classes" :key="cl.id">
-                                    <td>{{cl.class.name}}</td>
-                                    <td>{{cl.class.team}}</td>
-                                    <td>{{cl.unit_name}}</td>
-                                    <td>{{toMoney(cl.class.value)}}</td>
-                                    <td>{{cl.approved_at ? formartDate(cl.approved_at) : 'Não aprovado'}}</td>
-                                    <td>
-                                        <b-button variant="danger" size="sm" @click="() => removeClass(cl.class.id)">
-                                            <b-icon icon="x"/>
-                                        </b-button>
-                                        <b-button v-if="!cl.contract" variant="light" @click="() => createContract(cl.class.id)" class="btn-sm">
-                                            Gerar Contrato
-                                        </b-button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="col-md-12" v-if="student.id">
-                    <h5>Contratos</h5>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>Aula</th>
-                                <th>Criado Em</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="contract in student.contracts" :key="contract.id">
-                                <td>{{contract.status_text}}</td>
-                                <td>{{contract.class ? `${contract.class.name} (${contract.class.team})` : '' }}</td>
-                                <td>{{contract.created_at_format}}</td>
-                                <td>
-                                    <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
-                                    <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm" v-b-tooltip title="Enviar notificações de contrato">
-                                        <b-icon icon="bell"/>
-                                    </b-button>
-                                    <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                        <b-icon icon="vector-pen"/>
-                                    </a>
-                                    <a :href="`/contracts/view/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                        <b-icon icon="download"/>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
+                    </b-tab>
+                    <b-tab title="Aulas">
+                        <div class="row">
+                            <div class="col-md-12 my-4">
+                                <h5>
+                                    Aulas
+                                    <b-button variant="light"  @click="() => addClassModalShow = true" class="btn-sm float-right">Adicionar Aula</b-button>
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Turma</th>
+                                                <th>Unidade</th>
+                                                <th>Valor R$</th>
+                                                <th>Aprovado Em</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="cl in student.student_classes" :key="cl.id">
+                                                <td>{{cl.class.name}}</td>
+                                                <td>{{cl.class.team}}</td>
+                                                <td>{{cl.unit_name}}</td>
+                                                <td>{{toMoney(cl.class.value)}}</td>
+                                                <td>{{cl.approved_at ? formartDate(cl.approved_at) : 'Não aprovado'}}</td>
+                                                <td>
+                                                    <b-button variant="danger" size="sm" @click="() => removeClass(cl.class.id)">
+                                                        <b-icon icon="x"/>
+                                                    </b-button>
+                                                    <b-button v-if="!cl.contract" variant="light" @click="() => createContract(cl.class.id)" class="btn-sm">
+                                                        Gerar Contrato
+                                                    </b-button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
+                    <b-tab title="Contratos">
+                        <div class="row">
+                            <div class="col-md-12" v-if="student.id">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>Aula</th>
+                                            <th>Criado Em</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="contract in student.contracts" :key="contract.id">
+                                            <td>{{contract.status_text}}</td>
+                                            <td>{{contract.class ? `${contract.class.name} (${contract.class.team})` : '' }}</td>
+                                            <td>{{contract.created_at_format}}</td>
+                                            <td>
+                                                <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
+                                                <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm" v-b-tooltip title="Enviar notificações de contrato">
+                                                    <b-icon icon="bell"/>
+                                                </b-button>
+                                                <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
+                                                    <b-icon icon="vector-pen"/>
+                                                </a>
+                                                <a :href="`/contracts/view/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
+                                                    <b-icon icon="download"/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </b-tab>
+                </b-tabs>
+            </div>
+            <div class="row mt-3">
                 <div class="col-12 text-right">
                     <div>
                         <b-button @click="onHidden">Cancelar</b-button>

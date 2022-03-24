@@ -8,245 +8,234 @@
             @hidden="onHidden"
         >
         
+            <div>
+                <b-tabs content-class="mt-3" card>
+                
+                    <b-tab title='Dados do Usuário' active>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
 
-            <div class="row">
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Nome</label>
+                                            <b-form-input placeholder="Nome"  v-model="user.name"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>E-Mail</label>
+                                            <b-form-input :disabled="user.signer_key ? true : false" type="email" placeholder="E-Mail"  v-model="user.email"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>CPF</label>
+                                            <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
+                                        </b-form-group>
+                                    </div>
 
-                <div class="col-12">
-                    <h4 class="h4">Dados do Usuário</h4>
-                    <hr/>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Data de Nascimento</label>
+                                            <b-form-input type="date" v-model="user.birthdate"/>
+                                        </b-form-group>
+                                    </div> 
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Telefone</label>
+                                            <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>WhatsApp</label>
+                                            <select class="form-control" v-model="user.is_whatsapp">
+                                                <option value="1">Sim</option>
+                                                <option value="0">Não</option>
+                                            </select>
+                                        </b-form-group>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>RG</label>
+                                            <b-form-input class="form-control" placeholder="Numero do RG" v-model="user.rg"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Órgão Expeditor</label>
+                                            <b-form-select :options="orgaosExpeditores" class="w-100" v-model="user.orgao_exp"></b-form-select>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>UF do Órgão Expeditor</label>
+                                            <b-form-select :options="ufsParam" class="w-100" v-model="user.uf_orgao_exp"></b-form-select>
+                                        </b-form-group>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Profissão</label>
+                                            <b-form-input class="form-control" placeholder="Sua Profissão" v-model="user.profession"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Instagram</label>
+                                            <b-form-input class="form-control" placeholder="Instagram para marcação do aluno em posts" v-model="user.instagram"/>
+                                        </b-form-group>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="row">
+
+                                    <div class="col-6" v-if="user.picture">
+                                        <b-img :src="user.picture" fluid alt="User Image"></b-img>
+                                    </div>
+                                    <div class="col-12">
+                                        <b-button 
+                                            variant="outline-secondary"
+                                            @click="() => pictureModalShow = true"
+                                        >
+                                            {{user.picture ? 'Alterar' : 'Adicionar'}} imagem
+                                        </b-button>
+                                        <b-button
+                                            variant="outline-secondary"
+                                            @click="getFiles"
+                                        >
+                                            Arquivos
+                                        </b-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
+
+                    <b-tab title="Endereço">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>CEP</label>
+                                    <b-form-input type="text" placeholder="CEP"  v-model="user.cep" v-mask="'#####-###'"/>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>UF</label>
+                                    <b-form-select :options="ufs" class="w-100" v-model="user.uf"></b-form-select>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Cidade</label>
+                                    <b-form-input type="text" placeholder="Cidade"  v-model="user.city"/>
+                                </b-form-group>
+                            </div>
+
+                            <div class="col-md-3">
+                                <b-form-group>
+                                    <label>Bairro</label>
+                                    <b-form-input type="text" placeholder="Bairro"  v-model="user.district"/>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-4">
+                                <b-form-group>
+                                    <label>Logradouro</label>
+                                    <b-form-input type="text" placeholder="Rua / Av."  v-model="user.street"/>
+                                </b-form-group>
+                            </div>
+
+                            <div class="col-md-2">
+                                <b-form-group>
+                                    <label>Nº</label>
+                                    <b-form-input type="text" placeholder="Nº"  v-model="user.address_number"/>
+                                </b-form-group>
+                            </div>
+
+                            <div class="col-md-3">
+                                <b-form-group>
+                                    <label>Complemento</label>
+                                    <b-form-input type="text" placeholder="Ap 101 / Predio X"  v-model="user.address_complement"/>
+                                </b-form-group>
+                            </div>
+                        </div>
+                    </b-tab>
+
+                    <b-tab title="Alunos">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="student in user.students" :key="student.id">
+                                                <td>{{ student.name }}</td>
+                                                <td>{{ student.status_text }}</td>
+                                                <td>
+                                                    <b-badge v-if="student.open_contracts_count" variant="primary">
+                                                        {{student.open_contracts_count}} Contratos Abertos
+                                                    </b-badge>
+                                                </td>
+                                                <td>
+                                                    
+                                                    <b-button variant="light" size="sm" @click="editStudent($event, student.id)">
+                                                        <b-icon icon="pencil-square"></b-icon>
+                                                    </b-button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
+                </b-tabs>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <b-button variant="light" @click="addAsSignatory" v-if="!user.signer_key">
+                        <b-icon icon="plus"/>
+                        Adicionar como signatário
+                    </b-button>
+
+                    <b-button variant="danger" @click="inactivate" v-if="user.status != 'I'">
+                        <b-icon icon="power"/>
+                        Inativar
+                    </b-button>
+                    <b-button variant="success" @click="activate" v-if="user.status == 'I'">
+                        <b-icon icon="power"/>
+                        Ativar
+                    </b-button>
+
+                    <b-button variant="light" @click="() => $bvModal.show('delete-confirmation')">
+                        <b-icon icon="trash"/>
+                        Deletar
+                    </b-button>
+
                 </div>
-                <div class="col-md-12">
-                    <div class="row">
-
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Nome</label>
-                                <b-form-input placeholder="Nome"  v-model="user.name"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>E-Mail</label>
-                                <b-form-input :disabled="user.signer_key ? true : false" type="email" placeholder="E-Mail"  v-model="user.email"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>CPF</label>
-                                <b-form-input class="form-control" placeholder="CPF" v-mask="'###.###.###-##'" v-model="user.cpf"/>
-                            </b-form-group>
-                        </div>
-
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Data de Nascimento</label>
-                                <b-form-input type="date" v-model="user.birthdate"/>
-                            </b-form-group>
-                        </div> 
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Telefone</label>
-                                <b-form-input placeholder="Telefone" v-mask="'(##) #####-####'" v-model="user.phone"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>WhatsApp</label>
-                                <select class="form-control" v-model="user.is_whatsapp">
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
-                                </select>
-                            </b-form-group>
-                        </div>
-
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>RG</label>
-                                <b-form-input class="form-control" placeholder="Numero do RG" v-model="user.rg"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Órgão Expeditor</label>
-                                <b-form-select :options="orgaosExpeditores" class="w-100" v-model="user.orgao_exp"></b-form-select>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>UF do Órgão Expeditor</label>
-                                <b-form-select :options="ufsParam" class="w-100" v-model="user.uf_orgao_exp"></b-form-select>
-                            </b-form-group>
-                        </div>
-
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Profissão</label>
-                                <b-form-input class="form-control" placeholder="Sua Profissão" v-model="user.profession"/>
-                            </b-form-group>
-                        </div>
-                        <div class="col-md-4">
-                            <b-form-group>
-                                <label>Instagram</label>
-                                <b-form-input class="form-control" placeholder="Instagram para marcação do aluno em posts" v-model="user.instagram"/>
-                            </b-form-group>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="row">
-
-                        <div class="col-6" v-if="user.picture">
-                            <b-img :src="user.picture" fluid alt="User Image"></b-img>
-                        </div>
-                        <div class="col-12">
-                            <b-button 
-                                variant="outline-secondary"
-                                @click="() => pictureModalShow = true"
-                            >
-                                {{user.picture ? 'Alterar' : 'Adicionar'}} imagem
-                            </b-button>
-                            <b-button
-                                variant="outline-secondary"
-                                @click="getFiles"
-                            >
-                                Arquivos
-                            </b-button>
-                        </div>
-                    </div>
+                <div class="col-md-6 text-right">
+                    <b-button @click="onHidden">Cancelar</b-button>
+                    <b-button variant="primary" @click="save">
+                        <b-icon icon="check"/>
+                        Salvar
+                    </b-button>
                 </div>
             </div>
 
             <!-- addess -->
-            <div class="row">
-                <div class="col-12 mt-3">
-                    <h4 class="h4">
-                        <b-icon icon="map"></b-icon>
-                        Endereço
-                    </h4>
-                    <hr>
-                </div>
-                <div class="col-md-4">
-                    <b-form-group>
-                        <label>CEP</label>
-                        <b-form-input type="text" placeholder="CEP"  v-model="user.cep" v-mask="'#####-###'"/>
-                    </b-form-group>
-                </div>
-                <div class="col-md-4">
-                    <b-form-group>
-                        <label>UF</label>
-                        <b-form-select :options="ufs" class="w-100" v-model="user.uf"></b-form-select>
-                    </b-form-group>
-                </div>
-                <div class="col-md-4">
-                    <b-form-group>
-                        <label>Cidade</label>
-                        <b-form-input type="text" placeholder="Cidade"  v-model="user.city"/>
-                    </b-form-group>
-                </div>
 
-                <div class="col-md-3">
-                    <b-form-group>
-                        <label>Bairro</label>
-                        <b-form-input type="text" placeholder="Bairro"  v-model="user.district"/>
-                    </b-form-group>
-                </div>
-                <div class="col-md-4">
-                    <b-form-group>
-                        <label>Logradouro</label>
-                        <b-form-input type="text" placeholder="Rua / Av."  v-model="user.street"/>
-                    </b-form-group>
-                </div>
-
-                <div class="col-md-2">
-                    <b-form-group>
-                        <label>Nº</label>
-                        <b-form-input type="text" placeholder="Nº"  v-model="user.address_number"/>
-                    </b-form-group>
-                </div>
-
-                <div class="col-md-3">
-                    <b-form-group>
-                        <label>Complemento</label>
-                        <b-form-input type="text" placeholder="Ap 101 / Predio X"  v-model="user.address_complement"/>
-                    </b-form-group>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <h4 class="h4 mt-4">
-                        Alunos
-                        <b-button variant="primary" class="float-right" @click="addStudent">Novo Aluno</b-button>    
-                    </h4>
-                    <hr>
-                </div>
-
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="student in user.students" :key="student.id">
-                                    <td>{{ student.name }}</td>
-                                    <td>{{ student.status_text }}</td>
-                                    <td>
-                                        <b-badge v-if="student.open_contracts_count" variant="primary">
-                                            {{student.open_contracts_count}} Contratos Abertos
-                                        </b-badge>
-                                    </td>
-                                    <td>
-                                        
-                                        <b-button variant="light" size="sm" @click="editStudent($event, student.id)">
-                                            <b-icon icon="pencil-square"></b-icon>
-                                        </b-button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <b-button variant="light" @click="addAsSignatory" v-if="!user.signer_key">
-                                <b-icon icon="plus"/>
-                                Adicionar como signatário
-                            </b-button>
-
-                            <b-button variant="danger" @click="inactivate" v-if="user.status != 'I'">
-                                <b-icon icon="power"/>
-                                Inativar
-                            </b-button>
-                            <b-button variant="success" @click="activate" v-if="user.status == 'I'">
-                                <b-icon icon="power"/>
-                                Ativar
-                            </b-button>
-
-                            <b-button variant="light" @click="() => $bvModal.show('delete-confirmation')">
-                                <b-icon icon="trash"/>
-                                Deletar
-                            </b-button>
-
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <b-button @click="onHidden">Cancelar</b-button>
-                            <b-button variant="primary" @click="save">
-                                <b-icon icon="check"/>
-                                Salvar
-                            </b-button>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
         </b-modal>
 
         <b-modal hide-footer v-model="pictureModalShow">

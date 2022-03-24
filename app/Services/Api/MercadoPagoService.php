@@ -34,8 +34,11 @@ class MercadoPagoService
             $expiresDateTime = strtotime($invoice->expires_at);
         } else {
             // expired
-            $expiresDateTime = strtotime('+3 days', strtotime(date('Y-m-d 23:59:59')));
+            $expiresDateTime = strtotime('+2 days', strtotime(date('Y-m-d 23:59:59')));
         } 
+
+        $months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        $expirantionText = date('d') . ' de ' . $months[intval( date('m') )];
 
         $expirationDate = date( 'Y-m-d', $expiresDateTime) . "T" . date( 'H:i:s.300', $expiresDateTime) . 'Z';
 
@@ -46,11 +49,11 @@ class MercadoPagoService
         $docNumber = str_replace(' ', '', $docNumber);
 
         // payment data
-        $this->payment->transaction_amount = $invoice->value;
-        $this->payment->description = 'Fatura Ellegance Ballet';
+        $this->payment->transaction_amount = floatval($invoice->value) + floatval($invoice->fee);
+        $this->payment->description = "Fatura Ellegance Ballet $expirantionText";
         $this->payment->payment_method_id = "bolbradesco";
         $this->payment->external_reference = $invoice->id;
-        // $this->payment->date_of_expiration = $expirationDate;
+        $this->payment->date_of_expiration = $expirationDate;
 
         $nameParts = explode(' ', $user->name);
         $firstName = $nameParts[0];
@@ -58,9 +61,9 @@ class MercadoPagoService
 
         // payer data
         $this->payment->payer = [
-            'email'          => $user->email,
-            'first_name'     => $firstName,
-            'last_name'     => $lastname,
+            'email'      => $user->email,
+            'first_name' => $firstName,
+            'last_name'  => $lastname,
             // 'entity_type'    => 'individual',
             // 'type'           => 'customer',
 

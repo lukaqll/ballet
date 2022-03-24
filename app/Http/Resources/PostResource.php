@@ -14,6 +14,7 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
+        $classesId = $this->classes->pluck('id');
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -22,6 +23,7 @@ class PostResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'files' => $this->files,
+            'classes' => $classesId,
             
             'created_at_format' => date('d/m/Y', strtotime($this->created_at))
         ];

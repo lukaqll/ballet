@@ -43,7 +43,7 @@
                             </div>
                             <div>
 
-                                <div class="table-responsive" style="overflow: inherit;" v-if="users.length">
+                                <div class="table-responsive" v-if="users.length">
                                     <b-table
                                         :fields="tableFields"
                                         :items="usersTable"

@@ -308,7 +308,9 @@ class ClicksignService extends AbstractApiService
     
             if( !empty($studentClass) ){
                 $studentClass->update(['approved_at' => date('Y-m-d H:i:s')]);
-                $invoicesService->generateClassInvoice($studentClass);
+
+                // cria fatura de proporcional
+                // $invoicesService->generateClassInvoice($studentClass);
             }
         }
 

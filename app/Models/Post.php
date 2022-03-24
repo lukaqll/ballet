@@ -24,4 +24,9 @@ class Post extends Model
     public function files(){
         return $this->hasMany(PostSrc::class, 'id_post', 'id');
     }
+
+    public function classes(){
+        return $this->belongsToMany(ClassModel::class, PostClass::class, 'id_post', 'id_class', 'id', 'id');
+    }
+
 }

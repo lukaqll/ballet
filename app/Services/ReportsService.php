@@ -26,4 +26,25 @@ class ReportsService extends AbstractService
             order by count(id) desc
         ");
     }
+
+    public function getRevenueByMonth(){
+
+        $result = DB::select("
+            select 
+                date_format(paid_at, '%Y-%m') as month, sum(value+fee) as value
+            from invoices
+            where status = 'P'
+            group by month;
+        ");
+
+        $months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dev'];
+        foreach( $result as &$item ){
+
+            $monthText = $months[ intval(date('m', strtotime($item->month))) ];
+            $dateText = $monthText . ' de ' . date('Y', strtotime($item->month));
+            $item->month = $dateText;
+        }
+
+        return $result;
+    }
 }

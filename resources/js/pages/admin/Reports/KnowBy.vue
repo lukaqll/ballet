@@ -40,6 +40,8 @@ export default {
     data: () => ({
         reportData: [],
         chartOptions: {
+            responsive: true,
+            maintainAspectRatio: false,
         }
     }),
     methods: {

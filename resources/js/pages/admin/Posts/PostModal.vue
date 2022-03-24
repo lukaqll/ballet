@@ -25,6 +25,24 @@
                 </div>
 
                 <div class="col-md-12">
+                    <b-form-group>
+                        <label class="w-100">
+                            Aulas
+                        </label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b-button size="sm" variant="light" @click="allClasses">Todas</b-button>
+                                <b-button size="sm" variant="light" @click="noClasses">Limpar</b-button>
+                            </div>
+                            <div class="col-md-8">
+                                <v-select size='sm' class="float-right w-50" :options="units" :reduce="opt => opt.id" v-model="selectedUnit"/>
+                            </div>
+                        </div>
+                        <v-select  multiple :options="classes" :reduce="opt => opt.id" v-model="post.classes"/>
+                    </b-form-group>
+                </div>
+
+                <div class="col-md-12">
                     <div class="border rounded my-1 p-2">
                         <label>Arquivos</label>
                         <b-form-file
@@ -77,12 +95,18 @@ import common from '../../../common/common'
 export default {
     components: {  },
 
+    computed: {    },
+
     mounted: function(){
-        
+        this.getClasses()
+        this.getUnits()
     },
     data: () => ({
         post: {},
-        files: []
+        files: [],
+        classes: [],
+        units: [],
+        selectedUnit: null
     }),
     props: {
         isVisible: Boolean,
@@ -90,7 +114,9 @@ export default {
     },
 
     watch: {
-    
+        selectedUnit(id){
+            this.selectUnit(id)
+        }
     },
     methods: {
         getPost(id){
@@ -134,6 +160,12 @@ export default {
                     }
                 }
 
+                if( this.classes.length ){
+                    for(const classes of this.post.classes){
+                        formData.append('classes[]', classes)
+                    }
+                }
+
                 common.request({
                     url: '/api/posts/update/'+this.idPost,
                     type: 'post',
@@ -157,6 +189,13 @@ export default {
                 for(const file of this.files){
                     formData.append('files[]', file)
                 }
+
+                if( this.classes.length ){
+                    for(const classes of this.post.classes){
+                        formData.append('classes[]', classes)
+                    }
+                }
+
                 
                 common.request({
                     url: '/api/posts',
@@ -191,7 +230,69 @@ export default {
                 })
                 }
             })
+        },
+
+        getClasses(){
+            common.request({
+                url: '/api/classes/public-list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (classes) => {
+                    this.classes = classes.map(cl => (
+                        {id: cl.id, label: `${cl.unit_name} - ${cl.name} (${cl.team})`, id_unit: cl.id_unit})
+                    )
+                },
+            })
+        },
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units.map(cl => (
+                        {id: cl.id, label: `${cl.name}`})
+                    )
+                }
+            })
+        },
+
+        allClasses(){
+
+            if( !this.post.classes ){
+                this.post = {...this.post, classes: []}
+            }
+            for( const cl of this.classes ){
+
+                if( !this.post.classes.includes( cl.id ) ){
+                    this.post.classes.push( cl.id )
+                }
+            }
+        },
+        noClasses(){
+            this.post = {...this.post, classes: []}
+        },
+        selectUnit(id){
+            
+            if( !id )
+                return 
+
+            if( !this.post.classes ){
+                this.post = {...this.post, classes: []}
+            }            
+            
+            for( const cl of this.classes ){
+
+                if( !this.post.classes.includes( cl.id ) && cl.id_unit == id ){
+                    this.post.classes.push( cl.id )
+                }
+            }
+
+            this.selectedUnit = null
         }
+         
     }
 }
 </script>

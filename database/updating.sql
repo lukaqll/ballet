@@ -1,40 +1,96 @@
-ALTER TABLE `ballet`.`classes` 
+ALTER TABLE `invoices` 
+ADD COLUMN `paid_at` DATETIME NULL AFTER `updated_at`;
+ALTER TABLE `invoices` 
+ADD COLUMN `fee` DECIMAL(12,2) NULL DEFAULT 0 AFTER `value`;
+
+CREATE TABLE `post_classes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_post` INT NOT NULL,
+  `id_class` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_post_class_1_idx` (`id_post` ASC),
+  INDEX `fk_post_class_2_idx` (`id_class` ASC),
+  CONSTRAINT `fk_post_class_1`
+    FOREIGN KEY (`id_post`)
+    REFERENCES `posts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_post_class_2`
+    FOREIGN KEY (`id_class`)
+    REFERENCES `classes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+ALTER TABLE `invoices` 
+ADD COLUMN `manual` TINYINT NULL DEFAULT 0 AFTER `paid_at`;
+
+
+CREATE TABLE `sales` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_students` INT NULL,
+  `id_unit` INT NULL,
+  `description` VARCHAR(255) NULL,
+  `color` VARCHAR(60) NULL,
+  `size` VARCHAR(45) NULL,
+  `payment_method` VARCHAR(45) NULL,
+  `paid_at` DATETIME NULL,
+  `status` VARCHAR(45) NULL,
+  `payment_status` VARCHAR(45) NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_sales_1_idx` (`id_students` ASC),
+  INDEX `fk_sales_2_idx` (`id_unit` ASC),
+  CONSTRAINT `fk_sales_1`
+    FOREIGN KEY (`id_students`)
+    REFERENCES `students` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_sales_2`
+    FOREIGN KEY (`id_unit`)
+    REFERENCES `units` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+------------------
+
+ALTER TABLE `classes` 
 ADD COLUMN `full` TINYINT NULL DEFAULT 0 AFTER `team`;
 
 -------------------
 
-ALTER TABLE `ballet`.`classes` 
+ALTER TABLE `classes` 
 CHANGE COLUMN `name` `name` VARCHAR(225) NOT NULL ;
-ALTER TABLE `ballet`.`classes` 
+ALTER TABLE `classes` 
 ADD COLUMN `team` VARCHAR(60) NULL AFTER `value`;
 
 -----------------
 
-ALTER TABLE `ballet`.`contracts` 
+ALTER TABLE `contracts` 
 ADD COLUMN `id_class` INT NULL AFTER `id_student`,
 ADD COLUMN `contractscol` VARCHAR(45) NULL AFTER `updated_at`,
 ADD INDEX `fk_contract_class_idx` (`id_class` ASC);
 ;
-ALTER TABLE `ballet`.`contracts` 
+ALTER TABLE `contracts` 
 ADD CONSTRAINT `fk_contract_class`
   FOREIGN KEY (`id_class`)
-  REFERENCES `ballet`.`classes` (`id`)
+  REFERENCES `classes` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 ---------------
 
-ALTER TABLE `ballet`.`invoices` 
+ALTER TABLE `invoices` 
 CHANGE COLUMN `updated_at` `updated_at` DATETIME NULL DEFAULT NULL ;
 
-ALTER TABLE `ballet`.`student_classes` 
+ALTER TABLE `student_classes` 
 ADD COLUMN `approved_at` DATETIME NULL AFTER `id_class`;
 
-ALTER TABLE `ballet`.`users` 
+ALTER TABLE `users` 
 ADD COLUMN `is_whatsapp` TINYINT NULL DEFAULT '0' AFTER `phone`,
 ADD COLUMN `uf_orgao_exp` VARCHAR(45) NULL AFTER `orgao_exp`;
 
-ALTER TABLE `ballet`.`students` 
+ALTER TABLE `students` 
 CHANGE COLUMN `nick_name` `nick_name` VARCHAR(60) NULL ;
 
 

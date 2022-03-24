@@ -84,7 +84,7 @@ a {
     z-index: var(--z-fixed)
 }
 
-.nav {
+nav.nav {
     height: 100%;
     display: flex;
     flex-direction: column;

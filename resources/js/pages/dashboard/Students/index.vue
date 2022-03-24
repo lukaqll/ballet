@@ -13,7 +13,7 @@
                 
                 <div class="row justify-content-center">
 
-                    <div class="col-md-4 my-2" v-for="student in students" :key="student.id">
+                    <div class="col-md-6 my-2" v-for="student in students" :key="student.id">
 
                         <b-card class="border-0 shadow-sm">
                             <div class="row">

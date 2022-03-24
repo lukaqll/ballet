@@ -75,6 +75,11 @@
                             Posts
                         </router-link>
 
+                        <router-link disabled='true' tag="a" class="nav_link" to='#'>
+                            <i class="fa fa-money-bill"></i>
+                            Vendas
+                        </router-link>
+
                         <router-link tag="a" class="nav_link" to='/admin/reports'>
                             <b-icon icon="bar-chart-line"></b-icon>
                             Relatórios

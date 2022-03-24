@@ -20,7 +20,7 @@ export default {
     
     units: [
         {name: 'Ellegance Ballet – Ibatiba ES', address: 'Praça Central', phone: phone, mail: ''},
-        {name: 'Ellegance Ballet – Venda Nova do Imigrante ES', address: 'Vila Betânia', phone: phone, mail: ''},
+        {name: 'Ellegance Ballet – Venda Nova do Imigrante ES', address: 'Vila da Mata', phone: phone, mail: ''},
     ],
 
     banners: [

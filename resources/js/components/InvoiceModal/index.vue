@@ -24,6 +24,13 @@
 
             <div class="col-md-12">
                 <b-form-group>
+                    <label>Juros</label>
+                    <b-form-input v-model="invoice.fee" v-money="moneyMask"/>
+                </b-form-group>
+            </div>
+
+            <div class="col-md-12">
+                <b-form-group>
                     <label>Vencimento</label>
                     <b-form-input type="date" v-model="invoice.expires_at"/>
                 </b-form-group>

@@ -18,16 +18,21 @@
                                 <div class="col-12">
                                     <h5 class="text-center">
                                         <b-badge variant="primary" v-if="invoice.status == 'A'">{{invoice.status_text}}</b-badge>
-                                        <b-badge variant="success" v-else-if="invoice.status == 'P'">{{invoice.status_text}}</b-badge>
+                                        <b-badge variant="success" v-else-if="invoice.status == 'P'">Pago</b-badge>
                                         <b-badge variant="danger" v-else-if="invoice.status == 'C'">{{invoice.status_text}}</b-badge>
-
                                         <b-badge variant="danger" v-if="invoice.is_expired">Vencida</b-badge>
-
                                     </h5>
                                     <p>
-                                        Valor: <b>R$ {{toMoney(invoice.value)}}</b> <br>
+                                        <span v-if="invoice.fee > 0">
+                                            Valor: <b>R$ {{toMoney(invoice.value)}}</b> <br>
+                                            Multa/Juros: <b>R$ {{toMoney(invoice.fee)}}</b> <br>
+                                        </span>
+                                        Total: <b>R$ {{toMoney(invoice.total)}}</b> <br>
                                         Gerado Em: <b>{{invoice.created_at_formated}}</b> <br>
                                         Vencimento: <b>{{invoice.expires_at_formated}}</b> <br>
+                                        <span v-if="(invoice.status == 'P' || invoice.status == 'PM') && invoice.paid_at">
+                                            Pago Em: <b>{{invoice.paid_at_formated}}</b> <br>
+                                        </span>
                                     </p>
                                 </div>
                                 <div class="col-12">

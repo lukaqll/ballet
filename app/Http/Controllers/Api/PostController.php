@@ -34,8 +34,32 @@ class PostController extends Controller
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
         return response()->json( $response );
+    
     }
 
+    /**
+     * list all
+     * 
+     * @return  json
+     */
+    public function listByUser( Request $request )
+    {
+        try {
+
+            $user = auth('api')->user();
+            $result = $this->postsService->listByUser( $user );
+
+            $response = [ 'status' => 'success', 'data' => PostResource::collection($result) ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    
+    }
+
+    
     /**
      * list active posts
      * 
@@ -111,15 +135,25 @@ class PostController extends Controller
             $validData = $request->validate([
                 'title' => 'nullable|string',
                 'description' => 'nullable|string',
-                'files' => 'required|array',
-                'files.*' => 'required|image'
+                'files' => 'nullable|array',
+                'files.*' => 'required|image',
+                'classes' => 'nullable|array',
+                'classes.*' => 'required|numeric|exists:classes,id',
             ]);
             $validData['status'] = 'A';
-            
+        
             $created = $this->postsService->create( $validData );
 
-            foreach( $validData['files'] as $file ){
-                $this->postsService->uploadFile($created, $file);
+            if( !empty($validData['classes']) ){
+                foreach($validData['classes'] as $idClass){
+                    $created->classes()->attach( $idClass );
+                }
+            }
+
+            if( !empty($validData['files']) ){
+                foreach( $validData['files'] as $file ){
+                    $this->postsService->uploadFile($created, $file);
+                }
             }
 
             $response = [ 'status' => 'success', 'data' => new PostResource($created) ];
@@ -147,7 +181,9 @@ class PostController extends Controller
                 'description' => 'nullable|string',
                 'status' => 'nullable|string',
                 'files' => 'nullable|array',
-                'files.*' => 'required|image'
+                'files.*' => 'required|image',
+                'classes' => 'nullable|array',
+                'classes.*' => 'required|numeric|exists:classes,id',
             ]);
 
             $updated = $this->postsService->updateById( $id, $validData);
@@ -155,6 +191,13 @@ class PostController extends Controller
             if( !empty($validData['files']) ){
                 foreach( $validData['files'] as $file ){
                     $this->postsService->uploadFile($updated, $file);
+                }
+            }
+
+            $updated->classes()->detach();
+            if( !empty($validData['classes']) ){
+                foreach($validData['classes'] as $idClass){
+                    $updated->classes()->attach( $idClass );
                 }
             }
 

@@ -8,7 +8,10 @@ use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\StudentClass;
 use App\Models\User;
+use App\Services\Api\MercadoPagoService;
+use DateTime;
 use Exception;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -45,6 +48,13 @@ class InvoicesService extends AbstractService
             group by us.id;"));
 
         return $result;
+    }
+
+    public function getExpiredInvoices(){
+
+        return $this->model->where('status', 'A')
+                           ->whereRaw('expires_at < curdate()')
+                           ->get();
     }
 
     /**
@@ -275,7 +285,7 @@ class InvoicesService extends AbstractService
         $userService = new UsersService;
 
         // update invoice status
-        $ticket->invoice->update(['status' => 'P']);
+        $ticket->invoice->update(['status' => 'P', 'payd_at' => date('Y-m-d H:i:s')]);
 
         // verify store status
         $user = $ticket->invoice->user;
@@ -293,5 +303,34 @@ class InvoicesService extends AbstractService
 
         }
 
+    }
+
+    public function feeVerify( Invoice $invoice ){
+
+        if( !$invoice->getIsExpired() )
+            return false;
+
+        $mercadoPagoService = new MercadoPagoService;
+
+        $expirationDate = new DateTime( $invoice->expires_at );
+        $now = new DateTime();
+        $dateInterval = $expirationDate->diff( $now );
+        $amountOfDays = intval($dateInterval->days);
+
+        $invoiceValue = floatval($invoice->value);
+        
+        $multa = ($invoiceValue * 2) / 100;
+        $juros = ($invoiceValue * (0.033*$amountOfDays)) / 100;
+        $totalFee = round(($multa + $juros), 2);
+
+        // echo "\n dias = $amountOfDays, multa = $multa, juros = $juros, total => $totalFee \n";
+
+        $invoice->update(['fee' => $totalFee, 'reference' => null]);
+
+        if( !empty($invoice->reference) ){
+            $mercadoPagoService->cancelPayment($invoice->reference);
+        }
+
+        return $invoice;
     }
 }

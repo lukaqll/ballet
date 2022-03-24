@@ -18,7 +18,10 @@ class Invoice extends Model
         'reference',
         'expires_at',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'fee',
+        'paid_at',
+        'manual'
     ];
 
     public function user(){
@@ -30,7 +33,6 @@ class Invoice extends Model
             'A' => 'Aberto',
             'P' => 'Pago',
             'C' => 'Cancelado',
-            'PM' => 'Baixa Manual',
         ];
         return $status[$this->status];
     }

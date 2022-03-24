@@ -91,6 +91,7 @@ Route::group(['midleware' => ['auth']], function () {
 
     // posts
     Route::get('/posts/list-active', [PostController::class, 'listActive']);
+    Route::get('/posts/list-by-user', [PostController::class, 'listByUser']);
     Route::get('/files/get-registration/{idUser}', [UserController::class, 'getRegistrationFiles']);
 
 });
@@ -187,9 +188,11 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/invoices/{id}', [InvoiceController::class, 'update']);
     Route::post('/invoices', [InvoiceController::class, 'create']);
     Route::post('/invoices/pay-manually/{id}', [InvoiceController::class, 'payManually']);
+    Route::post('/invoices/send-mail/{id}', [InvoiceController::class, 'sendInvoiceMail']);
 
     // reports
     Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);
+    Route::get('/reports/revenue', [ReportsController::class, 'revenue']);
 
 
     // signer config
@@ -198,3 +201,4 @@ Route::group(['middleware' => ['admin']], function () {
 
 
 });
+Route::post('/invoices/update-fee/{id}', [InvoiceController::class, 'updateFee']);

@@ -82,7 +82,7 @@ export default {
         getPosts(){
 
             common.request({
-                url: '/api/posts/list-active',
+                url: '/api/posts/list-by-user',
                 type: 'get',
                 auth: true,
                 setError: true,

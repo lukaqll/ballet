@@ -22,6 +22,7 @@
                                 <th>Status</th>
                                 <th>Vencimento</th>
                                 <th>Valor</th>
+                                <th>Multa/Juros</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -32,8 +33,10 @@
                                 <td>{{ invoice.status_text }}</td>
                                 <td>{{ invoice.expires_at_formated }}</td>
                                 <td>R$ {{ toMoney(invoice.value) }}</td>
+                                <td>R$ {{ toMoney(invoice.fee) }}</td>
                                 <td>
                                     <b-badge v-if="invoice.is_expired" variant="danger">Vencida</b-badge>
+                                    <b-badge v-if="invoice.manual" variant="primary">Baixa Manual</b-badge>
                                 </td>
                                 <td>
 
@@ -44,6 +47,10 @@
 
                                         <b-dropdown-item @click="() => openWindow(`/invoice-payment/get/${invoice.id}`)" v-if="invoice.status == 'A'">
                                             Ver Boleto
+                                        </b-dropdown-item>
+
+                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => sendMail(invoice.id)">
+                                            Enviar E-mail
                                         </b-dropdown-item>
 
                                         <b-dropdown-item v-if="invoice.status == 'A'" variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">
@@ -167,6 +174,23 @@ export default {
                         setError: true,
                         success: (resp) => {
                             this.getInvoices(this.idUser)
+                        }
+                    })
+                }
+            })
+        },
+        sendMail(id){
+            common.confirmAlert({
+                title: 'Enviar E-mail para o usuário desta fatura?',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/invoices/send-mail/'+id,
+                        type: 'post',
+                        auth: true,
+                        load: true,
+                        setError: true,
+                        success: (resp) => {
+                            common.success({title: 'Email enviado'})
                         }
                     })
                 }

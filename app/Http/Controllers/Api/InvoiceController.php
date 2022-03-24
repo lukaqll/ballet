@@ -7,6 +7,7 @@ use App\Http\Resources\InvoiceResource;
 use App\Mail\InvoiceMail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -108,13 +109,16 @@ class InvoiceController extends Controller
                 'id_user' => 'required|integer|exists:users,id',
                 'expires_at' => 'required|date',
                 'value' => 'required|string',
-                'send_mail' => 'nullable'
+                'send_mail' => 'nullable',
+                'fee' => 'required|string',
             ]);
 
             if( $validData['expires_at'] < date('Y-m-d'))
                 throw ValidationException::withMessages(['A data de vencimento não pode ser menor que hoje']);
 
-            $validData['value'] = $this->unMaskMoney($validData['value']);            
+            $validData['value'] = $this->unMaskMoney($validData['value']);     
+            $validData['fee'] = $this->unMaskMoney($validData['fee']);            
+
             $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
             $validData['status'] = 'A';
 
@@ -149,16 +153,25 @@ class InvoiceController extends Controller
             $validData = $request->validate([
                 'expires_at' => 'required|date',
                 'value' => 'required|string',
+                'fee' => 'required|string',
                 'send_mail' => 'nullable'
             ]);
 
             $validData['value'] = $this->unMaskMoney($validData['value']);            
+            $validData['fee'] = $this->unMaskMoney($validData['fee']);            
 
-            if( date('Y-m-d', strtotime($validData['expires_at'])) != date('Y-m-d', strtotime($invoice->expires_at)) || floatval($validData['value']) != floatval($invoice->value) ){
+            if( 
+                date('Y-m-d', strtotime($validData['expires_at'])) != date('Y-m-d', strtotime($invoice->expires_at)) 
+                || floatval($validData['value']) != floatval($invoice->value) 
+                || floatval($validData['fee']) != floatval($invoice->fee) 
+            ){
                 $invoice->update(['reference' => null]);
                 if( $invoice->openPayment ){
                     $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_update']);
                 }
+            }
+            if( !empty($invoice->reference) ){
+                $this->mercadoPagoService->cancelPayment($invoice->reference);
             }
 
             if( $validData['expires_at'] < date('Y-m-d'))
@@ -166,7 +179,7 @@ class InvoiceController extends Controller
                 
             $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
 
-            $updated = $this->invoicesService->updateById( $id, $validData);
+            $updated = $this->invoicesService->updateById( $id, $validData );
 
             if( !empty($validData['send_mail']) ){
                 $this->invoicesService->sendInvoiceMail($invoice);
@@ -277,8 +290,27 @@ class InvoiceController extends Controller
                 $invoice->openPayment->update(['status' => 'payd', 'status_detail' => 'payd_manual']);
             }
 
-            $updated = $this->invoicesService->updateById( $id, ['status' => 'PM'] );
+            $updated = $this->invoicesService->updateById( $id, ['status' => 'P', 'manual' => 1, 'payd_at' => date('Y-m-d H:i:s')] );
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function sendInvoiceMail( $id ){
+        try {
+
+            $invoice = $this->invoicesService->find($id);
+            if($invoice->status != 'A')
+                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+
+            $this->invoicesService->sendInvoiceMail($invoice);
+
+            $response = [ 'status' => 'success', 'data' => true ];
 
         } catch ( ValidationException $e ){
             

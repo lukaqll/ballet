@@ -14,9 +14,11 @@ import SignerConfig from './pages/admin/Config/SignerConfig'
 import Register from './pages/auth/Register'
 import NewRegistration from './pages/admin/NewRegistration'
 import Contracts from './pages/admin/Contracts'
+import Sales from './pages/admin/Sales'
 import Posts from './pages/admin/Posts'
 import Reports from './pages/admin/Reports'
 import ReportsKnowBy from './pages/admin/Reports/KnowBy.vue'
+import ReportsRevenue from './pages/admin/Reports/Revenue.vue'
 
 import ClientHome from './pages/dashboard/Home'
 import ClientSettings from './pages/dashboard/Settings'
@@ -135,6 +137,12 @@ export default {
             component: Posts,
         },
         {
+            name: 'sales',
+            path: '/admin/sales',
+            component: Sales,
+            exact: true
+        },
+        {
             name: 'reports',
             path: '/admin/reports',
             component: Reports,
@@ -144,6 +152,12 @@ export default {
             name: 'reports',
             path: '/admin/reports/know-by',
             component: ReportsKnowBy,
+            exact: true
+        },
+        {
+            name: 'reports',
+            path: '/admin/reports/revenue',
+            component: ReportsRevenue,
             exact: true
         },
 
