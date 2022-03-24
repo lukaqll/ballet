@@ -38,7 +38,7 @@ class MercadoPagoService
         } 
 
         $months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        $expirantionText = date('d') . ' de ' . $months[intval( date('m') )+1];
+        $expirantionText = date('d') . ' de ' . $months[intval( date('m') )-1];
 
         $expirationDate = date( 'Y-m-d', $expiresDateTime) . "T" . date( 'H:i:s.300', $expiresDateTime) . 'Z';
 
