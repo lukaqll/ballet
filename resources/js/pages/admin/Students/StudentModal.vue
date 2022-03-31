@@ -20,6 +20,7 @@
                                         <b-form-group>
                                             <label>Usuário</label>
                                             <v-select 
+                                                disabled
                                                 :options="usersOptions" 
                                                 label="text"
                                                 :reduce="user => user.value"
@@ -34,10 +35,21 @@
                                             <b-form-input placeholder="Nome"  v-model="student.name"/>
                                         </b-form-group>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <b-form-group>
                                             <label>Aniversário</label>
                                             <b-form-input type="date" v-model="student.birthdate"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <b-form-group>
+                                            <label>Status</label>
+                                            <select v-model="student.status" class="form-control">
+                                                <option value="A">Ativo</option>
+                                                <option value="I">Inativo</option>
+                                                <option value="MP">Matrícula Pendente</option>
+                                                <option value="CP">Contrato Pendente</option>
+                                            </select>
                                         </b-form-group>
                                     </div>
                                 </div>

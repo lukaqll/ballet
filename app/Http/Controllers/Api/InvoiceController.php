@@ -290,7 +290,9 @@ class InvoiceController extends Controller
                 $invoice->openPayment->update(['status' => 'payd', 'status_detail' => 'payd_manual']);
             }
 
-            $updated = $this->invoicesService->updateById( $id, ['status' => 'P', 'manual' => 1, 'payd_at' => date('Y-m-d H:i:s')] );
+            $updated = $this->invoicesService->updateById( $id, ['status' => 'P', 'manual' => 1, 'paid_at' => date('Y-m-d H:i:s')] );
+            $this->usersService->verifyUserStatus( $invoice->user );
+            
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
 
         } catch ( ValidationException $e ){

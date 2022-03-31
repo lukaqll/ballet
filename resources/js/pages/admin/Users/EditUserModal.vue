@@ -9,7 +9,7 @@
         >
         
             <div>
-                <b-tabs content-class="mt-3" card>
+                <b-tabs content-class="mt-3">
                 
                     <b-tab title='Dados do Usuário' active>
                         <div class="row">
@@ -86,6 +86,17 @@
                                         <b-form-group>
                                             <label>Instagram</label>
                                             <b-form-input class="form-control" placeholder="Instagram para marcação do aluno em posts" v-model="user.instagram"/>
+                                        </b-form-group>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b-form-group>
+                                            <label>Status</label>
+                                            <select class="form-control" v-model="user.status">
+                                                <option value="A">Ativo</option>
+                                                <option value="I">Inativo</option>
+                                                <option value="P">Inadimplente</option>
+                                                <option value="CP">Contrato Pendente</option>
+                                            </select>
                                         </b-form-group>
                                     </div>
                                 </div>

@@ -19,6 +19,7 @@ class StudentResource extends JsonResource
             'id_user' => $this->id_user,
             'name' => $this->name,
             'nick_name' => $this->nick_name,
+            'status' => $this->status,
             'birthdate' => $this->birthdate,
             'picture' => !empty($this->picture) ? '/storage/'.$this->picture : null,
             'birthdate_formated' => date('d/m/Y', strtotime($this->birthdate)),

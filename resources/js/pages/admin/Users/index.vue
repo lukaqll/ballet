@@ -162,7 +162,6 @@ export default {
             return [
                 { key: 'name', label: 'Nome', sortable: true },
                 { key: 'status_text', label: 'Status', sortable: true },
-                { key: 'email', label: 'E-mail', sortable: true },
                 { key: 'students', label: 'Alunos' },
                 { key: 'alerts', label: '' },
                 { key: 'actions', label: '' },
@@ -170,7 +169,9 @@ export default {
         },
         status(){
             return [
+                {text: 'Todos', value: null},
                 {text: 'Ativo', value: 'A'},
+                {text: 'Inadimplente', value: 'P'},
                 {text: 'Inativo', value: 'I'},
                 {text: 'Matrícula Pendente', value: 'MP'},
             ]
@@ -199,7 +200,7 @@ export default {
         toPasswordUpdateId: null,
         editableStudentId: null,
         studentModalShow: false,
-        filter: {},
+        filter: {status: null},
         tableFilter: '',
         units: [],
 

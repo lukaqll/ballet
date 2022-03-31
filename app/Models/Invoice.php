@@ -38,7 +38,7 @@ class Invoice extends Model
     }
 
     public function getIsExpired(){
-        return (date($this->expires_at) < date('Y-m-d H:i:s')) && $this->status == 'A';
+        return ($this->expires_at < date('Y-m-d H:i:s')) && $this->status == 'A';
     }
 
     public function openPayment(){

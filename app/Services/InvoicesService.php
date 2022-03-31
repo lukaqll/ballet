@@ -285,7 +285,7 @@ class InvoicesService extends AbstractService
         $userService = new UsersService;
 
         // update invoice status
-        $ticket->invoice->update(['status' => 'P', 'payd_at' => date('Y-m-d H:i:s')]);
+        $ticket->invoice->update(['status' => 'P', 'paid_at' => date('Y-m-d H:i:s')]);
 
         // verify store status
         $user = $ticket->invoice->user;

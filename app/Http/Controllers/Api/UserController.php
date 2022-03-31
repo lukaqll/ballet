@@ -177,6 +177,7 @@ class UserController extends Controller
                 'profession' => 'nullable|string',
                 'birthdate'  => 'required|string',
                 'cep'        => 'required|string',
+                'status'     => 'required|string'
             ]);
 
             $this->usersService->verifyUserName($validData['name']);

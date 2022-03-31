@@ -201,6 +201,7 @@ class StudentController extends Controller
                 'food_restriction' => 'nullable',
                 'in_school'        => 'nullable',
                 'school_time'      => 'nullable',
+                'status'           => 'required|string',
             ]);
             $student = $this->studentsService->updateById( $id, $validData);
 

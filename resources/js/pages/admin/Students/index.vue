@@ -122,6 +122,7 @@ export default {
         },
         status(){
             return [
+                {text: 'Todos', value: null},
                 {text: 'Ativo', value: 'A'},
                 {text: 'Inativo', value: 'I'},
                 {text: 'Matrícula Pendente', value: 'MP'},
@@ -155,7 +156,7 @@ export default {
 
         units: [],
         classes: [],
-        filter: {},
+        filter: {status: null},
         tableFilter: ''
     }),
 
