@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\DocumentsController;
 use App\Http\Controllers\Api\InvoiceController;
+use App\Services\InvoicesService;
 use App\Services\PasswordRecoveryService;
 use App\Services\UsersService;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/php-test', function(){
 
+    $invoiceService = new InvoicesService;
+    // $res =  $invoiceService->getUsersToInvoice();
+    // $res =  $invoiceService->generateInvoices();
+    // echo json_encode($res);
 });
 
 Route::get('/contracts/view/{id}', [DocumentsController::class, 'viewDocument']);

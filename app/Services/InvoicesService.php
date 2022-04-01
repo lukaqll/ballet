@@ -119,7 +119,6 @@ class InvoicesService extends AbstractService
 
                 // get class
                 $class = $studentClass->class;
-                $value += $this->proportionalCalc( $studentClass->approved_at, $now, $class );
                 $value += $class->value;
             }
         }
