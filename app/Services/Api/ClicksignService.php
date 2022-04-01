@@ -76,7 +76,7 @@ class ClicksignService extends AbstractApiService
         $url = "/signers/".$sign_key;
 
         $userService = new UsersService;
-        $response = $this->request('swlwrw', $url, [
+        $response = $this->request('delete', $url, [
             'query' => [
                 'access_token' => $this->accesToken
             ]
@@ -112,11 +112,12 @@ class ClicksignService extends AbstractApiService
         $fileName = "contrato-{$student->id}-{$student->name}-{$rand}.pdf";
         $path = '/students/contracts/'.$fileName;
 
+        $deadlineAt = date('Y-m-d', strtotime('+90 days', strtotime(date('Y-m-d')))) . 'T00:00:00-03:00';
         $data = [
             'document' => [
                 'path' => $path,
                 'content_base64' => $base64,
-                'deadline_at' => 30,
+                'deadline_at' => $deadlineAt,
                 'remind_interval' => 1,
             ]
         ];

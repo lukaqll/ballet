@@ -47,6 +47,7 @@ export default {
     methods:{
         onShown(){
             this.classTime.id_class = this.classModel.id
+            console.log(this.classModel.id)
             if( this.classTimeId ){
                 this.getById(this.classTimeId)
             }

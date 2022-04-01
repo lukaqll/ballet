@@ -61,7 +61,7 @@
                                                                                 <b-icon icon="pencil-square"></b-icon>
                                                                                 Editar Aula
                                                                             </b-dropdown-item>
-                                                                            <b-dropdown-item @click="addClassTime($event, cl.id)">
+                                                                            <b-dropdown-item @click="addClassTime($event, cl)">
                                                                                 <b-icon icon="calendar-plus"></b-icon>
                                                                                 Adicionar Hrário
                                                                             </b-dropdown-item>
