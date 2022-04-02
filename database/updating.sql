@@ -52,6 +52,24 @@ CREATE TABLE `sales` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+ALTER TABLE `sales` 
+ADD COLUMN `price` DECIMAL(12,2) NULL AFTER `updated_at`,
+ADD COLUMN `paid_price` DECIMAL(12,2) NULL AFTER `price`;
+ALTER TABLE `sales` 
+CHANGE COLUMN `price` `price` DECIMAL(12,2) NULL DEFAULT 0 ,
+CHANGE COLUMN `paid_price` `paid_price` DECIMAL(12,2) NULL DEFAULT 0 ;
+ALTER TABLE `sales` 
+DROP FOREIGN KEY `fk_sales_1`;
+ALTER TABLE `sales` 
+CHANGE COLUMN `id_students` `id_student` INT(11) NULL DEFAULT NULL ;
+ALTER TABLE `sales` 
+ADD CONSTRAINT `fk_sales_1`
+  FOREIGN KEY (`id_student`)
+  REFERENCES `students` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
 ------------------
 
 ALTER TABLE `classes` 

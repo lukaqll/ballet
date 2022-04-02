@@ -19,41 +19,69 @@
 
                                 <div class="col-md-12">
                                     <div class="row">
+
                                         <div class="col-md-3">
-                                            <b-form-select :options="status" class="w-100" v-model="filter.status"></b-form-select>
+                                            <label>Satus</label>
+                                            <select class="form-control" v-model="filter.status">
+                                                <option value="Encomendado">Encomendado</option>
+                                                <option value="Pronto">Pronto</option>
+                                                <option value="Entregue">Entregue</option>
+                                            </select>
                                         </div>
-                                        <div class="col-md-4">
-                                            <b-button @click="getContracts">Buscar</b-button>
+
+                                        <div class="col-md-3">
+                                            <label>Satus Pag.</label>
+                                            <select class="form-control" v-model="filter.payment_status">
+                                                <option value="Pendente">Pendente</option>
+                                                <option value="Pago">Pago</option>
+                                            </select>
+                                        </div>
+
+                                         <div class="col-md-3">
+                                            <label>Aluno</label>
+                                            <b-form-select v-model="filter.id_student" :options="studentsOptions"></b-form-select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Unidade</label>
+                                            <b-form-select v-model="filter.id_unit" :options="unitsOptions"></b-form-select>
+                                        </div>
+
+                                        <div class="col-md-4" style="margin-top: 2rem">
+                                            <b-button @click="getSales">Buscar</b-button>
                                             <b-button variant="danger" @click="filter = {}">Limpar</b-button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="my-2">
-                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+
+                                <div class="col-md-12 mt-4">
+                                    <div class="row my-2">
+                                        <div class="col-md-4">
+                                            <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <b-button variant='primary' @click="newSale">Nova Venda</b-button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                             <div>
 
-                                <div class="table-responsive" v-if="contracts.length">
+                                <div class="table-responsive" v-if="sales.length">
                                     <b-table
                                         :fields="tableFields"
-                                        :items="contracts"
+                                        :items="sales"
                                         :filter="tableFilter"
                                         hover
                                     >
                                         <template #cell(actions)="row">
-                                            <b-button v-if="row.item.status == 'running'" variant="danger" @click="() => cancelContract(row.item.id)" class="btn-sm" v-b-tooltip title="Cancelar contrato">Cancelar</b-button>
-                                            <b-button v-if="row.item.status == 'running'" variant="light" @click="() => notify(row.item.id)" class="btn-sm" v-b-tooltip title="Enviar notificação">
-                                                <b-icon icon="bell"/>
+                                            <b-button variant="light" @click="() => getSale(row.item.id)" class="btn-sm" v-b-tooltip title="Editar">
+                                                <b-icon icon="pencil-square"></b-icon>
                                             </b-button>
-                                            <a :href="`/contracts/sign/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-if="row.item.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                                <b-icon icon="vector-pen"/>
-                                            </a>
-                                            <a :href="`/contracts/view/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                                <b-icon icon="download"/>
-                                            </a>
+                                            <b-button variant="danger" @click="() => deleteSale(row.item.id)" class="btn-sm" v-b-tooltip title="Deletar">
+                                                <b-icon icon="trash"></b-icon>
+                                            </b-button>
                                         </template>
                                     </b-table>
                                 </div>
@@ -66,6 +94,7 @@
             </div>
         </div>
         
+        <sale-modal :idSale="idSale" @save="onSave"/>
     </admin-base>
 </template>
 
@@ -73,44 +102,50 @@
 import common from '../../../common/common'
 import AdminBase from '../../../components/AdminBase/index.vue'
 import DataTable from "vue-materialize-datatable";
+import SaleModal from './SaleModal.vue';
 
 export default {
-    components: { AdminBase, DataTable },
+    components: { AdminBase, DataTable, SaleModal },
 
     computed: {
 
         tableFields(){
             return [
-                { key: 'user.name', label: 'Usuário', sortable: true },
                 { key: 'student.name', label: 'Aluno', sortable: true },
-                { key: 'class.name', label: 'Aula', sortable: true },
-                { key: 'status_text', label: 'Status', sortable: true },
-                { key: 'created_at_format', label: 'Criado Em', sortable: true },
+                { key: 'unit.name', label: 'Unidade', sortable: true },
+                { key: 'description', label: 'Desc.', sortable: true },
+                { key: 'status', label: 'Status', sortable: true },
+                { key: 'payment_status', label: 'Pagamento', sortable: true },
+                { key: 'formated_price', label: 'Valor', sortable: true },
                 { key: 'actions', label: '' },
             ]
         },
-        status(){
-            return [
-                {text: 'Abertos', value: 'running'},
-                {text: 'Finalizados', value: 'closed'},
-                {text: 'Cancelados', value: 'canceled'},
-            ]
+
+        unitsOptions(){
+            return this.units.map(un => ({ text: un.name, value: un.id }))
+        },
+        studentsOptions(){
+            return this.students.map(st => ({ text: `${st.name} - ${st.user.name}`, value: st.id }))
         }
     },
-
        
     mounted: function(){
-        this.getContracts()
+        this.getSales()
+        this.getStudents()
+        this.getUnits()
     },
 
     data: () => ({
-        contracts: [],
+        sales: [],
+        idSale: null,
         filter: {},
-        tableFilter: ''
+        tableFilter: '',
+        students: [],
+        units: []
     }),
 
     methods: {
-        getContracts(){
+        getSales(){
 
             let filters = {}
             for(const key in this.filter){
@@ -120,50 +155,77 @@ export default {
             let queryString = new URLSearchParams(filters)
 
             common.request({
-                url: '/api/contracts/list-all?'+queryString,
+                url: '/api/sales?'+queryString,
                 type: 'get',
                 auth: true,
                 setError: true,
                 load: true,
-                success: (contracts) => {
-                    this.contracts = contracts
+                success: (sales) => {
+                    this.sales = sales
                 }
             })
         },
 
-        notify(id){
-
-            common.request({
-                url: '/api/contracts/notify/'+id,
-                type: 'post',
-                auth: true,
-                setError: true,
-                load: true,
-                success: (student) => {
-                    common.success({title: 'Notificações enviadas'})
-                }
-            })
+        getSale( id ){
+            this.idSale = id
+            this.$bvModal.show('sale-modal')
         },
 
-        cancelContract(id){
+        deleteSale( id ){
 
             common.confirmAlert({
-                title: 'Deseja mesmo cancelar este contrato?',
-                message: 'Esta ação será irreversível',
+                title: 'Deseja deletar esta venda?',
                 onConfirm: () => {
                     common.request({
-                        url: '/api/contracts/cancel/'+id,
-                        type: 'post',
+                        url: '/api/sales/'+id,
+                        type: 'delete',
                         auth: true,
                         setError: true,
                         load: true,
-                        success: (contract) => {
-                            this.getContracts()
+                        success: (sale) => {
+                            this.getSales()        
                         }
                     })
                 }
             })
         },
+
+        onSave() {
+            this.$bvModal.hide('sale-modal')
+            this.idSale = null
+            this.getSales()
+        },
+
+        newSale() {
+            this.$bvModal.show('sale-modal')
+            this.idSale = null
+        },
+
+        getStudents() {
+            common.request({
+                url: '/api/students/filter',
+                type: 'get',
+                auth: true,
+                setError: true,
+                load: true,
+                success: (students) => {
+                    this.students = students
+                }
+            })
+        },
+
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units
+                }
+            })
+        },
+
     }
 }
 </script>

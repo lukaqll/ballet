@@ -23,6 +23,8 @@ class Sale extends Model
         'paid_at',
         'status',
         'payment_status',
+        'price',
+        'paid_price',
         'created_at',
         'updated_at'
     ];
@@ -34,4 +36,5 @@ class Sale extends Model
     public function unit(){
         return $this->hasOne(Unit::class, 'id', 'id_unit');
     }
+
 }

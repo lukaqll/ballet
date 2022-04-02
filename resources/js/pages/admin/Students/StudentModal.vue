@@ -241,14 +241,14 @@
                         </div>
                     </div>
                     <div class="col-12 text-right">
-                    <div>
-                        <b-button @click="() => pictureModalShow = false">Cancelar</b-button>
-                        <b-button variant="primary" type="submit">
-                            <b-icon icon="check"/>
-                            Salvar
-                        </b-button>
+                        <div>
+                            <b-button @click="() => pictureModalShow = false">Cancelar</b-button>
+                            <b-button variant="primary" type="submit">
+                                <b-icon icon="check"/>
+                                Salvar
+                            </b-button>
+                        </div>
                     </div>
-                </div>
                 </div>
             </b-form>
         </b-modal>

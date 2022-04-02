@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MercadoPagoHookController;
 use App\Http\Controllers\Api\ParameterController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ReportsController;
+use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
@@ -199,6 +200,12 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/signer-config/save', [ParameterController::class, 'saveSigner']);
     Route::get('/signer-config/get', [ParameterController::class, 'getSigner']);
 
+    // sales
+    Route::post('/sales', [SaleController::class, 'create']);
+    Route::put('/sales/{id}', [SaleController::class, 'update']);
+    Route::delete('/sales/{id}', [SaleController::class, 'delete']);
+    Route::get('/sales/{id}', [SaleController::class, 'get']);
+    Route::get('/sales', [SaleController::class, 'list']);
 
 });
 Route::post('/invoices/update-fee/{id}', [InvoiceController::class, 'updateFee']);

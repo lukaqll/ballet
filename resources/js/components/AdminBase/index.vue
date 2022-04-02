@@ -75,7 +75,7 @@
                             Posts
                         </router-link>
 
-                        <router-link disabled='true' tag="a" class="nav_link" to='#'>
+                        <router-link disabled='true' tag="a" class="nav_link" to='/admin/sales'>
                             <i class="fa fa-money-bill"></i>
                             Vendas
                         </router-link>

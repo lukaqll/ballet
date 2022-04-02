@@ -35,7 +35,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-4 mt-4">
                                     <div class="my-2">
                                         <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
                                     </div>

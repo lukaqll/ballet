@@ -16,6 +16,7 @@ use App\Services\PostSrcsService;
 use App\Services\PostsService;
 use App\Services\RegisterFilesSerivce;
 use App\Services\ReportsService;
+use App\Services\SalesService;
 use App\Services\StudentClassesService;
 use App\Services\StudentsService;
 use App\Services\UnitsService;
@@ -47,6 +48,7 @@ class Controller extends BaseController
     protected $repostsService;
     protected $studentClassesService;
     protected $mercadoPagoService;
+    protected $salesService;
     
     public function __construct()
     {
@@ -68,6 +70,7 @@ class Controller extends BaseController
         $this->repostsService = new ReportsService;
         $this->studentClassesService = new StudentClassesService;
         $this->mercadoPagoService = new MercadoPagoService;
+        $this->salesService = new SalesService;
     }
 
     protected function unMaskMoney( string $str ){
