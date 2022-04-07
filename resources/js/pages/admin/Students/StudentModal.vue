@@ -172,16 +172,24 @@
                                             <td>{{contract.class ? `${contract.class.name} (${contract.class.team})` : '' }}</td>
                                             <td>{{contract.created_at_format}}</td>
                                             <td>
-                                                <b-button v-if="contract.status == 'running'" variant="danger" @click="() => cancelContract(contract.id)" class="btn-sm">Cancelar</b-button>
-                                                <b-button v-if="contract.status == 'running'" variant="light" @click="() => notify(contract.id)" class="btn-sm" v-b-tooltip title="Enviar notificações de contrato">
-                                                    <b-icon icon="bell"/>
-                                                </b-button>
-                                                <a :href="`/contracts/sign/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-if="contract.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                                    <b-icon icon="vector-pen"/>
-                                                </a>
-                                                <a :href="`/contracts/view/${contract.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                                    <b-icon icon="download"/>
-                                                </a>
+         
+                                                <b-dropdown :id="'dropdown-'+contract.id" size="sm" variant='light'>
+                                                    <template #button-content >
+                                                        <b-icon icon="three-dots-vertical"></b-icon>
+                                                    </template>
+                                                    <b-dropdown-item :href="`/contracts/view/${contract.id}`" target="_blank" size="sm">
+                                                        Ver contrato
+                                                    </b-dropdown-item>
+                                                    <b-dropdown-item :href="`/contracts/sign/${contract.id}`" target="_blank" v-if="contract.status == 'running'" size="sm">
+                                                        Assinar
+                                                    </b-dropdown-item>
+                                                    <b-dropdown-item v-if="contract.status == 'running'" size="sm" @click="() => notify(contract.id)">
+                                                        Notificar
+                                                    </b-dropdown-item>
+                                                    <b-dropdown-item @click="() => cancelContract(contract.id)" v-if="contract.status != 'canceled'">
+                                                        <span class='text-danger'>Cancelar</span>
+                                                    </b-dropdown-item>
+                                                </b-dropdown>
                                             </td>
                                         </tr>
                                     </tbody>

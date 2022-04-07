@@ -75,7 +75,14 @@ class DocumentsController extends Controller
         try {
 
             $contract = $this->contractsService->find($id);
-            $result = $this->clicksignService->cancelContract( $contract );
+
+            if( $contract->status == 'running' ){
+                $result = $this->clicksignService->cancelContract( $contract );
+            } else {
+                $contract->update(['status' => 'canceled']);
+                $result = $contract;
+            }
+            
             $response = [ 'status' => 'success', 'data' => $result ];
             
         } catch ( ValidationException $e ){

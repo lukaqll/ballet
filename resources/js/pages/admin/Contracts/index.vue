@@ -44,16 +44,24 @@
                                         hover
                                     >
                                         <template #cell(actions)="row">
-                                            <b-button v-if="row.item.status == 'running'" variant="danger" @click="() => cancelContract(row.item.id)" class="btn-sm" v-b-tooltip title="Cancelar contrato">Cancelar</b-button>
-                                            <b-button v-if="row.item.status == 'running'" variant="light" @click="() => notify(row.item.id)" class="btn-sm" v-b-tooltip title="Enviar notificação">
-                                                <b-icon icon="bell"/>
-                                            </b-button>
-                                            <a :href="`/contracts/sign/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-if="row.item.status == 'running'" v-b-tooltip title="Tela de assinatura">
-                                                <b-icon icon="vector-pen"/>
-                                            </a>
-                                            <a :href="`/contracts/view/${row.item.id}`" target="_blank" class="btn btn-light btn-sm" v-b-tooltip title="Ver contrato">
-                                                <b-icon icon="download"/>
-                                            </a>
+
+                                            <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
+                                                <template #button-content >
+                                                    <b-icon icon="three-dots-vertical"></b-icon>
+                                                </template>
+                                                <b-dropdown-item :href="`/contracts/view/${row.item.id}`" target="_blank" size="sm">
+                                                    Ver contrato
+                                                </b-dropdown-item>
+                                                <b-dropdown-item :href="`/contracts/sign/${row.item.id}`" target="_blank" v-if="row.item.status == 'running'" size="sm">
+                                                    Assinar
+                                                </b-dropdown-item>
+                                                <b-dropdown-item v-if="row.item.status == 'running'" size="sm" @click="() => notify(row.item.id)">
+                                                    Notificar
+                                                </b-dropdown-item>
+                                                <b-dropdown-item @click="() => cancelContract(row.item.id)" v-if="row.item.status != 'canceled'">
+                                                    <span class='text-danger'>Cancelar</span>
+                                                </b-dropdown-item>
+                                            </b-dropdown>
                                         </template>
                                     </b-table>
                                 </div>

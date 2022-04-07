@@ -85,7 +85,7 @@
                                         </template>
                                     </b-table>
                                 </div>
-                                <div v-else>Nenhum contrato ainda</div>
+                                <div v-else>Nenhuma venda ainda</div>
 
                             </div>
                         </b-card-body>
