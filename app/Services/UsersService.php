@@ -202,7 +202,7 @@ class UsersService extends AbstractService
         $openInvoices = $user->openInvoices;
 
         // mais de uma fatura aberta
-        if( !empty($openInvoices) ){
+        if( !empty($openInvoices) && count($openInvoices) > 0 ){
 
             foreach( $openInvoices as $openInvoice ){
                 if( $openInvoice->getIsExpired() ){
@@ -247,6 +247,37 @@ class UsersService extends AbstractService
         PasswordRecovery::where('id_user', $user->id)->delete();
         RegisterFile::where('id_user', $user->id)->delete();
         return User::find($user->id)->delete();
+
+    }
+
+    public function verifyUserStatusScript(User $user){
+
+        $openInvoices = $user->openInvoices;
+
+        echo "\n $user->name ( $user->status )";
+
+        // pelo menos uma fatura aberta
+        if( !empty($openInvoices) && count($openInvoices) > 0 ){
+
+            echo "\n ".count($openInvoices)." faturas abertas";
+
+            foreach( $openInvoices as $openInvoice ){
+                
+                if( $openInvoice->getIsExpired() ){
+                    echo "\n atualizado para inadimplente";
+                    $user->update(['status' => 'P']);
+                    continue;
+                }
+            }
+        } 
+
+        // nenhuma fatura aberta
+        else {
+            echo "\n atualizado para ativo";
+            $user->update(['status' => 'A']);
+        }
+
+        echo "\n ------------";
 
     }
 }

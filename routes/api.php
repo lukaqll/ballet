@@ -202,9 +202,9 @@ Route::group(['middleware' => ['admin']], function () {
 
     // sales
     Route::post('/sales', [SaleController::class, 'create']);
+    Route::get('/sales/{id}', [SaleController::class, 'getById']);
     Route::put('/sales/{id}', [SaleController::class, 'update']);
     Route::delete('/sales/{id}', [SaleController::class, 'delete']);
-    Route::get('/sales/{id}', [SaleController::class, 'get']);
     Route::get('/sales', [SaleController::class, 'list']);
 
 });

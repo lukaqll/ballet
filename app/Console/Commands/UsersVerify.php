@@ -47,8 +47,7 @@ class UsersVerify extends Command
             if( in_array($user->status, ['CP', 'MP', 'I']) )
                 continue;
 
-            echo "\n User: $user->name";
-            $usersService->verifyUserStatus($user);
+            $usersService->verifyUserStatusScript($user);
         }
     }
 }
