@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\InvoiceAddController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -206,6 +207,13 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/sales/{id}', [SaleController::class, 'update']);
     Route::delete('/sales/{id}', [SaleController::class, 'delete']);
     Route::get('/sales', [SaleController::class, 'list']);
+
+    // sales
+    Route::post('/invoice-add', [InvoiceAddController::class, 'create']);
+    Route::get('/invoice-add/{id}', [InvoiceAddController::class, 'getById']);
+    Route::put('/invoice-add/{id}', [InvoiceAddController::class, 'update']);
+    Route::delete('/invoice-add/{id}', [InvoiceAddController::class, 'delete']);
+    Route::get('/user/{id}/invoice-add', [InvoiceAddController::class, 'list']);
 
 });
 Route::post('/invoices/update-fee/{id}', [InvoiceController::class, 'updateFee']);

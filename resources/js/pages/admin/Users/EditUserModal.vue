@@ -212,6 +212,45 @@
                             </div>
                         </div>
                     </b-tab>
+
+                    <b-tab title="Adicionais de Fatura">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <b-button @click="() => this.$bvModal.show('invoice-add-modal')" variant="primary" class="float-right">Novo</b-button>
+                                    <table class="table table-striped table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Desc.</th>
+                                                <th>Valor</th>
+                                                <th>Mês</th>
+                                                <th>Fatura</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="added in user.invoice_adds" :key="added.id">
+                                                <td>{{ added.description }}</td>
+                                                <td>R$ {{ toMoney(added.value) }}</td>
+                                                <td>{{ monthFormat(added.month) }}</td>
+                                                <td>{{ added.id_invoice }}</td>
+                                                <td>
+                                                    <div v-if="!added.id_invoice">
+                                                        <b-button variant="light" size="sm" @click="() => editInvoiceAdd(added.id)">
+                                                            <b-icon icon="pencil-square"></b-icon>
+                                                        </b-button>
+                                                        <b-button variant="danger" size="sm" @click="() => deleteInvoiceAdds(added.id)">
+                                                            <b-icon icon="trash"></b-icon>
+                                                        </b-button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
                 </b-tabs>
             </div>
             <div class="row mt-3">
@@ -311,6 +350,32 @@
             </div>
             <h3 class="text-center" v-else>Nenhum Arquivo</h3>
         </b-modal>
+
+        <b-modal size="md" title="Adicional" hide-footer id="invoice-add-modal">
+            <div class="row">
+                <div class="col-md-12">
+                    <b-form-group>
+                        <label>Descrição</label>
+                        <b-form-input v-model="invoiceAdd.description"/>
+                    </b-form-group>
+                    <b-form-group>
+                        <label>Valor</label>
+                        <b-form-input v-model="invoiceAdd.value" v-money="{decimal: ',', thousands: '.', precision: 2}"/>
+                    </b-form-group>
+                    <b-form-group>
+                        <label>Mês</label>
+                        <b-form-input v-model="invoiceAdd.month" type='month'/>
+                    </b-form-group>
+                </div>
+                <div class="col-md-12">
+                    <b-button @click="() => this.$bvModal.hide('invoice-add-modal')">Cancelar</b-button>
+                    <b-button variant="primary" @click="saveInvoiceAdds">
+                        <b-icon icon="check"/>
+                        Salvar
+                    </b-button>
+                </div>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -318,7 +383,6 @@
 import common from '../../../common/common'
 import orgaosExpeditores from "../../../params/orgaosExpeditores"
 import ufs from "../../../params/ufs"
-import Swal from 'sweetalert2'
 
 export default {
 
@@ -331,7 +395,9 @@ export default {
             {value: 'ES', text: 'Espírito Santo'},
             {value: 'MG', text: 'Minas Gerais'},
         ],
-        registrationFiles: []
+        registrationFiles: [],
+        
+        invoiceAdd: {}
     }),
     props: {
         isVisible: Boolean,
@@ -478,6 +544,73 @@ export default {
                     this.$bvModal.show('registration-files')
                 }
             })
+        },
+
+        saveInvoiceAdds(){
+            if(!!this.invoiceAdd.id){
+                this.updateInvoiceAdds()
+            } else {
+                this.createInvoiceAdds()
+            }
+        },
+        createInvoiceAdds() {
+            const data = {...this.invoiceAdd}
+            data.id_user = this.user.id
+
+            common.request({
+                url: '/api/invoice-add',
+                type: 'post',
+                auth: true,
+                data: data,
+                load: true,
+                setError: true,
+                success: (data) => {
+                    this.$emit('reloadUser', this.user)
+                    this.$bvModal.hide('invoice-add-modal')
+                    this.invoiceAdd = {}
+                }
+            })
+        },
+        updateInvoiceAdds() {
+            common.request({
+                url: '/api/invoice-add/'+this.invoiceAdd.id,
+                type: 'put',
+                auth: true,
+                data: this.invoiceAdd,
+                load: true,
+                setError: true,
+                success: (data) => {
+                    this.$emit('reloadUser', this.user)
+                    this.$bvModal.hide('invoice-add-modal')
+                    this.invoiceAdd = {}
+                }
+            })
+        },
+
+        deleteInvoiceAdds(id) {
+            common.request({
+                url: '/api/invoice-add/'+id,
+                type: 'delete',
+                auth: true,
+                load: true,
+                success: (data) => {
+                    this.$emit('reloadUser', this.user)
+                }
+            })
+        },
+
+        editInvoiceAdd(id){
+            const added = this.user.invoice_adds.find(i => i.id == id)
+            const month = added.month.substring(0, 7)
+            this.invoiceAdd = {...added, month: month}
+            this.$bvModal.show('invoice-add-modal')
+        },
+
+        toMoney(str){
+            return common.toMoney(str)
+        },
+        monthFormat(str){
+            return common.monthFormat(str)
         }
     }
 }

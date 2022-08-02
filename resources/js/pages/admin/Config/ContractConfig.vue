@@ -1,33 +1,30 @@
 <template>
-    <admin-base>
 
-        <div class="row">
-            <div class="col-12">
-                <b-card no-body class="border-0 shadow-sm">
+    <div class="row">
+        <div class="col-12">
+            <b-card no-body class="border-0 shadow-sm">
 
-                    <b-card-header>
-                        <h4>
-                            Editar Contrato
-                            <div class="float-right">
-                                <b-button variant="light" v-b-modal="'parameters-modal'">
-                                    <b-icon icon="info"/> Parâmetros</b-button>
-                                <b-button  variant="primary" @click="save">Salvar</b-button>    
-                            </div>
-                        </h4>
-                    </b-card-header>
-
-                    <b-card-body>
-                        <div class="row">
-                            <div class="col-12">
-                                <vue-editor v-model="content"></vue-editor>
-                            </div>
+                <b-card-header>
+                    <h4>
+                        Editar Contrato
+                        <div class="float-right">
+                            <b-button variant="light" v-b-modal="'parameters-modal'">
+                                <b-icon icon="info"/> Parâmetros</b-button>
+                            <b-button  variant="primary" @click="save">Salvar</b-button>    
                         </div>
-                    </b-card-body>
+                    </h4>
+                </b-card-header>
 
-                </b-card>
-            </div>
+                <b-card-body>
+                    <div class="row">
+                        <div class="col-12">
+                            <vue-editor v-model="content"></vue-editor>
+                        </div>
+                    </div>
+                </b-card-body>
+
+            </b-card>
         </div>
-        
         <b-modal size="lg" title="Parâmetros" id="parameters-modal" v-model="parametersModal" hide-footer>
             <b-alert show dismissible class="">
                 <small><b-icon icon="exclamation-triangle"/> É necessário o ':' no início na plavra-chave</small>
@@ -39,17 +36,16 @@
             </div>
             <b-table class="table-sm table-hover" :items="parameterWords" :filter="filter"></b-table>
         </b-modal>
-    </admin-base>
+    </div>
 
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase'
 import { VueEditor } from "vue2-editor";
 
 export default {
-    components: { AdminBase, VueEditor },
+    components: { VueEditor },
     mounted: function(){
 
         common.request({

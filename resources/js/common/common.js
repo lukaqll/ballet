@@ -153,6 +153,20 @@ const common = {
         stop: () => {
             SweetAlert.close()
         }
+    },
+
+    monthFormat(str){
+
+        if (!str)
+            return null
+
+        const date = new Date(str)
+        const year = date.getFullYear()
+        const month = date.getUTCMonth()
+
+        const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dev']
+
+        return `${months[month]} de ${year}`
     }
 }
 

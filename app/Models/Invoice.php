@@ -21,7 +21,8 @@ class Invoice extends Model
         'updated_at',
         'fee',
         'paid_at',
-        'manual'
+        'manual',
+        'added'
     ];
 
     public function user(){
@@ -44,5 +45,9 @@ class Invoice extends Model
     public function openPayment(){
         return $this->hasOne(InvoicePayment::class, 'id_invoice', 'id')
                     ->where('invoice_payment.status', 'pending');
+    }
+
+    public function invoiceAdds(){
+        return $this->hasMany(InvoiceAdd::class, 'id_invoice', 'id');
     }
 }

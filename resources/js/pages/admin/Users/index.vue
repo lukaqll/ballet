@@ -1,7 +1,5 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
+<div>
         
         <div class="row">
             <div class="col-12">
@@ -141,12 +139,11 @@
 
 
         
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase/index.vue'
 import NewUserModal from './NewUserModal';
 import EditUserModal from './EditUserModal';
 import StudentModal from '../Students/StudentModal';
@@ -155,7 +152,7 @@ import DataTable from "vue-materialize-datatable";
 import UserInvoices from "./UserInvoices";
 
 export default {
-    components: { AdminBase, NewUserModal, EditUserModal, StudentModal, PasswordUpdateModal,  DataTable, UserInvoices },
+    components: { NewUserModal, EditUserModal, StudentModal, PasswordUpdateModal,  DataTable, UserInvoices },
 
     computed: {
         tableFields(){

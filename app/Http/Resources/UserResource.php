@@ -48,7 +48,8 @@ class UserResource extends JsonResource
             'status_text' => $this->getStatusText(),
             'first_name' => $this->getFirstName(),
 
-            'open_invoices' => $this->openInvoices
+            'open_invoices' => $this->openInvoices,
+            'invoice_adds' => $this->invoiceAdds
         ];
     }
 }

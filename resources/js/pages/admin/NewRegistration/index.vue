@@ -1,8 +1,5 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
-        
+    <div>
         <div class="row">
             <div class="col-12">
                 <div>
@@ -58,7 +55,7 @@
         >
             
         </new-registration-view-modal>
-    </admin-base>
+    </div>
 </template>
 
 <script>

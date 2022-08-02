@@ -1,5 +1,5 @@
 <template>
-    <admin-base>
+    <div>
 
         <b-container>
             <div class="row">
@@ -54,7 +54,7 @@
             </div>
         </b-container>
            
-    </admin-base>
+    </div>
 </template>
 
 <script>

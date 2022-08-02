@@ -1,7 +1,5 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
+    <div>
         
         <div class="row">
 
@@ -58,17 +56,16 @@
             @onSave="onSavePost"
         />
         
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase/index.vue'
 import PostModal from './PostModal'
 import DataTable from "vue-materialize-datatable";
 
 export default {
-    components: { AdminBase, DataTable, PostModal },
+    components: { DataTable, PostModal },
 
     computed: {
         postsBindings(){

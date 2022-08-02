@@ -111,6 +111,7 @@ class InvoiceController extends Controller
                 'value' => 'required|string',
                 'send_mail' => 'nullable',
                 'fee' => 'required|string',
+                'added' => 'required|string',
             ]);
 
             if( $validData['expires_at'] < date('Y-m-d'))
@@ -118,6 +119,7 @@ class InvoiceController extends Controller
 
             $validData['value'] = $this->unMaskMoney($validData['value']);     
             $validData['fee'] = $this->unMaskMoney($validData['fee']);            
+            $validData['added'] = $this->unMaskMoney($validData['added']);            
 
             $validData['expires_at'] = date('Y-m-d 23:59:59', strtotime($validData['expires_at']));
             $validData['status'] = 'A';
@@ -154,11 +156,13 @@ class InvoiceController extends Controller
                 'expires_at' => 'required|date',
                 'value' => 'required|string',
                 'fee' => 'required|string',
+                'added' => 'required|string',
                 'send_mail' => 'nullable'
             ]);
 
             $validData['value'] = $this->unMaskMoney($validData['value']);            
             $validData['fee'] = $this->unMaskMoney($validData['fee']);            
+            $validData['added'] = $this->unMaskMoney($validData['added']);
 
             if( 
                 date('Y-m-d', strtotime($validData['expires_at'])) != date('Y-m-d', strtotime($invoice->expires_at)) 

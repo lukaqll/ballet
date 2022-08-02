@@ -21,6 +21,7 @@ use App\Services\StudentClassesService;
 use App\Services\StudentsService;
 use App\Services\UnitsService;
 use App\Services\UsersService;
+use App\Services\InvoiceAddService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -49,6 +50,7 @@ class Controller extends BaseController
     protected $studentClassesService;
     protected $mercadoPagoService;
     protected $salesService;
+    protected $invoiceAddService;
     
     public function __construct()
     {
@@ -71,6 +73,7 @@ class Controller extends BaseController
         $this->studentClassesService = new StudentClassesService;
         $this->mercadoPagoService = new MercadoPagoService;
         $this->salesService = new SalesService;
+        $this->invoiceAddService = new InvoiceAddService;
     }
 
     protected function unMaskMoney( string $str ){

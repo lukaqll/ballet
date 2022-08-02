@@ -1,6 +1,6 @@
 <template>
     
-    <admin-base>
+    <div>
         <div class="row">
             <div class="col-12">
 
@@ -159,17 +159,15 @@
             :classTimeId="classTimeId"
         />
 
-    </admin-base>
+    </div>
 </template>
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase'
 import UnitModal from './UnitModal'
 import ClassModal from './ClassModal'
 import ClassTimeModal from './ClassTimeModal'
 export default {
     components: {
-        AdminBase,
         UnitModal,
         ClassModal,
         ClassTimeModal

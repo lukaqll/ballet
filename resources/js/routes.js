@@ -64,99 +64,119 @@ export default {
     routes: [
         {
             path: '*',
-            component: NotFound
+            component: NotFound,
+            meta: {base: 'commom-header'}
         },
 
         {
             name: 'login',
             path: '/login',
-            component: Login
+            component: Login,
+            meta: {base: 'commom-header'}
         },
 
         {
             name: 'admin.home',
             path: '/admin',
             component: Home,
+            meta: {base: 'admin-base'}
         },
         {
             path: '/admin/users',
             component: Users,
+            meta: {base: 'admin-base'}
         },
         {
             path: '/admin/units',
             component: Units,
+            meta: {base: 'admin-base'}
         },
         {
             path: '/admin/students',
             component: Students,
+            meta: {base: 'admin-base'}
         },
         {
             path: '/admin/settings',
             component: Settings,
+            meta: {base: 'admin-base'}
         },
 
         // password recovery
         {
             name: 'password_reset',
             path: '/password-reset/:token',
-            component: PasswordReset
+            component: PasswordReset,
+            meta: {base: 'commom-header'}
+
         },
         {
             name: 'password_recovery',
             path: '/password-recovery',
-            component: SendMail
+            component: SendMail,
+            meta: {base: 'commom-header'}
         },
         {
             name: 'config',
             path: '/admin/config',
             component: Config,
+            meta: {base: 'admin-base'}
         },
         {
             name: 'contract_config',
             path: '/admin/config/contract',
             component: ContractConfig,
+            meta: {base: 'admin-base'}
         },
         {
             name: 'signer_config',
             path: '/admin/config/signer',
+            meta: {base: 'admin-base'},
             component: SignerConfig,
         },
         {
             name: 'new_users',
             path: '/admin/new-users',
+            meta: {base: 'admin-base'},
             component: NewRegistration,
         },
         {
             name: 'contracts',
             path: '/admin/contracts',
+            meta: {base: 'admin-base'},
             component: Contracts,
         },
         {
             name: 'contracts',
             path: '/admin/posts',
+            meta: {base: 'admin-base'},
             component: Posts,
         },
         {
             name: 'sales',
             path: '/admin/sales',
+            meta: {base: 'admin-base'},
             component: Sales,
             exact: true
         },
         {
             name: 'reports',
             path: '/admin/reports',
+            meta: {base: 'admin-base'},
             component: Reports,
             exact: true
         },
         {
             name: 'reports',
             path: '/admin/reports/know-by',
+            meta: {base: 'admin-base'},
             component: ReportsKnowBy,
             exact: true
         },
         {
             name: 'reports',
             path: '/admin/reports/revenue',
+            meta: {base: 'admin-base'},
             component: ReportsRevenue,
             exact: true
         },
@@ -165,7 +185,8 @@ export default {
         {
             name: 'cadastro',
             path: '/cadastro',
-            component: Register
+            component: Register,
+            meta: {base: 'commom-header'}
         },
         
 
@@ -177,32 +198,38 @@ export default {
             name: 'client.home',
             path: '/home',
             component: ClientHome,
-            exact: true
+            exact: true,
+            meta: {base: 'dashboard-base'}
         },
         {
             name: 'client.settings',
             path: '/minha-conta',
             component: ClientSettings,
+            meta: {base: 'dashboard-base'}
         },
         {
             name: 'client.students',
             path: '/alunos',
             component: ClientStudents,
+            meta: {base: 'dashboard-base'}
         },
         {
             name: 'client.contracts',
             path: '/contratos',
             component: ClientContracts,
+            meta: {base: 'dashboard-base'}
         },
         {
             name: 'client.posts',
             path: '/posts',
             component: ClientPosts,
+            meta: {base: 'dashboard-base'}
         },
         {
             name: 'client.invoices',
             path: '/faturas',
             component: ClientInvoices,
+            meta: {base: 'dashboard-base'}
         },
 
         /**
@@ -212,7 +239,8 @@ export default {
             name: 'site.home',
             path: '/',
             component: SiteHome,
-            exact: true
+            exact: true,
+            meta: {base: 'site-base'}
         },
     ]
 }

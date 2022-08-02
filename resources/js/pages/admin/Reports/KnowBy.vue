@@ -1,6 +1,6 @@
 <template>
     
-    <admin-base>
+    <div>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <b-card class="border-0 shadow-sm text-center" title="Por onde nos conheceram?">
@@ -9,16 +9,15 @@
                 </b-card>
             </div>
         </div>
-    </admin-base>
+    </div>
 </template>
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase'
 import ReportChart from '../../../components/ReportChart'
 import palette from 'google-palette'
 
 export default {
-    components: {AdminBase, ReportChart},
+    components: {ReportChart},
 
     mounted: function() {
         this.getReport()

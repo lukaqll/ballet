@@ -18,14 +18,20 @@
             <div class="col-md-12">
                 <b-form-group>
                     <label>Valor</label>
-                    <b-form-input v-model="invoice.value" v-money="moneyMask"/>
+                    <b-form-input v-model="invoice.value" v-money="{ decimal: ',', thousands: '.', precision: 2 }"/>
                 </b-form-group>
             </div>
 
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <b-form-group>
                     <label>Juros</label>
-                    <b-form-input v-model="invoice.fee" v-money="moneyMask"/>
+                    <b-form-input v-model="invoice.fee" v-money="{ decimal: ',', thousands: '.', precision: 2 }"/>
+                </b-form-group>
+            </div>
+            <div class="col-md-6">
+                <b-form-group>
+                    <label>Adicional</label>
+                    <b-form-input v-model="invoice.added" v-money="{ decimal: ',', thousands: '.', precision: 2 }"/>
                 </b-form-group>
             </div>
 
@@ -67,11 +73,7 @@ export default {
     data: () => ({
         formData: {},
         invoice: {},
-        moneyMask: {
-            decimal: ',',
-            thousands: '.',
-            precision: 2,
-        },
+        moneyMask: { decimal: ',', thousands: '.', precision: 2 },
         users: []
     }),
     mounted: function(){
@@ -137,6 +139,8 @@ export default {
                 setError: true,
                 success: (resp) => {
                     resp.value = common.toMoney(resp.value)
+                    resp.fee = common.toMoney(resp.fee)
+                    resp.added = common.toMoney(resp.added)
                     resp.expires_at = resp.expires_at.split(' ')[0]
                     this.invoice = resp
                 }

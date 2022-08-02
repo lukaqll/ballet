@@ -139,7 +139,7 @@ import common from '../../common/common'
 import siteParam from '../../params/siteParams'
 export default {
     props: {
-        linkRefs: Object
+        linkRefs: {type: Object, default: () => {}}
     },
     computed: {
         siteParam(){

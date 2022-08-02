@@ -1,8 +1,5 @@
 <template>
-    <dashboard-base
-        :title="'Usuários'"
-    >
-        
+
         <div class="row">
             <div class="col-12 mt-3">
                 <h3 class="ml-3">Meus Contratos</h3>
@@ -49,16 +46,12 @@
 
             </div>
         </div>
-        
-    </dashboard-base>
 </template>
 
 <script>
 import common from '../../../common/common'
-import DashboardBase from '../../../components/DashboardBase/index.vue'
 
 export default {
-    components: { DashboardBase },
        
     mounted: function(){
         this.getContracts()

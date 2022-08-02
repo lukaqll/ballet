@@ -6,7 +6,7 @@
             :visible="visible" 
             @hidden="onHidden"
             title="Faturas"
-            size="lg"
+            size="xl"
         >
             <div class="row">
                 <div class="col-md-12">
@@ -18,50 +18,54 @@
                     <table class="table table-hover table-stripped">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Gerada Em</th>
                                 <th>Status</th>
                                 <th>Vencimento</th>
                                 <th>Valor</th>
                                 <th>Multa/Juros</th>
+                                <th>Adicionais</th>
                                 <th></th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="invoice in invoices" :key="invoice.id">
+                                <td>{{ invoice.id }}</td>
                                 <td>{{ invoice.created_at_formated }}</td>
                                 <td>{{ invoice.status_text }}</td>
                                 <td>{{ invoice.expires_at_formated }}</td>
                                 <td>R$ {{ toMoney(invoice.value) }}</td>
                                 <td>R$ {{ toMoney(invoice.fee) }}</td>
+                                <td>R$ {{ toMoney(invoice.added) }}</td>
                                 <td>
                                     <b-badge v-if="invoice.is_expired" variant="danger">Vencida</b-badge>
                                     <b-badge v-if="invoice.manual" variant="primary">Baixa Manual</b-badge>
                                 </td>
                                 <td>
 
-                                    <b-dropdown :id="'dropdown-'+invoice.id" size="sm" variant='light'>
+                                    <b-dropdown :id="'dropdown-'+invoice.id" size="sm" variant='light' v-if="invoice.status == 'A'">
                                         <template #button-content >
                                             <b-icon icon="three-dots-vertical"></b-icon>
                                         </template>
 
-                                        <b-dropdown-item @click="() => openWindow(`/invoice-payment/get/${invoice.id}`)" v-if="invoice.status == 'A'">
+                                        <b-dropdown-item @click="() => openWindow(`/invoice-payment/get/${invoice.id}`)">
                                             Ver Boleto
                                         </b-dropdown-item>
 
-                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => sendMail(invoice.id)">
+                                        <b-dropdown-item size="sm" @click="() => sendMail(invoice.id)">
                                             Enviar E-mail
                                         </b-dropdown-item>
 
-                                        <b-dropdown-item v-if="invoice.status == 'A'" variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">
+                                        <b-dropdown-item variant="danger" size="sm" @click="() => cancelInvoice(invoice.id)">
                                             Cancelar
                                         </b-dropdown-item>
 
-                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => editInvoice(invoice.id)">
+                                        <b-dropdown-item size="sm" @click="() => editInvoice(invoice.id)">
                                             Editar
                                         </b-dropdown-item>
 
-                                        <b-dropdown-item v-if="invoice.status == 'A'" size="sm" @click="() => payInvoice(invoice.id)">
+                                        <b-dropdown-item size="sm" @click="() => payInvoice(invoice.id)">
                                             Baixa Manual
                                         </b-dropdown-item>
                                     </b-dropdown>

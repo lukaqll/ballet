@@ -1,89 +1,83 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
-        
-        <div class="row">
+       
+    <div class="row">
 
-            <div class="col-12">
-                <div>
-                    <b-card no-body class="border-0 shadow-sm">
+        <div class="col-12">
+            <div>
+                <b-card no-body class="border-0 shadow-sm">
 
-                        <b-card-body>
-                            <div class="row">
-                                <div class="col-12">
-                                    <h3>
-                                        Contratos    
-                                    </h3>
-                                </div>
+                    <b-card-body>
+                        <div class="row">
+                            <div class="col-12">
+                                <h3>
+                                    Contratos    
+                                </h3>
+                            </div>
 
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <b-form-select :options="status" class="w-100" v-model="filter.status"></b-form-select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <b-button @click="getContracts">Buscar</b-button>
-                                            <b-button variant="danger" @click="filter = {}">Limpar</b-button>
-                                        </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <b-form-select :options="status" class="w-100" v-model="filter.status"></b-form-select>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="my-2">
-                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                    <div class="col-md-4">
+                                        <b-button @click="getContracts">Buscar</b-button>
+                                        <b-button variant="danger" @click="filter = {}">Limpar</b-button>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-
-                                <div class="table-responsive" v-if="contracts.length">
-                                    <b-table
-                                        :fields="tableFields"
-                                        :items="contracts"
-                                        :filter="tableFilter"
-                                        hover
-                                    >
-                                        <template #cell(actions)="row">
-
-                                            <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
-                                                <template #button-content >
-                                                    <b-icon icon="three-dots-vertical"></b-icon>
-                                                </template>
-                                                <b-dropdown-item :href="`/contracts/view/${row.item.id}`" target="_blank" size="sm">
-                                                    Ver contrato
-                                                </b-dropdown-item>
-                                                <b-dropdown-item :href="`/contracts/sign/${row.item.id}`" target="_blank" v-if="row.item.status == 'running'" size="sm">
-                                                    Assinar
-                                                </b-dropdown-item>
-                                                <b-dropdown-item v-if="row.item.status == 'running'" size="sm" @click="() => notify(row.item.id)">
-                                                    Notificar
-                                                </b-dropdown-item>
-                                                <b-dropdown-item @click="() => cancelContract(row.item.id)" v-if="row.item.status != 'canceled'">
-                                                    <span class='text-danger'>Cancelar</span>
-                                                </b-dropdown-item>
-                                            </b-dropdown>
-                                        </template>
-                                    </b-table>
+                            <div class="col-md-4">
+                                <div class="my-2">
+                                    <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
                                 </div>
-                                <div v-else>Nenhum contrato ainda</div>
-
                             </div>
-                        </b-card-body>
-                    </b-card>
-                </div>
+                        </div>
+                        <div>
+
+                            <div class="table-responsive" v-if="contracts.length">
+                                <b-table
+                                    :fields="tableFields"
+                                    :items="contracts"
+                                    :filter="tableFilter"
+                                    hover
+                                >
+                                    <template #cell(actions)="row">
+
+                                        <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
+                                            <template #button-content >
+                                                <b-icon icon="three-dots-vertical"></b-icon>
+                                            </template>
+                                            <b-dropdown-item :href="`/contracts/view/${row.item.id}`" target="_blank" size="sm">
+                                                Ver contrato
+                                            </b-dropdown-item>
+                                            <b-dropdown-item :href="`/contracts/sign/${row.item.id}`" target="_blank" v-if="row.item.status == 'running'" size="sm">
+                                                Assinar
+                                            </b-dropdown-item>
+                                            <b-dropdown-item v-if="row.item.status == 'running'" size="sm" @click="() => notify(row.item.id)">
+                                                Notificar
+                                            </b-dropdown-item>
+                                            <b-dropdown-item @click="() => cancelContract(row.item.id)" v-if="row.item.status != 'canceled'">
+                                                <span class='text-danger'>Cancelar</span>
+                                            </b-dropdown-item>
+                                        </b-dropdown>
+                                    </template>
+                                </b-table>
+                            </div>
+                            <div v-else>Nenhum contrato ainda</div>
+
+                        </div>
+                    </b-card-body>
+                </b-card>
             </div>
         </div>
-        
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase/index.vue'
 import DataTable from "vue-materialize-datatable";
 
 export default {
-    components: { AdminBase, DataTable },
+    components: {  DataTable },
 
     computed: {
 

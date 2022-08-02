@@ -1,6 +1,6 @@
 <template>
     
-    <admin-base>
+    <div>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <b-card class="border-0 shadow-sm text-center" title="Faturamento Mensal">
@@ -9,16 +9,15 @@
                 </b-card>
             </div>
         </div>
-    </admin-base>
+    </div>
 </template>
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase'
 import LineChart from '../../../components/ReportChart/line.vue'
 import palette from 'google-palette'
 
 export default {
-    components: {AdminBase, LineChart},
+    components: { LineChart},
 
     mounted: function() {
         this.getReport()

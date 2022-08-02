@@ -49,7 +49,7 @@ class MercadoPagoService
         $docNumber = str_replace(' ', '', $docNumber);
 
         // payment data
-        $this->payment->transaction_amount = floatval($invoice->value) + floatval($invoice->fee);
+        $this->payment->transaction_amount = floatval($invoice->value) + floatval($invoice->fee) + floatval($invoice->added);
         $this->payment->description = "Fatura Ellegance Ballet $expirantionText";
         $this->payment->payment_method_id = "bolbradesco";
         $this->payment->external_reference = $invoice->id;

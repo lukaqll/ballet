@@ -159,18 +159,32 @@ class InvoicesService extends AbstractService
             return false;
         }
 
+        // get invoice adds for this month
+        $toAdds = $user->invoiceAdds()
+                      ->where('month', $now)
+                      ->where('id_invoice', null)
+                      ->get();
+        $toAddValue = 0;
+        foreach($toAdds as $toAdd){
+            $toAddValue += floatval($toAdd->value);
+        }
+
         // create invoice
         $invoiceData = [
             'id_user'    => $user->id,
             'value'      => $invoiceValue,
             'status'     => 'A',
             'reference'  => '',
-            'expires_at' => $expiration
+            'expires_at' => $expiration,
+            'added'      => $toAddValue
         ];
 
-        // echo "\n $invoiceValue total \n"; die;
-
         $invoice = $this->create($invoiceData);
+
+        foreach($toAdds as $toAdd){
+            $toAdd->update(['id_invoice' => $invoice->id]);
+        }
+            
         $this->sendInvoiceMail($invoice);
 
         return $invoice;

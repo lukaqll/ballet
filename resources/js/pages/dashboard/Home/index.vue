@@ -1,45 +1,41 @@
 <template>
-    <dashboard-base>
 
-        <b-container>
-            <div class="row">
+    <b-container>
+        <div class="row">
 
-                <div class="col-md-12 pt-3" v-if="data.user">
-                    <h2 class="text-center text-secondary">Bem Vindo, {{ data.user.first_name }}</h2>
-                </div>
+            <div class="col-md-12 pt-3" v-if="data.user">
+                <h2 class="text-center text-secondary">Bem Vindo, {{ data.user.first_name }}</h2>
+            </div>
 
-                <div class="col-md-12 pt-3">
+            <div class="col-md-12 pt-3">
 
-                    <b-alert v-if="statusVariant" show dismissible :variant="statusVariant.variant">
-                        {{statusVariant.text}}
+                <b-alert v-if="statusVariant" show dismissible :variant="statusVariant.variant">
+                    {{statusVariant.text}}
+                </b-alert>
+
+                <router-link v-if="data.open_contracts" to="/contratos" tag="span">
+                    <b-alert show dismissible variant="danger">
+                        Você possui <b>{{ data.open_contracts }}</b> Contratos abertos
                     </b-alert>
+                </router-link>
 
-                    <router-link v-if="data.open_contracts" to="/contratos" tag="span">
-                        <b-alert show dismissible variant="danger">
-                            Você possui <b>{{ data.open_contracts }}</b> Contratos abertos
-                        </b-alert>
-                    </router-link>
-
-                    <router-link v-if="data.user && data.user.open_invoices && data.user.open_invoices.length" to="/faturas" tag="span">
-                        <b-alert show dismissible variant="danger">
-                            Você possui <b>{{ data.user.open_invoices.length }}</b> Faturas abertas
-                        </b-alert>
-                    </router-link>
-
-                </div>
+                <router-link v-if="data.user && data.user.open_invoices && data.user.open_invoices.length" to="/faturas" tag="span">
+                    <b-alert show dismissible variant="danger">
+                        Você possui <b>{{ data.user.open_invoices.length }}</b> Faturas abertas
+                    </b-alert>
+                </router-link>
 
             </div>
-        </b-container>
+
+        </div>
+    </b-container>
            
-    </dashboard-base>
 </template>
 
 <script>
 import common from '../../../common/common'
-import DashboardBase from '../../../components/DashboardBase'
 
 export default {
-    components: { DashboardBase },
     data: () => ({
         data: {},
     }),

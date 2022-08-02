@@ -19,7 +19,8 @@ class InvoiceResource extends JsonResource
             'id_user' => $this->id_user,
             'value' => $this->value,
             'fee' => $this->fee,
-            'total' => $this->fee + $this->value,
+            'added' => $this->added,
+            'total' => $this->fee + $this->value + $this->added,
             'status' => $this->status,
             'reference' => $this->reference,
             'expires_at' => $this->expires_at,
@@ -27,6 +28,7 @@ class InvoiceResource extends JsonResource
             'updated_at' => $this->updated_at,
             'paid_at' => $this->paid_at,
             'manual' => $this->manual,
+            'invoice_adds' => $this->invoiceAdds,
 
             'created_at_formated' => date('d/m/Y', strtotime($this->created_at)),
             'expires_at_formated' => date('d/m/Y', strtotime($this->expires_at)),

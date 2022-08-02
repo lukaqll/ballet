@@ -1,7 +1,5 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
+    <div>
         
         <div class="row">
 
@@ -95,17 +93,16 @@
         </div>
         
         <sale-modal :idSale="idSale" @save="onSave"/>
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase/index.vue'
 import DataTable from "vue-materialize-datatable";
 import SaleModal from './SaleModal.vue';
 
 export default {
-    components: { AdminBase, DataTable, SaleModal },
+    components: { DataTable, SaleModal },
 
     computed: {
 

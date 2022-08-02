@@ -1,7 +1,5 @@
 <template>
-    <admin-base
-        :title="'Usuários'"
-    >
+    <div>
         
         <div class="row">
 
@@ -92,17 +90,16 @@
             @onSave="onStudentSave"
         />
         
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase/index.vue'
 import StudentModal from './StudentModal';
 import DataTable from "vue-materialize-datatable";
 
 export default {
-    components: { AdminBase, StudentModal, DataTable },
+    components: { StudentModal, DataTable },
 
     computed: {
         tableFields(){

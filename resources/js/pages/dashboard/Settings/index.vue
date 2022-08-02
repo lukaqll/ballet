@@ -1,5 +1,4 @@
 <template>
-    <dashboard-base>
         <div>
             <div class="row">
                 <div class="col-12 mt-3">
@@ -233,19 +232,15 @@
                 </b-form>
             </b-modal>
         </div>
-
-    </dashboard-base>
 </template>
 
 <script>
 import common from '../../../common/common'
-import DashboardBase from '../../../components/DashboardBase'
 import orgaosExpeditores from "../../../params/orgaosExpeditores"
 import ufs from "../../../params/ufs"
 
 export default {
     
-    components: {DashboardBase},
     computed: {
         orgaosExpeditores: function(){
             return orgaosExpeditores

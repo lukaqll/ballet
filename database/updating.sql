@@ -216,3 +216,33 @@ CREATE TABLE `parameters` (
   `attribute` TEXT NOT NULL,
   `value` TEXT NULL,
   PRIMARY KEY (`id`));
+
+---------------------
+
+CREATE TABLE `ellega78_app`.`invoice_adds` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_user` INT NOT NULL,
+  `id_invoice` INT NULL,
+  `value` DECIMAL(12,2) NOT NULL DEFAULT 0,
+  `month` DATE NOT NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_USER_idx` (`id_user` ASC),
+  INDEX `FK_INVOICE_idx` (`id_invoice` ASC),
+  CONSTRAINT `FK_USER_ADD`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `ellega78_app`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_INVOICE_ADD`
+    FOREIGN KEY (`id_invoice`)
+    REFERENCES `ellega78_app`.`invoices` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+ALTER TABLE `ellega78_app`.`invoices` 
+ADD COLUMN `added` DECIMAL(12,2) NULL DEFAULT 0 AFTER `manual`;
+
+ALTER TABLE `ellega78_app`.`invoice_adds` 
+ADD COLUMN `description` VARCHAR(45) NULL AFTER `id_invoice`;

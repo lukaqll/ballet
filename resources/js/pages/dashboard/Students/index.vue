@@ -1,45 +1,40 @@
 <template>
-    <dashboard-base
-        :title="'Usuários'"
-    >
         
-        <div class="row">
+    <div class="row">
 
-            <div class="col-12 mt-3">
-                <h3 class="ml-3">Alunos</h3>
-                <hr>
-            </div>
-            <div class="col-12">
-                
-                <div class="row justify-content-center">
+        <div class="col-12 mt-3">
+            <h3 class="ml-3">Alunos</h3>
+            <hr>
+        </div>
+        <div class="col-12">
+            
+            <div class="row justify-content-center">
 
-                    <div class="col-md-6 my-2" v-for="student in students" :key="student.id">
+                <div class="col-md-6 my-2" v-for="student in students" :key="student.id">
 
-                        <b-card class="border-0 shadow-sm">
-                            <div class="row">
-                                <div class="col-12" v-if="student.picture">
-                                    <img :src="student.picture" alt="" class="img-fluid rounded">
-                                </div>
-                                <div class="col-12">
-                                    <h4 class="text-center">{{ student.name }}</h4>
-                                    <p>
-                                        Aniversário: <b>{{student.birthdate_formated}}</b> <br>
-                                        Status: <b>{{student.status_text}}</b> <br>
-                                        <span v-if="student.classes.length">Aulas: <b>{{ student.classes.map(i => i.name).join(', ') }}.</b></span>
-                                        <span v-else>Aulas: Nenhuma aula ainda</span>
-                                    </p>
-                                </div>
-                                <div class="col-12">
-                                    <b-button variant="block" class="btn-light" @click="() => editStudent(student.id)">Editar</b-button>
-                                </div>
+                    <b-card class="border-0 shadow-sm">
+                        <div class="row">
+                            <div class="col-12" v-if="student.picture">
+                                <img :src="student.picture" alt="" class="img-fluid rounded">
                             </div>
-                        </b-card>
-                    </div>
-
+                            <div class="col-12">
+                                <h4 class="text-center">{{ student.name }}</h4>
+                                <p>
+                                    Aniversário: <b>{{student.birthdate_formated}}</b> <br>
+                                    Status: <b>{{student.status_text}}</b> <br>
+                                    <span v-if="student.classes.length">Aulas: <b>{{ student.classes.map(i => i.name).join(', ') }}.</b></span>
+                                    <span v-else>Aulas: Nenhuma aula ainda</span>
+                                </p>
+                            </div>
+                            <div class="col-12">
+                                <b-button variant="block" class="btn-light" @click="() => editStudent(student.id)">Editar</b-button>
+                            </div>
+                        </div>
+                    </b-card>
                 </div>
+
             </div>
         </div>
-
         <student-modal
             :isVisible="studentModalShow"
             :idStudent="editableStudentId"
@@ -47,18 +42,18 @@
             @onHidden="onStudentModalHidden"
             @onSave="onStudentSave"
         />
+    </div>
+
         
-    </dashboard-base>
 </template>
 
 <script>
 import common from '../../../common/common'
-import DashboardBase from '../../../components/DashboardBase'
 import StudentModal from './StudentModal.vue';
 import DataTable from "vue-materialize-datatable";
 
 export default {
-    components: { DashboardBase, StudentModal, DataTable },
+    components: { StudentModal, DataTable },
 
     computed: {
         studentsBindings(){

@@ -1,5 +1,5 @@
 <template>
-    <admin-base>
+    <div>
         <div>
             <div class="row">
                 <div class="col-12">
@@ -73,16 +73,14 @@
             </b-modal>
         </div>
 
-    </admin-base>
+    </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-import AdminBase from '../../../components/AdminBase'
 
 export default {
     
-    components: {AdminBase},
     mounted: function() {
         common.request({
             type: 'get',
