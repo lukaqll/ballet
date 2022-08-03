@@ -169,6 +169,7 @@ class InvoiceController extends Controller
                 date('Y-m-d', strtotime($validData['expires_at'])) != date('Y-m-d', strtotime($invoice->expires_at)) 
                 || floatval($validData['value']) != floatval($invoice->value) 
                 || floatval($validData['fee']) != floatval($invoice->fee) 
+                || floatval($validData['added']) != floatval($invoice->added) 
             ){
                 $invoice->update(['reference' => null]);
                 if( $invoice->openPayment ){
