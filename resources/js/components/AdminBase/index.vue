@@ -35,7 +35,7 @@
 
         </b-navbar>
 
-        <div class="l-navbar" id="nav-bar" :class="sibarExpanded ? 'show' : '' ">
+        <div class="l-navbar pt-3" id="nav-bar" :class="sibarExpanded ? 'show' : '' ">
             <nav class="nav">
                 <div>                     
                     <div class="nav_list"> 

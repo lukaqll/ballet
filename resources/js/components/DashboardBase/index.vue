@@ -35,25 +35,24 @@
 
         </b-navbar>
 
-        <div class="l-navbar" id="nav-bar" :class="sibarExpanded ? 'show' : '' ">
+        <div class="l-navbar pt-3 elevation-2" id="nav-bar" :class="sibarExpanded ? 'show' : '' ">
             <nav class="nav">
                 <div>                     
                     <div class="nav_list"> 
 
-                        <div class="nas_link w-100 my-4" v-if="user.id">
+                        <div class="w-100 my-4" v-if="user.id">
                             <div class="row justify-content-center">
                                 <div class="col-6" v-if="user.picture">
                                     <img class="img-fluid rounded" :src="user.picture" alt="pic">
                                 </div>
                                 <div class="col-12 text-center">
-                                    <p class=" text-white mt-2">
-                                        {{user.name}} <br>
-                                        <small class="text-white">
-                                            Desde: {{user.created_at_format}}
-                                        </small>
+                                    <p class="mt-2 px-2">
+                                        <b>{{user.name}}</b>
+                                        <br>
+                                        <small>Desde: {{user.created_at_format}}</small>
                                     </p>
                                 </div>
-                                <hr class="border-white">
+                                <hr>
                             </div>
                         </div>
 
