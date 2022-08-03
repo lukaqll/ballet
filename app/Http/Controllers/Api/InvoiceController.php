@@ -5,6 +5,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Mail\InvoiceMail;
+use App\Models\Parameter;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -235,10 +236,18 @@ class InvoiceController extends Controller
 
         try {
 
+
+            $invoiceAllow = Parameter::where('operation', 'general-config')
+                                    ->where('attribute', 'invoice_allow')
+                                    ->where('value', '1')
+                                    ->first();
+            if(empty($invoiceAllow))
+                throw new Exception('Estamos em manutenção, tente mais tarde :)');
+
             $invoice = $this->invoicesService->find($id);
             
             if($invoice->status != 'A')
-                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+                throw new Exception('Esta fatura não está mais aberta');
     
             $invoicePayment = $invoice->openPayment;
     

@@ -6,6 +6,7 @@ use App\Mail\InvoiceMail;
 use App\Models\ClassModel;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
+use App\Models\Parameter;
 use App\Models\StudentClass;
 use App\Models\User;
 use App\Services\Api\MercadoPagoService;
@@ -307,11 +308,17 @@ class InvoicesService extends AbstractService
 
     public function sendInvoiceMail(Invoice $invoice){
 
-        // JobsInvoiceMail::dispatch($invoice)->delay(now()->addSeconds('15'));
-        // JobsInvoiceMail::dispatch($invoice);
         try {
+            
+            $emailAllowParam = Parameter::where('operation', 'general-config')
+                                        ->where('attribute', 'send_invoice_mail')
+                                        ->where('value', '1')
+                                        ->first();
 
-            Mail::send(new InvoiceMail($invoice));
+            if(!empty($emailAllowParam)){
+                Mail::send(new InvoiceMail($invoice));
+            }
+
         } catch (Exception $e){
 
         }

@@ -215,5 +215,9 @@ Route::group(['middleware' => ['admin']], function () {
     Route::delete('/invoice-add/{id}', [InvoiceAddController::class, 'delete']);
     Route::get('/user/{id}/invoice-add', [InvoiceAddController::class, 'list']);
 
+    // general config
+    Route::get('/config/get', [ParameterController::class, 'getConfig']);
+    Route::post('/config/save', [ParameterController::class, 'saveConfig']);
+
 });
 Route::post('/invoices/update-fee/{id}', [InvoiceController::class, 'updateFee']);

@@ -204,4 +204,45 @@ class ParameterController extends Controller
 
         return response()->json( $response );
     }
+
+    
+    /**
+     * get config
+     */
+    public function getConfig( Request $request ){
+        try {
+
+            $result = $this->parametersService->list(['operation' => 'general-config']);
+            $response = [ 'status' => 'success', 'data' => $result ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    /**
+     * save config
+     */
+    public function saveConfig( Request $request ){
+        try {
+
+            $invoice_allow = $request->input('invoice_allow');
+            $send_invoice_mail = $request->input('send_invoice_mail');
+
+            $this->parametersService->saveConfig('invoice_allow', $invoice_allow);
+            $this->parametersService->saveConfig('send_invoice_mail', $send_invoice_mail);
+
+            $response = [ 'status' => 'success', 'data' => true ];
+
+        } catch ( ValidationException $e ){
+            
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+    
 }

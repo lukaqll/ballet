@@ -246,3 +246,7 @@ ADD COLUMN `added` DECIMAL(12,2) NULL DEFAULT 0 AFTER `manual`;
 
 ALTER TABLE `ellega78_app`.`invoice_adds` 
 ADD COLUMN `description` VARCHAR(45) NULL AFTER `id_invoice`;
+
+
+INSERT INTO `ellega78_app`.`parameters` (`operation`, `attribute`, `value`) VALUES ('general-config', 'invoice_allow', '1');
+INSERT INTO `ellega78_app`.`parameters` (`operation`, `attribute`, `value`) VALUES ('general-config', 'send_invoice_mail', '1');

@@ -108,4 +108,21 @@ class ParametersService extends AbstractService
 
         return $signerData;
     }
+
+    public function saveConfig($attr, $value){
+
+        $config = $this->get(['operation' => 'general-config', 'attribute' => $attr]);
+
+        if(!empty($config)){
+            $config->update(['value' => $value]);
+        } else {
+            $config = $this->create([
+                'operation' => 'general-config', 
+                'attribute' => $attr,
+                'value' => $value
+            ]);
+        }
+
+        return $config;
+    }
 }
