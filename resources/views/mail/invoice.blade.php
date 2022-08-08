@@ -10,7 +10,7 @@
                 <h1>Olá, {{ $user->name }}</h1>
                 <h3>Sua Fatura Ellegance Ballet já está disponível</h3>
                 <p>
-                    Valor: R$ {{ number_format($invoice->value, 2, ',', ',') }}
+                    Valor: R$ {{ number_format(floatval($invoice->value)+floatval($invoice->fee)+floatval($invoice->added), 2, ',', ',') }}
                     <br>
                     Vencimento: {{ date('d/m/Y', strtotime($invoice->expires_at)) }}
                 </p>

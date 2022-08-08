@@ -28,8 +28,63 @@
                         </b-card>
                     </div>
 
-                    <!-- user data -->
+                    <!-- files -->
                     <div :class="`col-12 my-2 form-step ${getStepHandle(0)}`">
+                        <b-card class="border-0 shadow-sm">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4 class="h4 mt-4">
+                                        <b-icon icon="files"></b-icon>
+                                        Arquivos
+                                    </h4>
+                                    <hr>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="border rounded my-1 p-2">
+                                        <label>Frente do documento de identidade do responsável</label>
+                                        <b-form-file
+                                            v-model="files.doc1"
+                                            :state="Boolean(files.doc1)"
+                                            placeholder="Escolha ou arraste um arquivo..."
+                                            drop-placeholder="Solte aqui..."
+                                        />
+                                        <div class="mt-3">Arquivo Selecionado: {{ files.doc1 ? files.doc1.name : '' }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="border rounded my-1 p-2">
+                                        <label>Verso do documento de identidade do responsável</label>
+                                        <b-form-file
+                                            v-model="files.doc2"
+                                            :state="Boolean(files.doc2)"
+                                            placeholder="Escolha ou arraste um arquivo..."
+                                            drop-placeholder="Solte aqui..."
+                                        />
+                                        <div class="mt-3">Arquivo Selecionado: {{ files.doc2 ? files.doc2.name : '' }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="border rounded my-1 p-2">
+                                        <label>Comprovante de pagamento da matrícula</label>
+                                        <b-form-file
+                                            v-model="files.payment"
+                                            :state="Boolean(files.payment)"
+                                            placeholder="Escolha ou arraste um arquivo..."
+                                            drop-placeholder="Solte aqui..."
+                                        />
+                                        <div class="mt-3">Arquivo Selecionado: {{ files.payment ? files.payment.name : '' }}</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </b-card> 
+                    </div>
+
+                    <!-- user data -->
+                    <div :class="`col-12 my-2 form-step ${getStepHandle(1)}`">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
 
@@ -128,7 +183,7 @@
                     </div>
 
                     <!-- address -->
-                    <div :class="`col-12 my-2 form-step ${getStepHandle(1)}`">
+                    <div :class="`col-12 my-2 form-step ${getStepHandle(2)}`">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-12 mt-3">
@@ -189,7 +244,7 @@
                     </div>
 
                     <!-- student data -->
-                    <div :class="`col-12 my-2 form-step ${getStepHandle(2)}`">
+                    <div :class="`col-12 my-2 form-step ${getStepHandle(3)}`">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-12">
@@ -286,7 +341,7 @@
                     </div>
 
                     <!-- know by -->
-                    <div :class="`col-12 my-2 form-step ${getStepHandle(3)}`">
+                    <div :class="`col-12 my-2 form-step ${getStepHandle(4)}`">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
                                 <div class="col-md-4">
@@ -304,61 +359,6 @@
                                 </div>
                             </div>
                         </b-card>
-                    </div>
-
-                    <!-- files -->
-                    <div :class="`col-12 my-2 form-step ${getStepHandle(4)}`">
-                        <b-card class="border-0 shadow-sm">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h4 class="h4 mt-4">
-                                        <b-icon icon="files"></b-icon>
-                                        Arquivos
-                                    </h4>
-                                    <hr>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="border rounded my-1 p-2">
-                                        <label>Frente do documento de identidade do responsável</label>
-                                        <b-form-file
-                                            v-model="files.doc1"
-                                            :state="Boolean(files.doc1)"
-                                            placeholder="Escolha ou arraste um arquivo..."
-                                            drop-placeholder="Solte aqui..."
-                                        />
-                                        <div class="mt-3">Arquivo Selecionado: {{ files.doc1 ? files.doc1.name : '' }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="border rounded my-1 p-2">
-                                        <label>Verso do documento de identidade do responsável</label>
-                                        <b-form-file
-                                            v-model="files.doc2"
-                                            :state="Boolean(files.doc2)"
-                                            placeholder="Escolha ou arraste um arquivo..."
-                                            drop-placeholder="Solte aqui..."
-                                        />
-                                        <div class="mt-3">Arquivo Selecionado: {{ files.doc2 ? files.doc2.name : '' }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="border rounded my-1 p-2">
-                                        <label>Comprovante de pagamento da matrícula</label>
-                                        <b-form-file
-                                            v-model="files.payment"
-                                            :state="Boolean(files.payment)"
-                                            placeholder="Escolha ou arraste um arquivo..."
-                                            drop-placeholder="Solte aqui..."
-                                        />
-                                        <div class="mt-3">Arquivo Selecionado: {{ files.payment ? files.payment.name : '' }}</div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </b-card> 
                     </div>
 
                     <!-- save -->

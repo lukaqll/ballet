@@ -3,7 +3,7 @@
         <b-modal 
             hide-footer 
             size="lg" 
-            :title="idStudent ? 'Editar aluno '+student.name  : 'Novo Aluno'"
+            :title="!!idStudent ? 'Editar aluno '+student.name  : 'Novo Aluno'"
             :visible="isVisible" 
             @hidden="onHidden" 
             @shown="onShown" 
@@ -20,7 +20,7 @@
                                         <b-form-group>
                                             <label>Usuário</label>
                                             <v-select 
-                                                disabled
+                                                :disabled="!!idStudent"
                                                 :options="usersOptions" 
                                                 label="text"
                                                 :reduce="user => user.value"
@@ -88,32 +88,44 @@
                             </div>
 
                             <div class="col-md-4">
-                                <b-form-group>
+                                <b-form-group v-if="!!idStudent" >
                                     <label>Problema de saúde</label>
                                     <b-form-input v-if="student.health_problem" disabled placeholder="Problema de saúde" class="w-100" v-model="student.health_problem"/>
                                     <span v-else> <br> Nenhum problema de saúde</span>
                                 </b-form-group>
+                                <b-form-group v-else >
+                                    <label>Problema de saúde</label>
+                                    <b-form-input placeholder="Problema de saúde" class="w-100" v-model="student.health_problem"/>
+                                </b-form-group>
                             </div>
 
                             <div class="col-md-4">
-                                <b-form-group>
+                                <b-form-group v-if="!!idStudent">
                                     <label>Restrição alimentar</label>
                                     <b-form-input v-if="student.food_restriction" disabled placeholder="Retrição alimentar" class="w-100" v-model="student.food_restriction"/>
                                     <span v-else> <br> Nenhuma restrição alimentar</span>
+                                </b-form-group>
+                                <b-form-group v-else>
+                                    <label>Restrição alimentar</label>
+                                    <b-form-input placeholder="Retrição alimentar" class="w-100" v-model="student.food_restriction"/>
                                 </b-form-group>
                             </div>
 
                             
                             <div class="col-md-4">
-                                <b-form-group>
+                                <b-form-group v-if="!!idStudent">
                                     <label>Ensino regular</label>
                                     <b-form-input v-if="student.school_time" disabled placeholder="Ex.: de segunda à sexta, matutino"  class="w-100" v-model="student.school_time"></b-form-input>
                                     <span v-else> <br> Não está no ensino regular</span>
                                 </b-form-group>
+                                <b-form-group v-else>
+                                    <label>Ensino regular</label>
+                                    <b-form-input placeholder="Ex.: de segunda à sexta, matutino"  class="w-100" v-model="student.school_time"></b-form-input>
+                                </b-form-group>
                             </div>
                         </div>
                     </b-tab>
-                    <b-tab title="Aulas">
+                    <b-tab title="Aulas" v-if="!!idStudent">
                         <div class="row">
                             <div class="col-md-12 my-4">
                                 <h5>
@@ -154,7 +166,7 @@
                             </div>
                         </div>
                     </b-tab>
-                    <b-tab title="Contratos">
+                    <b-tab title="Contratos"  v-if="!!idStudent">
                         <div class="row">
                             <div class="col-md-12" v-if="student.id">
                                 <table class="table table-sm">
@@ -287,7 +299,7 @@ export default {
     props: {
         isVisible: Boolean,
         onSave: Function,
-        idStudent: Number,
+        idStudent: {type: Number, default: null},
         user: Object
     },
     computed: {
@@ -384,6 +396,7 @@ export default {
                     load: true,
                     success: (data) => {
                         this.$emit('onSave', data)
+                        this.getStudent(data.id)
                     }
                 })
             }
