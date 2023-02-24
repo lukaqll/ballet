@@ -33,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'is_admin',
         'picture',
         'signer_key',
+        'id_unit',
         'uf',
         'city',
         'district',
@@ -62,6 +63,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function students(){
         return $this->hasMany( Student::class, 'id_user', 'id' );
+    }
+
+    public function unit() {
+        return $this->hasOne(Unit::class, 'id', 'id_unit');
     }
 
     /**

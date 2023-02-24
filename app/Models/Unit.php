@@ -14,7 +14,8 @@ class Unit extends Model
 
     protected $fillable = [
         'id',
-        'name'
+        'name',
+        'due_day'
     ];
 
     public $timestamps = false;

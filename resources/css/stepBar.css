@@ -21,7 +21,8 @@
     content: "";
     border-bottom: 2px solid #ccc;
     /* width: 100%; */
-    top: 20px;
+    top: 25%;
+    /* top: 20px; */
     left: -50%;
     z-index: 2;
   }
@@ -31,7 +32,8 @@
     content: "";
     border-bottom: 2px solid #ccc;
     width: 100%;
-    top: 20px;
+    top: 25%;
+    /* top: 20px; */
     left: 50%;
     z-index: 2;
   }
@@ -49,8 +51,9 @@
     margin-bottom: 6px;
   }
   
-  .stepper-item.active {
+  .stepper-item.active .step-counter {
     /* font-weight: bold; */
+    border: 2px solid #4bb543;
   }
   
   .stepper-item.completed .step-counter {
@@ -63,7 +66,8 @@
     content: "";
     border-bottom: 2px solid #4bb543;
     width: 100%;
-    top: 20px;
+    top: 25%;
+    /* top: 20px; */
     left: 50%;
     z-index: 3;
   }

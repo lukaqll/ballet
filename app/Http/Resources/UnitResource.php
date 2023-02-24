@@ -17,6 +17,7 @@ class UnitResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'due_day' => $this->due_day,
             'classes' => ClassResource::collection($this->classes),
         ];
     }

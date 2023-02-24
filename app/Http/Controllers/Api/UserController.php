@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RegisterFileResource;
 use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\UserResource;
+use App\Models\ClassModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -99,6 +100,7 @@ class UserController extends Controller
                 'user_picture' => 'nullable|image',
                 'send_password_mail' => 'nullable',
 
+                'user_id_unit'  => 'required|integer|exists:units,id',
                 'user_uf'       => 'required|string',
                 'user_city'     => 'required|string',
                 'user_district' => 'required|string',
@@ -164,6 +166,7 @@ class UserController extends Controller
                 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
                 'phone' => 'required|string',
                 'is_whatsapp'   => 'nullable|integer',
+                'id_unit'  => 'required|integer|exists:units,id',
                 'uf'       => 'required|string',
                 'city'     => 'required|string',
                 'district' => 'required|string',
@@ -390,6 +393,8 @@ class UserController extends Controller
             $studentData['id_user'] = $user->id;
             $student = $this->studentsService->createStudent($studentData);
             
+            $class = ClassModel::find($studentData['id_class']);
+            $user->update(['id_unit' => $class->id_unit]);
 
             // register files
             $fileValidData = $request->validate([

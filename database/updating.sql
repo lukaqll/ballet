@@ -250,3 +250,13 @@ ADD COLUMN `description` VARCHAR(45) NULL AFTER `id_invoice`;
 
 INSERT INTO `ellega78_app`.`parameters` (`operation`, `attribute`, `value`) VALUES ('general-config', 'invoice_allow', '1');
 INSERT INTO `ellega78_app`.`parameters` (`operation`, `attribute`, `value`) VALUES ('general-config', 'send_invoice_mail', '1');
+
+----------
+
+ALTER TABLE `ellega78_app`.`units` 
+ADD COLUMN `due_day` INT NOT NULL DEFAULT 8 AFTER `name`;
+
+ALTER TABLE `ellega78_app`.`users` 
+ADD COLUMN `id_unit` INT NULL AFTER `signer_key`;
+
+----------

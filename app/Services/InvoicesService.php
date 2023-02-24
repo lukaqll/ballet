@@ -140,9 +140,16 @@ class InvoicesService extends AbstractService
         // first day of month
         $now = date('Y-m-01');
         $curMonth = date('Y-m', strtotime($now));
+
+        $day = $user->unit->due_day;
+        if ($day < 1)
+            $day = 1;
+
+        if ($day > date('t'))
+            $day = date('t');
         
         // expires at day 10
-        $expiration = date('Y-m-d 23:59:59', strtotime('+7 days', strtotime($now)));
+        $expiration = date("Y-m-{$day} 23:59:59", strtotime($now));
 
         // get invoice from current month
         $isInvoiceMonthExists = $this->model->where('status', '!=', 'C')
@@ -307,6 +314,7 @@ class InvoicesService extends AbstractService
     }
 
     public function sendInvoiceMail(Invoice $invoice){
+        if (env('APP_ENV') != 'prod') return;
 
         try {
             

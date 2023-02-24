@@ -30,6 +30,8 @@ class UserResource extends JsonResource
             'students' => StudentResource::collection($this->students),
             'created_at_format' => date('d/m/Y', strtotime($this->created_at)),
 
+            'unit' => $this->unit,
+            'id_unit' => $this->id_unit,
             'uf' => $this->uf,
             'city' => $this->city,
             'district' => $this->district,

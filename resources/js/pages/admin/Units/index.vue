@@ -28,7 +28,7 @@
                                                 {{unit.name}}
                                             </div>
                                             <div class="col-3 text-right">
-                                                <b-button variant="light" size="sm" v-b-tooltip.hover title="Editar unidade" @click="editUnit($event, unit.id, unit.name)">
+                                                <b-button variant="light" size="sm" v-b-tooltip.hover title="Editar unidade" @click="editUnit($event, unit)">
                                                     <b-icon class="text-primary" icon="pencil-square" ></b-icon>
                                                 </b-button>
                                                 <b-button variant="light" size="sm" v-b-tooltip.hover title="Adicionar aula" @click="addClass($event, unit)">
@@ -218,9 +218,11 @@ export default {
                 }
             })
         },
-        editUnit(evt, id, name){
+        editUnit(evt, unit){
             this.editableUnit = {
-                id: id, name: name
+                id: unit.id,
+                name: unit.name,
+                due_day: unit.due_day
             }
             this.unitModalShow = true
         },

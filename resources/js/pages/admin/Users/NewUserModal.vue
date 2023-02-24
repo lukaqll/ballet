@@ -126,22 +126,28 @@
 
             <div class="row">
                 <!-- addess -->
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <b-form-group>
                         <label>CEP</label>
                         <b-form-input type="text" placeholder="CEP"  v-model="user.cep" v-mask="'#####-###'"/>
                     </b-form-group>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <b-form-group>
                         <label>UF</label>
                         <b-form-select :options="ufs" class="w-100" v-model="user.uf"></b-form-select>
                     </b-form-group>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <b-form-group>
                         <label>Cidade</label>
                         <b-form-input type="text" placeholder="cidade"  v-model="user.city"/>
+                    </b-form-group>
+                </div>
+                <div class="col-md-3">
+                    <b-form-group>
+                        <label>Unidade</label>
+                        <b-form-select :options="units" class="w-100" v-model="user.id_unit"></b-form-select>
                     </b-form-group>
                 </div>
 
@@ -251,13 +257,15 @@ export default {
         ufs: [
             {value: 'ES', text: 'Espírito Santo'},
             {value: 'MG', text: 'Minas Gerais'},
-        ]
+        ],
+        units: []
     }),
     props: {
         isVisible: Boolean,
     },
     mounted: function() {
         this.getClasses()
+        this.getUnits()
     },
     watch: {
         sendPasswordMail: function(willSend) {
@@ -317,6 +325,26 @@ export default {
                     this.classes = classes.map(cl => (
                         {value: cl.id, text: `${cl.name} - ${cl.unit_name}`})
                     )
+                }
+            })
+        },
+
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units.map(cl => (
+                        {value: cl.id, text: `${cl.name}`})
+                    )
+                },
+                error: () => {
+                    common.setError({
+                        title: 'Ops! Houve algum erro.',
+                        message: 'Por favor, recarregue a página e tente novamente'
+                    })
                 }
             })
         }

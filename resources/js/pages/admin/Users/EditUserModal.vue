@@ -129,22 +129,28 @@
 
                     <b-tab title="Endereço">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <b-form-group>
                                     <label>CEP</label>
                                     <b-form-input type="text" placeholder="CEP"  v-model="user.cep" v-mask="'#####-###'"/>
                                 </b-form-group>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <b-form-group>
                                     <label>UF</label>
                                     <b-form-select :options="ufs" class="w-100" v-model="user.uf"></b-form-select>
                                 </b-form-group>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <b-form-group>
                                     <label>Cidade</label>
                                     <b-form-input type="text" placeholder="Cidade"  v-model="user.city"/>
+                                </b-form-group>
+                            </div>
+                            <div class="col-md-3">
+                                <b-form-group>
+                                    <label>Unidade</label>
+                                    <b-form-select :options="units" class="w-100" v-model="user.id_unit" :value="user.id_unit"></b-form-select>
                                 </b-form-group>
                             </div>
 
@@ -396,13 +402,16 @@ export default {
             {value: 'MG', text: 'Minas Gerais'},
         ],
         registrationFiles: [],
-        
+        units: [],
         invoiceAdd: {}
     }),
     props: {
         isVisible: Boolean,
         onSave: Function,
         user: Object,
+    },
+    mounted: function() {
+        this.getUnits()
     },
     computed: {
         orgaosExpeditores: function(){
@@ -611,6 +620,26 @@ export default {
         },
         monthFormat(str){
             return common.monthFormat(str)
+        },
+
+        getUnits(){
+            common.request({
+                url: '/api/units/list',
+                type: 'get',
+                auth: true,
+                setError: true,
+                success: (units) => {
+                    this.units = units.map(cl => (
+                        {value: cl.id, text: `${cl.name}`})
+                    )
+                },
+                error: () => {
+                    common.setError({
+                        title: 'Ops! Houve algum erro.',
+                        message: 'Por favor, recarregue a página e tente novamente'
+                    })
+                }
+            })
         }
     }
 }

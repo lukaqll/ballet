@@ -37,6 +37,8 @@ class InvoiceMail implements ShouldQueue
      */
     public function handle()
     {
+        if (env('APP_ENV') != 'prod') return;
+        
         Mail::send(new MailInvoiceMail($this->invoice));
     }
 }

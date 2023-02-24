@@ -10,10 +10,16 @@
 
         <b-form @submit.prevent="save">
             <div class="row">
-                <div class="col-12">
+                <div class="col-md-6">
                     <b-form-group>	
-                        <label>Nome</label>
-                        <b-form-input v-model="unit.name"/>
+                        <label for="name">Nome</label>
+                        <b-form-input id="name" v-model="unit.name"/>
+                    </b-form-group>
+                </div>
+                <div class="col-md-6">
+                    <b-form-group>
+                        <label for="day">Dia de vencimento</label>
+                        <b-form-input id="day" type="number" min="1" max="31" v-model="unit.due_day" value="1"/>
                     </b-form-group>
                 </div>
                 <div class="col-12 text-right">
@@ -65,6 +71,7 @@ export default {
                     auth: true,
                     data: this.unit,
                     load: true,
+                    setError: true,
                     success: (resp) => {
                         this.unit = {}
                         this.$emit('onSave', resp)
@@ -78,6 +85,7 @@ export default {
                     type: 'post',
                     auth: true,
                     data: this.unit,
+                    setError: true,
                     load: true,
                     success: (resp) => {
                         this.unit = {}

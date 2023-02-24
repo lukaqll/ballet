@@ -19,6 +19,8 @@ class PasswordRecoveryService extends AbstractService
 
     public function sendMail( User $user, bool $isFirst = false ){
 
+        if (env('APP_ENV') != 'prod') return true;
+
         // cancel others token
         $this->model->where('id_user', $user->id)
                     ->where('status', 'A')

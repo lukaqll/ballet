@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex flex-column justify-content-center h-100 bg-light mt-3 main-container" style="min-height: 100vh !important">
-        <component :is="containerTag" class="w-100 d-flex justify-content-center py-5">
+    <div class="d-flex flex-column h-100 bg-light mt-3 main-container" style="min-height: 100vh !important">
+        <component :is="containerTag" class="w-100 d-flex py-5">
             <template v-if="!saved">
                 <div class="row">
                     <div class="col-12">
@@ -344,6 +344,9 @@
                     <div :class="`col-12 my-2 form-step ${getStepHandle(4)}`">
                         <b-card class="border-0 shadow-sm">
                             <div class="row">
+                                <div class="col-12">
+                                    <hr>
+                                </div>
                                 <div class="col-md-4">
                                     <div>
                                         <b-form-group label="Como conheceu nossa empresa?" v-slot="{ knowBy }">
@@ -438,11 +441,11 @@ export default {
         ],
 
         steps: [
-            {index: 0, name: 'Usuário'},
-            {index: 1, name: 'Endereço'},
-            {index: 2, name: 'Aluno'},
-            {index: 3, name: 'Questionário'},
-            {index: 4, name: 'Arquivos'},
+            {index: 0, name: 'Arquivos'},
+            {index: 1, name: 'Usuário'},
+            {index: 2, name: 'Endereço'},
+            {index: 3, name: 'Aluno'},
+            {index: 4, name: 'Questionário'}
         ],
         currentStep: 0
     }),
@@ -594,7 +597,7 @@ export default {
         getStepHandle(step){
             if( this.currentStep == step ){
                 return 'active'
-            } else if ( this.currentStep > step ){
+            } else if ( this.currentStep >= step ){
                 return 'completed'
             } else {
                 return ''

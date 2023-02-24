@@ -186,6 +186,8 @@ return [
         'end'                       => 'Hora de Fechamento',
         'notes'                     => 'Observação',
         'expires_at'                => 'Vencimento',
+        'id_unit'                   => 'Unidade',
+        'due_day'                   => 'Dia de vencimento',
         
         'id_user'                   => 'Usuário',
         'nick_name'                 => 'Apelido',
@@ -197,7 +199,7 @@ return [
         'user_uf'       => 'UF do Usuário',
         'user_city'     => 'Cidade do Usuário',
         'user_district' => 'Bairro do Usuário',
-        'user_street'   => 'Cidade do Usuário',
+        'user_street'   => 'Logradouro do Usuário',
         'user_rg'       => 'RG do Usuário',
         'user_orgao_exp' => 'Órgão do Usuário',
         'user_uf_orgao_exp' => 'UF do Órgão do Usuário',
@@ -205,6 +207,7 @@ return [
         'user_cep'       => 'CEP do Usuário',
         'user_instagram' => 'Instagram do Usuário',
         'user_know_by'   => 'Como Nos Conheceu',
+        'user_id_unit'   => 'Unidade',
 
         'student_name'     => 'Nome do Aluno',
         'student_nick_name' => 'Apelido do Aluno',

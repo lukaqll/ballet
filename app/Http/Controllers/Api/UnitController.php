@@ -85,6 +85,7 @@ class UnitController extends Controller
 
             $validData = $request->validate([
                 'name' => 'required|string|unique:units',
+                'due_day' => 'required|integer|min:1|max:31'
             ]);
             
             $created = $this->unitsService->create( $validData );
@@ -109,6 +110,7 @@ class UnitController extends Controller
             
             $validData = $request->validate([
                 'name' => 'required|string|unique:units,name,'.$id,
+                'due_day' => 'required|integer|min:1|max:31'
             ]);
             $updated = $this->unitsService->updateById( $id, $validData);
             $response = [ 'status' => 'success', 'data' => new UnitResource($updated) ];
