@@ -398,9 +398,9 @@ class UserController extends Controller
 
             // register files
             $fileValidData = $request->validate([
-                'file_doc1' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
-                'file_doc2' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
-                'file_payment' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin',
+                'file_doc1' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin|max:4096',
+                'file_doc2' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin|max:4096',
+                'file_payment' => 'required|file|mimes:png,jpg,jpeg,pdf,docx,xml,xls,xlsx,doc,txt,zip,rar,bin|max:4096',
             ]);
             $files = $this->registerFilesSerivce->registerUpload( $user, $fileValidData );
 

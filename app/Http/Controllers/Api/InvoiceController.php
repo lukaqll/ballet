@@ -288,7 +288,7 @@ class InvoiceController extends Controller
     /**
      * payManually
      */
-    public function payManually($id){
+    public function payManually(Request $request, $id){
 
         try {
 
@@ -304,7 +304,27 @@ class InvoiceController extends Controller
                 $invoice->openPayment->update(['status' => 'payd', 'status_detail' => 'payd_manual']);
             }
 
-            $updated = $this->invoicesService->updateById( $id, ['status' => 'P', 'manual' => 1, 'paid_at' => date('Y-m-d H:i:s')] );
+            $validData = $request->validate([
+                'paid_at' => 'nullable|date',
+                'method' => 'nullable|integer|exists:payment_methods,id',
+                'receipt' => 'nullable|mimes:jpg,jpeg,png,bmp,gif,pdf'
+            ]);
+
+            if (!empty($validData['receipt'])) {
+                $invoice = $this->invoicesService->find($id);
+                $this->invoicesService->uploadReceipt($invoice, $validData['receipt']);
+                unset($validData['receipt']);
+            }
+
+            if (empty($validData['paid_at'])) {
+                $validData['paid_at'] = date('Y-m-d');
+            }
+
+            $validData['status'] = 'P';
+            $validData['manual'] = 1;
+            $validData['closed_at'] = date('Y-m-d H:i:s');
+
+            $updated = $this->invoicesService->updateById($id, $validData);
             $this->usersService->verifyUserStatus( $invoice->user );
             
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($updated) ];
@@ -330,6 +350,27 @@ class InvoiceController extends Controller
 
         } catch ( ValidationException $e ){
             
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function attachReceipt(Request $request, $id) {
+        try {
+            $invoice = $this->invoicesService->find($id);
+            if(empty($invoice))
+                throw ValidationException::withMessages(['Não é possível anexar um comprovante à esta fatura']);
+
+            $validData = $request->validate([
+                'receipt' => 'required|mimes:jpg,jpeg,png,bmp,gif,pdf'
+            ]);
+
+            if (empty($this->invoicesService->uploadReceipt($invoice, $validData['receipt'])))
+                throw ValidationException::withMessages(['Houve um erro ao carregar o arquivo']);
+
+            $response = [ 'status' => 'success', 'data' => true ];
+        } catch (ValidationException $e) {
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
 

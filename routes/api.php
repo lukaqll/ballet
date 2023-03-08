@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InvoiceAddController;
+use App\Http\Controllers\Api\PaymentMethodController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -191,6 +192,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/invoices', [InvoiceController::class, 'create']);
     Route::post('/invoices/pay-manually/{id}', [InvoiceController::class, 'payManually']);
     Route::post('/invoices/send-mail/{id}', [InvoiceController::class, 'sendInvoiceMail']);
+    Route::post('/invoices/attach-receipt/{id}', [InvoiceController::class, 'attachReceipt']);
 
     // reports
     Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);
@@ -219,5 +221,10 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/config/get', [ParameterController::class, 'getConfig']);
     Route::post('/config/save', [ParameterController::class, 'saveConfig']);
 
+    // payment methods
+    Route::get('/payment-methods', [PaymentMethodController::class, 'list']);
+    Route::post('/payment-methods', [PaymentMethodController::class, 'create']);
+    Route::put('/payment-methods/{id}', [PaymentMethodController::class, 'update']);
+    Route::delete('/payment-methods/{id}', [PaymentMethodController::class, 'delete']);
 });
 Route::post('/invoices/update-fee/{id}', [InvoiceController::class, 'updateFee']);

@@ -21,7 +21,10 @@ class Invoice extends Model
         'updated_at',
         'fee',
         'paid_at',
+        'closed_at',
         'manual',
+        'receipt',
+        'method',
         'added'
     ];
 
@@ -49,5 +52,9 @@ class Invoice extends Model
 
     public function invoiceAdds(){
         return $this->hasMany(InvoiceAdd::class, 'id_invoice', 'id');
+    }
+
+    public function paymentMethod() {
+        return $this->hasOne(PaymentMethod::class, 'id', 'method');
     }
 }

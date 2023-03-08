@@ -260,3 +260,14 @@ ALTER TABLE `ellega78_app`.`users`
 ADD COLUMN `id_unit` INT NULL AFTER `signer_key`;
 
 ----------
+
+ALTER TABLE `ellega78_app`.`invoices` 
+ADD COLUMN `closed_at` DATETIME NULL AFTER `paid_at`,
+ADD COLUMN `method` INT NULL AFTER `manual`,
+ADD COLUMN `receipt` VARCHAR(1024) NULL AFTER `method`;
+
+CREATE TABLE `ellega78_app`.`payment_methods` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `deleted` TINYINT(4) NULL DEFAULT 0,
+  PRIMARY KEY (`id`));

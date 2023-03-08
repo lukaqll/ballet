@@ -12,6 +12,11 @@
                     <b-icon icon="person"></b-icon>
                     Configurar Signatário
                 </router-link>
+
+                <b-button @click="getPaymentMethods">
+                    <i class="fa fa-dollar-sign"></i>
+                    Métodos de pagamento
+                </b-button>
             </b-card>
         </div>
 
@@ -27,15 +32,27 @@
                 <b-button class="mt-4" @click="save" variant="primary">Salvar</b-button>
             </b-card>
         </div>
+
+        <payment-method-modal
+            :list="paymentMethods"
+            :visible="methodsModal"
+            @onHidden="hideMethodsModal"
+        />
     </div>
 </template>
 
 <script>
 import common from '../../../common/common'
-export default {
+import PaymentMethodModal from './PaymentMethodModal.vue'
 
+export default {
+    components: {
+        PaymentMethodModal
+    },
     data: () => ({
-        config: {}
+        config: {},
+        methodsModal: false,
+        paymentMethods: []
     }),
 
     mounted() {
@@ -43,6 +60,25 @@ export default {
     },
 
     methods: {
+
+        hideMethodsModal() {
+            this.paymentMethods = []
+            this.methodsModal = false
+        },
+
+        getPaymentMethods() {
+            common.request({
+                url: '/api/payment-methods',
+                type: 'get',
+                setError: true,
+                load: true,
+                auth: true,
+                success: (resp) => {
+                    this.paymentMethods = resp
+                    this.methodsModal = true
+                }
+            })
+        },
 
         getConfig() {
             common.request({

@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class InvoicesService extends AbstractService
 {
@@ -306,7 +307,7 @@ class InvoicesService extends AbstractService
         $userService = new UsersService;
 
         // update invoice status
-        $ticket->invoice->update(['status' => 'P', 'paid_at' => date('Y-m-d H:i:s')]);
+        $ticket->invoice->update(['status' => 'P', 'paid_at' => date('Y-m-d H:i:s'), 'closed_at' => date('Y-m-d H:i:s')]);
 
         // verify store status
         $user = $ticket->invoice->user;
@@ -357,6 +358,24 @@ class InvoicesService extends AbstractService
 
         if( !empty($invoice->reference) ){
             $mercadoPagoService->cancelPayment($invoice->reference);
+        }
+
+        return $invoice;
+    }
+
+    public function uploadReceipt(Invoice $invoice, $file) {
+        if( empty($file) )
+            return false;
+        
+        // upload
+        $fileName = Storage::disk('public')->put('/receipts', $file);
+
+        if (!empty($invoice->receipt)) {
+            Storage::disk('public')->delete($invoice->receipt);
+        }
+        
+        if( $fileName ){
+            $invoice->update(['receipt' => $fileName]);
         }
 
         return $invoice;
