@@ -8,15 +8,13 @@
     >
         <b-form @submit.prevent="upload">
             <div class="row">
-                <div class="col-12">
-                    <div>
-                        <b-form-file
-                            v-model="file"
-                            placeholder="Escolha ou arraste um arquivo..."
-                            drop-placeholder="Escolha ou arraste um arquivo..."
-                        />
-                        <div class="mt-3">Arquivo Selecionado: {{ file ? file.name : '' }}</div>
-                    </div>
+                <div class="col-12 mb-4">
+                    <b-form-file
+                        v-model="file"
+                        placeholder="Escolha ou arraste um arquivo..."
+                        drop-placeholder="Escolha ou arraste um arquivo..."
+                    />
+                    <div class="mt-3">Arquivo Selecionado: {{ file ? file.name : '' }}</div>
                 </div>
                 <div class="col-12 text-right">
                     <b-button @click="hideModal">Cancelar</b-button>

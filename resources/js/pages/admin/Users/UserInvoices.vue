@@ -104,7 +104,7 @@
                         <b-form-select :options="paymentMethods" v-model="selectedMethod"/>
                     </b-form-group>
                 </div>
-                <div class="col-12">
+                <div class="col-12 mb-4">
                     <b-form-group>
                         <label>Comprovante</label>
                         <b-form-file
@@ -115,7 +115,6 @@
                     </b-form-group>
                     <div class="mt-3">Arquivo Selecionado: {{ receipt ? receipt.name : '' }}</div>
                 </div>
-                <hr>
                 <div class="col-12 text-right">
                     <b-button @click="hidePaymentModal">Cancelar</b-button>
                     <b-button @click="payInvoice" variant="primary"><b-icon icon="check"/>Confirmar</b-button>
