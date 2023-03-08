@@ -87,7 +87,7 @@
                     </b-form-group>
                 </div>
 
-                <div class="col-md-12" v-if="student.id">
+                <div class="col-md-12 table-responsive" v-if="student.id">
                     <h5>Contratos</h5>
                     <table class="table table-sm">
                         <thead>

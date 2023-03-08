@@ -168,7 +168,7 @@
                     </b-tab>
                     <b-tab title="Contratos"  v-if="!!idStudent">
                         <div class="row">
-                            <div class="col-md-12" v-if="student.id">
+                            <div class="col-md-12 table-responsive" v-if="student.id">
                                 <table class="table table-sm">
                                     <thead>
                                         <tr>
