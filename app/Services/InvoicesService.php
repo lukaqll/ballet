@@ -33,21 +33,19 @@ class InvoicesService extends AbstractService
      */
     public function getUsersToInvoice(){
 
-        $result = collect(DB::select("
-            select 
+        $result = collect(DB::select(
+            "SELECT 
                 us.id
-            from users us
-            join students st
-                on st.id_user = us.id
-                and st.status = 'A'
-            join student_classes sc
-                on sc.id_student = st.id
-                and sc.approved_at is not null
-            join classes cl
-                on cl.id = sc.id_class
-            where 
-                us.status IN ('A', 'P')
-            group by us.id;"));
+            FROM users us
+            JOIN students st ON st.id_user = us.id
+                AND st.status = 'A'
+            JOIN student_classes sc ON sc.id_student = st.id
+                AND sc.approved_at IS NOT NULL
+            JOIN classes cl ON cl.id = sc.id_class
+            WHERE us.status IN ('A', 'P')
+            GROUP BY us.id;
+            "
+        ));
 
         return $result;
     }
@@ -78,7 +76,8 @@ class InvoicesService extends AbstractService
             echo "\n {$user->name}";
             try {
 
-                $invoice = $this->generateInvoiceToUser( $user );
+                $value = $this->getInvoiceValue($user);
+                $invoice = $this->generateInvoiceToUser( $user, $value );
                 if( $invoice ){
                     echo "\n -> fatura gerada | R$ {$invoice->value}";
                 } else {
@@ -95,13 +94,70 @@ class InvoicesService extends AbstractService
     }
 
     /**
+     * get users to generate invoice
+     * 
+     * @return array
+     */
+    public function getUnsignedUsersToInvoice(){
+
+        return collect(DB::select(
+            "SELECT 
+                us.id
+            FROM users us
+            JOIN students st ON st.id_user = us.id
+                AND st.status = 'CP'
+            JOIN contracts ct on ct.id_student = st.id
+                and ct.status = 'running'
+            JOIN student_classes sc ON sc.id_student = st.id
+            JOIN classes cl ON cl.id = sc.id_class
+            WHERE us.status IN ('A', 'P')
+            GROUP BY us.id;
+            "
+        ));
+    }
+
+    /**
+     * generate to unsigned users
+     * run on script
+     * 
+     * @return array
+     */
+    public function generateInvoicesForUnsigned(){
+
+        $userModel = new User;
+        $usersResult = $this->getUnsignedUsersToInvoice();
+
+        $generated = [];
+        foreach( $usersResult as $item ){
+            
+            $user = $userModel->find($item->id);
+            $result = ['name' => $user->name];
+            
+            try {
+                $value = $this->getUnsignedUserInvoiceValue($user);
+                $invoice = $this->generateInvoiceToUser( $user, $value );
+                if ( $invoice ) {
+                    $result['message'] = "Fatura gerada | R$ {$invoice->value}";
+                } else {
+                    $result['message'] = "Fatura não gerada";
+                }
+            } catch ( Exception $e ){
+                $result['message'] = $e->getMessage();
+            }
+            $generated[] = $result;
+        }
+
+        return $generated;
+    }
+
+    /**
      * get invoice value
      * 
      * @param User
      * 
      * @return float
      */
-    public function getInvoiceValue( User $user, string $now ){
+    public function getInvoiceValue( User $user ){
 
         $students = $user->students;
         $value = 0;
@@ -129,6 +185,27 @@ class InvoicesService extends AbstractService
     }
 
     /**
+     * get invoice value
+     * @param User
+     * @return float
+     */
+    public function getUnsignedUserInvoiceValue( User $user ){
+        
+        $value = 0;
+
+        foreach($user->students as $student){
+            if ($student->status != 'CP') continue;
+            
+            foreach($student->studentClasses as $studentClass){
+                $class = $studentClass->class;
+                $value += $class->value;
+            }
+        }
+        
+        return $value;
+    }
+
+    /**
      * generate invoice
      * 
      * @param User $user
@@ -136,7 +213,7 @@ class InvoicesService extends AbstractService
      * 
      * @return Invoice
      */
-    public function generateInvoiceToUser( User $user ){
+    public function generateInvoiceToUser( User $user, $invoiceValue ){
 
         // first day of month
         $now = date('Y-m-01');
@@ -158,11 +235,10 @@ class InvoicesService extends AbstractService
                                             ->whereRaw("date_format(created_at, '%Y-%m') = '$curMonth'")
                                             ->first();
 
-        if( !empty($isInvoiceMonthExists) )
-            throw new Exception("Fatura do mês {$curMonth} já gerada");
-
-        // calc proportional
-        $invoiceValue = $this->getInvoiceValue($user, $now);
+        if( !empty($isInvoiceMonthExists) ) {
+            $month = implode('/', array_reverse(explode('-', $curMonth)));
+            throw new Exception("Fatura do mês {$month} já gerada");
+        }
         
         if( $invoiceValue < 3.49 ){
             return false;
@@ -332,6 +408,22 @@ class InvoicesService extends AbstractService
 
         }
 
+    }
+
+    public function sendAllUsersInvoicesMail() {
+        $invoices = Invoice::join('users', function($join) {
+                                $join->on('users.id', 'invoices.id_user')
+                                ->where('users.status', 'A');
+                            })
+                            ->where('invoices.status', 'A')
+                            ->select('invoices.*')
+                            ->get();
+
+        foreach ($invoices as $invoice) {
+            $this->sendInvoiceMail($invoice);
+        }
+        
+        return true;
     }
 
     public function feeVerify( Invoice $invoice ){

@@ -5,7 +5,7 @@
             hide-footer
             :visible="visible"
             @hidden="onHidden"
-            title="Faturas"
+            :title="'Faturas'+(user ? ` - ${user.name}` : '')"
             size="xl"
         >
             <div class="row">
@@ -157,7 +157,7 @@ export default {
     components: {InvoiceModal, FileModal},
     props:{
         visible: Boolean,
-        idUser: Number
+        user: Object
     },
     data: () => ({
         formData: {},
@@ -185,7 +185,7 @@ export default {
         },
         getInvoices() {
             common.request({
-                url: '/api/invoices/list-by-user/'+this.idUser,
+                url: '/api/invoices/list-by-user/'+this.user?.id,
                 type: 'get',
                 auth: true,
                 load: true,
@@ -210,7 +210,7 @@ export default {
                         load: true,
                         setError: true,
                         success: (resp) => {
-                            this.getInvoices(this.idUser)
+                            this.getInvoices(this.user?.id)
                         }
                     })
                 }
@@ -223,7 +223,7 @@ export default {
         newInvoice(){
             this.editableInvoice = null
             this.showInvoiceModal = true
-            this.idUserInvoice = this.idUser
+            this.idUserInvoice = this.user?.id
         },
         openWindow(url){
             window.open(url,'_blank');
@@ -247,7 +247,7 @@ export default {
                         data: data,
                         success: (resp) => {
                             this.hidePaymentModal()
-                            this.getInvoices(this.idUser)
+                            this.getInvoices(this.user?.id)
                         }
                     })
                 }

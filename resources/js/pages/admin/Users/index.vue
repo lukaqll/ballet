@@ -7,7 +7,7 @@
                     <b-card no-body class="border-0 shadow-sm">
 
                         <b-card-body>
-                            <div class="row">
+                            <div class="row gap-2">
                                 <div class="col-12">
                                     <h3>
                                         Usuários    
@@ -28,20 +28,29 @@
                                         <div class="col-md-6" style="margin-top: 2rem">
                                             <b-button @click="getUsers">Buscar</b-button>
                                             <b-button variant="danger" @click="filter = {}">Limpar</b-button>
-                                            <b>{{ users.length }} resultados</b>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 mt-4">
-                                    <div class="my-2">
-                                        <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                <div class="col-12 d-flex flex-column gap-1">
+                                    <b>{{ users.length }} resultado{{users.length != 1 ? 's' : ''}}</b>
+                                    <div class="d-flex align-items-center gap-3" v-if="expiredUsersCount">
+                                        <b>{{expiredUsersCount}} usuário{{expiredUsersCount != 1 ? 's' : ''}} com faturas abertas</b>
+                                        <b-button size="sm" variant="info" class="py-0" @click="sendMail">Enviar email</b-button>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3" v-if="unsignedUsers">
+                                        <b>{{unsignedUsers}} assinatura{{unsignedUsers != 1 ? 's' : ''}} pendente{{unsignedUsers != 1 ? 's' : ''}}</b>
+                                        <b-button size="sm" variant="info" class="py-0" @click="generateInvoices">Gerar faturas</b-button>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
 
-                                <div class="table-responsive" v-if="users.length">
+                            </div>
+
+                            <div class="row mt-4 gap-2" v-if="users.length">
+                                <div class="col-md-4">
+                                    <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                </div>
+                                <div class="col-12 table-responsive">
                                     <b-table
                                         :fields="tableFields"
                                         :items="usersTable"
@@ -70,7 +79,7 @@
                                                     <b-icon icon="pencil-square"></b-icon> Editar
                                                 </b-dropdown-item>
 
-                                                <b-dropdown-item @click="e => getUserInvoices(row.item.id)">
+                                                <b-dropdown-item @click="e => getUserInvoices(row.item)">
                                                     <i class="fa fa-dollar-sign"></i> Faturas 
                                                     <b v-if="row.item.open_invoices.length">
                                                         ({{row.item.open_invoices.length}} faturas abertas)
@@ -87,12 +96,10 @@
                                     </b-table>
 
                                 </div>
-                                <div v-else>
-                                    <h6 class="text-center text-secondary">Nenhum resultado</h6>
 
-                                    
-                                </div>
-
+                            </div>
+                            <div v-else>
+                                <h6 class="text-center text-secondary">Nenhum resultado</h6>
                             </div>
                         </b-card-body>
                     </b-card>
@@ -122,6 +129,7 @@
             :user="editableUser"
             @onHidden="onStudentModalHidden"
             @onSave="onStudentSave"
+            @update="getUnsignedUsersToInvoice"
         />
 
         <password-update-modal
@@ -132,9 +140,9 @@
         />
 
         <user-invoices
-            :visible="idUserInvoice ? true : false"
-            :idUser="idUserInvoice"
-            @onHidden="() => idUserInvoice = null"
+            :visible="userInvoice ? true : false"
+            :user="userInvoice"
+            @onHidden="() => userInvoice = null"
         />
 
 
@@ -181,6 +189,9 @@ export default {
             return this.users.map((user) => {
                 return {...user, _rowVariant: user.open_invoices && user.open_invoices.length ? 'danger' : null}
             })
+        },
+        expiredUsersCount(){
+            return this.users.filter(user => !!user?.open_invoices?.length).length
         }
     },
 
@@ -188,6 +199,7 @@ export default {
     mounted: function(){
         this.getUsers()
         this.getUnits()
+        this.getUnsignedUsersToInvoice()
     },
 
     data: () => ({
@@ -201,11 +213,12 @@ export default {
         tableFilter: '',
         units: [],
 
-        idUserInvoice: null,
+        userInvoice: null,
+        unsignedUsers: 0
     }),
 
     methods: {
-        getUsers(){
+        getUsers(load = true){
             let filters = {}
             for(const key in this.filter){
                 if( this.filter[key] )
@@ -217,9 +230,62 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
-                load: true,
+                load,
                 success: (users) => {
                     this.users = users
+                }
+            })
+        },
+
+        getUnsignedUsersToInvoice() {
+            common.request({
+                url: '/api/invoices/unsigned',
+                type: 'get',
+                auth: true,
+                setError: true,
+                load: true,
+                success: (count) => {
+                    this.unsignedUsers = count
+                }
+            })
+        },
+
+        generateInvoices() {
+            common.confirmAlert({
+                title: 'Isso criará uma fatura para todos os usuários com assinatura pendente',
+                confirmButtonText: 'Confirmar',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/invoices/unsigned/generate',
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: (resp) => {
+                            const message = resp.map(item => `${item.name}: ${item.message}`).join('.<br>')
+                            this.getUsers(false)
+                            common.confirmAlert({message: message, confirmButtonText: 'Ok', showCancelButton: false, type: 'success'})
+                        }
+                    })
+                }
+            })
+        },
+
+        sendMail() {
+            common.confirmAlert({
+                title: 'Isso enviará um E-mail para cada fatura aberta de todos os usuários',
+                confirmButtonText: 'Confirmar',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/invoices/mail/all',
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: (resp) => {
+                            common.success({title: 'E-mails enviados'})
+                        }
+                    })
                 }
             })
         },
@@ -277,8 +343,8 @@ export default {
             this.editableStudentId = null
             this.studentModalShow = true
         },
-        getUserInvoices(idUser){
-            this.idUserInvoice = idUser
+        getUserInvoices(user){
+            this.userInvoice = user
         },
         getUnits(){
             common.request({

@@ -114,7 +114,7 @@ const common = {
             icon: opt.type || 'warning',
             title: opt.title || '',
             html: '<p>' + (opt.message || '') + '</p>',
-            showCancelButton: true,
+            showCancelButton: opt.showCancelButton != undefined ? opt.showCancelButton : true,
             confirmButtonText: opt.confirmButtonText || 'Sim',
             cancelButtonText: opt.cancelButtonText || 'Cancelar',
         }).then((result)=>{

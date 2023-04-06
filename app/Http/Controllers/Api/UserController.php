@@ -185,7 +185,11 @@ class UserController extends Controller
 
             $this->usersService->verifyUserName($validData['name']);
             $userData['is_whatsapp'] = empty($userData['is_whatsapp']) ? 0 : 1;
+            $user = $this->usersService->find($id);
             $updated = $this->usersService->updateById( $id, $validData);
+            if ($validData['phone'] != $user->phone || $validData['email'] != $user->email) {
+                $this->clicksignService->replaceDocSigner($updated);
+            }
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
 
         } catch ( ValidationException $e ){
@@ -506,6 +510,9 @@ class UserController extends Controller
             $this->usersService->verifyUserName($validData['name']);
             $validData['is_whatsapp'] = empty($validData['is_whatsapp']) ? 0 : 1;
             $updated = $this->usersService->updateById( $user->id, $validData);
+            if ($validData['phone'] != $user->phone) {
+                $this->clicksignService->replaceDocSigner($updated);
+            }
             $response = [ 'status' => 'success', 'data' => new UserResource($updated) ];
 
         } catch ( ValidationException $e ){

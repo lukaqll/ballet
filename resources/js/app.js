@@ -25,3 +25,28 @@ const app = new Vue({
     el: '#app',
     router: new VueRouter(routes)
 });
+
+app.$on('bv::dropdown::show', e => {
+    var $dropdown = $(e.target);
+    var $container = $dropdown.parents('.table-responsive');
+
+    if (!$container.length && !$dropdown.data('dropdown-container')) return
+
+    if ($container.length) {
+        $dropdown.data('dropdown-container', $container);
+    } else {
+        $container = $dropdown.data('dropdown-container');
+    }
+
+    $dropdown.css('top', ($container.offset().top + $container.outerHeight()) + 'px');
+    $dropdown.css('left', $container.offset().left + 'px');
+    $dropdown.css('position', 'absolute');
+    $dropdown.css('display', 'block');
+    $dropdown.css('z-index', '9999');
+    const parent = $dropdown.parents('.modal-content')[0] || $dropdown.parents('.main-container')
+    $dropdown.appendTo(parent);
+})
+
+app.$on('bv::dropdown::hide', e => {
+    $(e.target).css('display', 'none');
+})

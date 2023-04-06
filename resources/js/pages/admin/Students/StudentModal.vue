@@ -427,6 +427,7 @@ export default {
                         load: true,
                         success: (std) => {
                             this.getStudent(this.student.id)
+                            this.$emit('update')
                         }
                     })
                 }
@@ -450,6 +451,7 @@ export default {
                                 this.getStudent(this.student.id)
                                 this.toAddClass = null
                                 this.addClassModalShow = false
+                                this.$emit('update')
                             }
                         })
                     }
@@ -505,6 +507,7 @@ export default {
                         load: true,
                         success: (contract) => {
                             this.getStudent(contract.id_student)
+                            this.$emit('update')
                         }
                     })
                 }
@@ -523,6 +526,7 @@ export default {
                         load: true,
                         success: (contract) => {
                             this.getStudent(contract.id_student)
+                            this.$emit('update')
                         }
                     })
                 }

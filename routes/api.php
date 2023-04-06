@@ -192,7 +192,10 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/invoices', [InvoiceController::class, 'create']);
     Route::post('/invoices/pay-manually/{id}', [InvoiceController::class, 'payManually']);
     Route::post('/invoices/send-mail/{id}', [InvoiceController::class, 'sendInvoiceMail']);
+    Route::post('/invoices/mail/all', [InvoiceController::class, 'sendAllUsersInvoicesMail']);
     Route::post('/invoices/attach-receipt/{id}', [InvoiceController::class, 'attachReceipt']);
+    Route::post('/invoices/unsigned/generate', [InvoiceController::class, 'createForUnsignedUsers']);
+    Route::get('/invoices/unsigned', [InvoiceController::class, 'getUnsignedUsers']);
 
     // reports
     Route::get('/reports/know-by', [ReportsController::class, 'knowBy']);

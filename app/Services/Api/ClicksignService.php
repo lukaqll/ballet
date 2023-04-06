@@ -105,7 +105,7 @@ class ClicksignService extends AbstractApiService
         $parametersService = new ParametersService;
 
         if( empty($user->signer_key) )
-            throw ValidationException::withMessages(['O usuário responsavel não está cadastrado como signatário']);
+            throw ValidationException::withMessages(['O usuário responsável não está cadastrado como signatário']);
 
         $rand = strtotime(date('YmdHis'));
 
@@ -191,6 +191,47 @@ class ClicksignService extends AbstractApiService
             return $result;
         } else {
             throw ValidationException::withMessages($response['message']);
+        }
+    }
+
+    /**
+     * remove a signer from a document
+     */
+    public function removeDocSigner(User $user, Contract $contract) {
+        if (empty($user->signer_key))
+            throw ValidationException::withMessages(['O usuário responsável não está cadastrado como signatário']);
+        
+        $doc = $this->getDocument($contract);
+        $signer = array_filter($doc->document->signers, function($signer) use($user) {
+            return $signer->key == $user->signer_key && (empty($signer->signature) || $signer->signature->validation->status != 'conferred');
+        });
+
+        if (empty($signer))
+            throw ValidationException::withMessages(['Signatário não encontrado']);
+
+        $signer = array_values($signer)[0];
+        $url = "/lists/{$signer->list_key}";
+        $response = $this->request('delete', $url, [
+            'query' => [
+                'access_token' => $this->accesToken
+            ]
+        ]);
+
+        if( $response['status'] != 'success' )
+            throw ValidationException::withMessages($response['message']);
+    }
+
+    public function replaceDocSigner(User $user) {
+        foreach ($user->contracts as $contract) {
+            if ($contract->status != 'running') continue;
+            
+            try {
+                $this->removeDocSigner($user, $contract);
+                $newSigner = $this->createSignatory($user);
+                $this->addSignatoryInDoc($newSigner, $contract);
+            } catch (ValidationException $e) {
+                continue;
+            }
         }
     }
 

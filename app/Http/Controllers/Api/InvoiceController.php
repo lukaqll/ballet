@@ -356,6 +356,17 @@ class InvoiceController extends Controller
         return response()->json( $response );
     }
 
+    public function sendAllUsersInvoicesMail(Request $request) {
+        try {
+            $result = $this->invoicesService->sendAllUsersInvoicesMail();
+            $response = [ 'status' => 'success', 'data' => $result ];
+        } catch (ValidationException $e) {
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
     public function attachReceipt(Request $request, $id) {
         try {
             $invoice = $this->invoicesService->find($id);
@@ -370,6 +381,31 @@ class InvoiceController extends Controller
                 throw ValidationException::withMessages(['Houve um erro ao carregar o arquivo']);
 
             $response = [ 'status' => 'success', 'data' => true ];
+        } catch (ValidationException $e) {
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function createForUnsignedUsers() {
+        try {
+            DB::beginTransaction();
+            $result = $this->invoicesService->generateInvoicesForUnsigned();
+            $response = [ 'status' => 'success', 'data' => $result ];
+            DB::commit();
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    public function getUnsignedUsers() {
+        try {
+            $result = $this->invoicesService->getUnsignedUsersToInvoice();
+            $response = [ 'status' => 'success', 'data' => count($result) ];
         } catch (ValidationException $e) {
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
         }
