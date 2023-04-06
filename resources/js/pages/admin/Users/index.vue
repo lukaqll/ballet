@@ -243,7 +243,7 @@ export default {
                 type: 'get',
                 auth: true,
                 setError: true,
-                load: true,
+                load: false,
                 success: (count) => {
                     this.unsignedUsers = count
                 }
