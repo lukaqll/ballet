@@ -48,6 +48,7 @@ class User extends Authenticatable implements JWTSubject
         'birthdate',
         'cep',
         'know_by',
+        'deleted',
         'created_at',
         'updated_at'
     ];

@@ -118,6 +118,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/users/admin/self-update', [UserController::class, 'adminSelfUpdate']);
     Route::post('/users/inactivate/{id}', [UserController::class, 'inactivate']);
     Route::post('/users/activate/{id}', [UserController::class, 'activate']);
+    Route::post('/users/delete-multiple', [UserController::class, 'deleteMultiple']);
     Route::delete('/users/{id}', [UserController::class, 'delete']);
 
     //
@@ -173,6 +174,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/contracts/cancel/{id}', [DocumentsController::class, 'cancelContract']);
     Route::post('/contracts/generate/{idStudent}/{idClass}', [DocumentsController::class, 'generate']);
     Route::post('/contracts/notify/{id}', [DocumentsController::class, 'notify']);
+    Route::post('/contracts/notifyAll', [DocumentsController::class, 'notifyAll']);
 
     // contracts
     Route::get('/contracts/list-all', [DocumentsController::class, 'list']);

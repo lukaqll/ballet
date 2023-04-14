@@ -111,6 +111,8 @@ class StudentController extends Controller
         try {
 
             $result = $this->studentsService->get( ['id' => $id] );
+            if (empty($result))
+                throw ValidationException::withMessages(['Aluno não encontrado']);
             $response = [ 'status' => 'success', 'data' => new StudentResource($result) ];
 
         } catch ( ValidationException $e ){
@@ -266,7 +268,16 @@ class StudentController extends Controller
 
         try {
 
-            $deleted = $this->studentsService->deleteById( $id );
+            // $deleted = $this->studentsService->deleteById( $id );
+            $student = $this->studentsService->find($id);
+            if (empty($student))
+                throw ValidationException::withMessages(['Aluno não encontrado']);
+
+            foreach ($student->openContracts as $contract) {
+                $this->clicksignService->cancelContract($contract);
+            }
+
+            $deleted = $student->update(['deleted' => 1]);
             $response = [ 'status' => 'success', 'data' => new StudentResource($deleted) ];
 
         } catch ( ValidationException $e ){

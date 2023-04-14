@@ -41,7 +41,8 @@ const common = {
 
             // error
             else {
-                opt.error && opt.log( resp.data.message )
+                opt.log && console.error( e )
+                opt.error && opt.error( resp.data.message )
 
                 //if set error is true
                 opt.setError && common.setError({message: common.formatRequiredError(resp.data.message) || 'Ops! Houve algum erro.'})

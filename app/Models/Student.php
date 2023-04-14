@@ -24,6 +24,7 @@ class Student extends Model
         'food_restriction',
         'in_school',
         'school_time',
+        'deleted',
         'created_at',
         'updated_at',
         

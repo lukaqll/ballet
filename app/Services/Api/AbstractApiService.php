@@ -31,7 +31,14 @@ abstract class AbstractApiService
             return $this->respose( $response->getStatusCode(), json_decode($response->getBody()) );
 
         } catch( ClientException $e ){
-            return $this->respose( $e->getCode(), json_decode($e->getResponse()->getBody())->errors );
+            $resp = json_decode($e->getResponse()->getBody());
+            $errors = ['Houve algum erro'];
+            if (!empty($resp->errors))
+                $errors = $resp->errors;
+            else if (!empty($resp->batch))
+                $errors = $resp->batch->errors;
+                
+            return $this->respose( $e->getCode(), $errors );
         }
     }
 

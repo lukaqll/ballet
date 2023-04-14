@@ -21,50 +21,58 @@
                                     </div>
                                     <div class="col-md-4">
                                         <b-button @click="getContracts">Buscar</b-button>
-                                        <b-button variant="danger" @click="filter = {}">Limpar</b-button>
+                                        <b-button variant="danger" @click="filter = {status: null}">Limpar</b-button>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-12 mt-3" v-if="running.length">
+                                <div class="d-flex align-items-center gap-3">
+                                    <b>{{running.length}} assinatura{{running.length != 1 ? 's' : ''}} pendente{{running.length != 1 ? 's' : ''}}</b>
+                                    <b-button size="sm" variant="info" class="py-0" @click="notifyAll">Notificar</b-button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" v-if="contracts.length">
                             <div class="col-md-4">
                                 <div class="my-2">
                                     <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
                                 </div>
                             </div>
-                        </div>
-                        <div>
 
-                            <div class="table-responsive" v-if="contracts.length">
-                                <b-table
-                                    :fields="tableFields"
-                                    :items="contracts"
-                                    :filter="tableFilter"
-                                    hover
-                                >
-                                    <template #cell(actions)="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <b-table
+                                        :fields="tableFields"
+                                        :items="contracts"
+                                        :filter="tableFilter"
+                                        hover
+                                    >
+                                        <template #cell(actions)="row">
 
-                                        <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
-                                            <template #button-content >
-                                                <b-icon icon="three-dots-vertical"></b-icon>
-                                            </template>
-                                            <b-dropdown-item :href="`/contracts/view/${row.item.id}`" target="_blank" size="sm">
-                                                Ver contrato
-                                            </b-dropdown-item>
-                                            <b-dropdown-item :href="`/contracts/sign/${row.item.id}`" target="_blank" v-if="row.item.status == 'running'" size="sm">
-                                                Assinar
-                                            </b-dropdown-item>
-                                            <b-dropdown-item v-if="row.item.status == 'running'" size="sm" @click="() => notify(row.item.id)">
-                                                Notificar
-                                            </b-dropdown-item>
-                                            <b-dropdown-item @click="() => cancelContract(row.item.id)" v-if="row.item.status != 'canceled'">
-                                                <span class='text-danger'>Cancelar</span>
-                                            </b-dropdown-item>
-                                        </b-dropdown>
-                                    </template>
-                                </b-table>
+                                            <b-dropdown :id="'dropdown-'+row.item.id" size="sm" variant='light'>
+                                                <template #button-content >
+                                                    <b-icon icon="three-dots-vertical"></b-icon>
+                                                </template>
+                                                <b-dropdown-item :href="`/contracts/view/${row.item.id}`" target="_blank" size="sm">
+                                                    Ver contrato
+                                                </b-dropdown-item>
+                                                <b-dropdown-item :href="`/contracts/sign/${row.item.id}`" target="_blank" v-if="row.item.status == 'running'" size="sm">
+                                                    Assinar
+                                                </b-dropdown-item>
+                                                <b-dropdown-item v-if="row.item.status == 'running'" size="sm" @click="() => notify(row.item.id)">
+                                                    Notificar
+                                                </b-dropdown-item>
+                                                <b-dropdown-item @click="() => cancelContract(row.item.id)" v-if="row.item.status != 'canceled'">
+                                                    <span class='text-danger'>Cancelar</span>
+                                                </b-dropdown-item>
+                                            </b-dropdown>
+                                        </template>
+                                    </b-table>
+                                </div>
                             </div>
-                            <div v-else>Nenhum contrato ainda</div>
-
                         </div>
+                        <div class="text-center mt-4" v-else>Nenhum resgistro encontrado</div>
                     </b-card-body>
                 </b-card>
             </div>
@@ -91,12 +99,18 @@ export default {
                 { key: 'actions', label: '' },
             ]
         },
+
         status(){
             return [
+                {text: 'Todos', value: null},
                 {text: 'Abertos', value: 'running'},
                 {text: 'Finalizados', value: 'closed'},
                 {text: 'Cancelados', value: 'canceled'},
             ]
+        },
+
+        running() {
+            return this.contracts.filter(i => i.status == 'running')
         }
     },
 
@@ -107,7 +121,7 @@ export default {
 
     data: () => ({
         contracts: [],
-        filter: {},
+        filter: {status: null},
         tableFilter: ''
     }),
 
@@ -141,8 +155,27 @@ export default {
                 auth: true,
                 setError: true,
                 load: true,
-                success: (student) => {
+                success: () => {
                     common.success({title: 'Notificações enviadas'})
+                }
+            })
+        },
+
+        notifyAll(){
+            common.confirmAlert({
+                title: 'Enviar notificação de assinatura para todos os contratos abertos?',
+                confirmButtonText: 'Sim',
+                onConfirm: () => {
+                    common.request({
+                        url: '/api/contracts/notifyAll',
+                        type: 'post',
+                        auth: true,
+                        setError: true,
+                        load: true,
+                        success: () => {
+                            common.success({title: 'Notificações enviadas'})
+                        }
+                    })
                 }
             })
         },

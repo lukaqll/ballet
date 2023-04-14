@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class InvoicesService extends AbstractService
 {
@@ -471,5 +472,23 @@ class InvoicesService extends AbstractService
         }
 
         return $invoice;
+    }
+
+    public function cancelInvoice($id) {
+
+        $invoice = $this->find($id);
+        if($invoice->status != 'A')
+            throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
+
+        $mercadoPagoService = new MercadoPagoService;
+        if( !empty($invoice->reference) ){
+            $mercadoPagoService->cancelPayment($invoice->reference);
+        }
+
+        if( !empty($invoice->openPayment) ){
+            $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_manual']);
+        }
+
+        return $this->updateById( $id, ['status' => 'C'] );
     }
 }

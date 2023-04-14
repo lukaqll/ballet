@@ -271,3 +271,14 @@ CREATE TABLE `ellega78_app`.`payment_methods` (
   `name` VARCHAR(45) NOT NULL,
   `deleted` TINYINT(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`));
+
+----------
+
+ALTER TABLE `ellega78_app`.`users` 
+ADD COLUMN `deleted` TINYINT(4) NULL DEFAULT 0 AFTER `know_by`;
+
+ALTER TABLE `ellega78_app`.`students` 
+ADD COLUMN `deleted` TINYINT(4) NULL DEFAULT 0 AFTER `picture`;
+
+ALTER TABLE `ellega78_app`.`users` 
+DROP INDEX `email_UNIQUE`;

@@ -88,6 +88,7 @@
             :user="editableUser"
             @onHidden="onStudentModalHidden"
             @onSave="onStudentSave"
+            @notFound="studentModalShow = false; editableStudentId = null"
         />
         
     </div>

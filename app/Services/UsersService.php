@@ -120,7 +120,7 @@ class UsersService extends AbstractService
                                  });
         }
         
-        return $findable->select('users.*')->get();
+        return $findable->where('users.deleted', '!=', 1)->select('users.*')->get();
     }
 
     /**
@@ -219,35 +219,72 @@ class UsersService extends AbstractService
 
     }
 
-
     public function delete(int $id){
         
         $user = $this->find($id);
 
         if(empty($user))
             throw ValidationException::withMessages(['Falha ao buscar usuário']);
-
-        $students = Student::where('id_user', $user->id)->get();
+            
+        $storage = Storage::disk('public');
 
         // delete invoices
-        $invoices = Invoice::where('id_user', $user->id)->get();
-        foreach($invoices as $invoice){
+        $invoices = Invoice::where('id_user', $user->id);
+        foreach($invoices->get() as $invoice){
             InvoicePayment::where('id_invoice', $invoice->id)->delete();
-            Invoice::find($invoice->id)->delete();
         }
-
+        $invoices->delete();
+            
         // delete student
-        foreach($students as $student){
-
+        $students = Student::where('id_user', $user->id);
+        foreach($students->get() as $student){
             StudentClass::where('id_student', $student->id)->delete();
             Contract::where('id_student', $student->id)->delete();
-            Student::find($student->id)->delete();
+
+            if ($storage->exists($student->picture))
+                $storage->delete($student->picture);
+        }
+        $students->delete();
+
+        PasswordRecovery::where('id_user', $user->id)->delete();
+        $files = RegisterFile::where('id_user', $user->id);
+        foreach ($files->get() as $file) {
+            if ($storage->exists($file->name))
+                $storage->delete($file->name);
+        }
+        $files->delete();
+
+        return $user->delete();
+    }
+
+    public function softDelete($id){
+        
+        $user = $this->find($id);
+
+        if(empty($user))
+            throw ValidationException::withMessages(['Falha ao buscar usuário']);
+
+        $invoicesService = new InvoicesService;
+        $clicksignService = new ClicksignService;
+
+        foreach($user->openInvoices as $invoice){
+            try {
+                $invoicesService->cancelInvoice($invoice->id);
+            } catch (ValidationException $e) {}
+        }
+
+        foreach($user->students as $student){
+            foreach ($student->openContracts as $contract) {
+                try {
+                    $clicksignService->cancelContract($contract);
+                } catch (ValidationException $e) {}
+            }
+            $student->update(['deleted' => 1]);
         }
 
         PasswordRecovery::where('id_user', $user->id)->delete();
-        RegisterFile::where('id_user', $user->id)->delete();
-        return User::find($user->id)->delete();
 
+        return $user->update(['deleted' => 1]);
     }
 
     public function verifyUserStatusScript(User $user){

@@ -113,6 +113,6 @@ class StudentsService extends AbstractService
             $findable = $findable->where('cl.id', $filters['id_class']);
         }
 
-        return $findable->select('students.*')->get();
+        return $findable->where('deleted', '!=', 1)->select('students.*')->get();
     }
 }

@@ -328,11 +328,24 @@ class ClicksignService extends AbstractApiService
     public function notifyAll( Contract $contract ){
 
         $document = $this->getDocument($contract);
+        $result = [];
         foreach( $document->document->signers as $signer ){
-            $this->sendNotification( $signer->request_signature_key );
+            try {
+                $this->sendNotification( $signer->request_signature_key );
+                $result[$signer->key] = [
+                    'name' => $signer->name,
+                    'success' => true
+                ];
+            } catch (ValidationException $e) {
+                $result[$signer->key] = [
+                    'name' => $signer->name,
+                    'success' => false,
+                    'messages' => $e->errors()[0]
+                ];
+            }
         }
 
-        return true;
+        return [$contract->student->user->name => $result];
     }
 
     public function onContractCloseHandle(Contract $contract, $status){

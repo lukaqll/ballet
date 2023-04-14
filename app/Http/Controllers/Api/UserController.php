@@ -7,8 +7,10 @@ use App\Http\Resources\RegisterFileResource;
 use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\UserResource;
 use App\Models\ClassModel;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -91,8 +93,20 @@ class UserController extends Controller
             // create user
             $userValidData = $request->validate([
                 'user_name'     => 'required|string',
-                'user_email'    => 'required|string|email|unique:users,email',
-                'user_cpf'      => 'required|string|size:14|unique:users,cpf',
+                // 'user_email'    => 'required|string|email|unique:users,email',
+                'user_email'    => [
+                    'required',
+                    'string',
+                    'email',
+                    Rule::unique('users', 'email')->where(fn (Builder $query) => $query->where('deleted', '!=', 1))
+                ],
+                // 'user_cpf'      => 'required|string|size:14|unique:users,cpf',
+                'user_cpf' => [
+                    'required',
+                    'string',
+                    'size:14',
+                    Rule::unique('users', 'cpf')->where(fn (Builder $query) => $query->where('deleted', '!=', 1))
+                ],
                 'user_phone'    => 'required|string',
                 'user_is_whatsapp' => 'nullable|integer',
                 'user_password' => 'nullable|string',
@@ -162,8 +176,20 @@ class UserController extends Controller
             
             $validData = $request->validate([
                 'name' => 'required|string',
-                'email' => 'required|string|email|unique:users,email,'.$id,
-                'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
+                // 'email' => 'required|string|email|unique:users,email,'.$id,
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    Rule::unique('users', 'email')->where(fn (Builder $query) => $query->where('deleted', '!=', 1)->where('id', '!=', $id))
+                ],
+                // 'cpf' => 'required|string|size:14|unique:users,cpf,'.$id,
+                'cpf' => [
+                    'required',
+                    'string',
+                    'size:14',
+                    Rule::unique('users', 'cpf')->where(fn (Builder $query) => $query->where('deleted', '!=', 1)->where('id', '!=', $id))
+                ],
                 'phone' => 'required|string',
                 'is_whatsapp'   => 'nullable|integer',
                 'id_unit'  => 'required|integer|exists:units,id',
@@ -213,7 +239,40 @@ class UserController extends Controller
             if( $request->input('confirmation') != 'confirmar' )
                 throw ValidationException::withMessages(['Confirme a remoção do usuário']);
 
-            $deleted = $this->usersService->delete( $id ); 
+            $deleted = $this->usersService->softDelete( $id );
+            $response = [ 'status' => 'success', 'data' => $deleted ];
+            DB::commit();
+        } catch ( ValidationException $e ){
+            DB::rollBack();
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+
+        return response()->json( $response );
+    }
+
+    /**
+     * delete multiple
+     * 
+     * @return  json
+     */
+    public function deleteMultiple( Request $request ){
+
+        try {
+            DB::beginTransaction();
+
+            if( $request->input('confirmation') != 'confirmar' )
+                throw ValidationException::withMessages(['Confirme a remoção dos usuários']);
+
+            $ids = $request->input('ids');
+            if (empty($ids) || !is_array($ids))
+                throw ValidationException::withMessages(['Não foi possível realizar esta ação']);
+
+            $deleted = [];
+            foreach ($ids as $id) {
+                try {
+                    $deleted[] = $this->usersService->softDelete( $id );
+                } catch (ValidationException $e) {}
+            }
             $response = [ 'status' => 'success', 'data' => $deleted ];
             DB::commit();
         } catch ( ValidationException $e ){
@@ -274,7 +333,13 @@ class UserController extends Controller
             $userData = $request->validate([
                 'name' => 'required|string|min:1',
                 'phone' => 'nullable|string',
-                'email' => 'required|string|unique:users,email,'.$user->id,
+                // 'email' => 'required|string|unique:users,email,'.$user->id,
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    Rule::unique('users', 'email')->where(fn (Builder $query) => $query->where('deleted', '!=', 1)->where('id', '!=', $user->id))
+                ],
             ]);
             
             $updated = $this->usersService->updateById($user->id, $userData);
@@ -351,8 +416,20 @@ class UserController extends Controller
             // create user
             $userValidData = $request->validate([
                 'user_name'     => 'required|string',
-                'user_email'    => 'required|string|email|unique:users,email',
-                'user_cpf'      => 'required|string|size:14|unique:users,cpf',
+                // 'user_email'    => 'required|string|email|unique:users,email',
+                'user_email'    => [
+                    'required',
+                    'string',
+                    'email',
+                    Rule::unique('users', 'email')->where(fn (Builder $query) => $query->where('deleted', '!=', 1))
+                ],
+                // 'user_cpf'      => 'required|string|size:14|unique:users,cpf',
+                'user_cpf' => [
+                    'required',
+                    'string',
+                    'size:14',
+                    Rule::unique('users', 'cpf')->where(fn (Builder $query) => $query->where('deleted', '!=', 1))
+                ],
                 'user_phone'    => 'required|string',
                 'user_is_whatsapp'   => 'nullable|integer',
                 'user_password' => 'nullable|string',

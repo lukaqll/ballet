@@ -18,6 +18,8 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'password' => 'required|string'
             ]);
+
+            $credentials['deleted'] = 0;
     
             if (! $token = auth('api')->attempt($credentials)) {
                 throw ValidationException::withMessages(['E-Mail ou Senha incorretos']);

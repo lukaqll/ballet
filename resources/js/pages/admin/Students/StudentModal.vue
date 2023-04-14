@@ -340,6 +340,9 @@ export default {
                 load: true,
                 success: (student) => {
                     this.student = student
+                },
+                error: (e) => {
+                    this.$emit('notFound')
                 }
             })
         },

@@ -27,7 +27,7 @@
                                         </div>
                                         <div class="col-md-6" style="margin-top: 2rem">
                                             <b-button @click="getUsers">Buscar</b-button>
-                                            <b-button variant="danger" @click="filter = {}">Limpar</b-button>
+                                            <b-button variant="danger" @click="filter = {status: null, id_unit: null}">Limpar</b-button>
                                         </div>
                                     </div>
                                 </div>
@@ -47,8 +47,15 @@
                             </div>
 
                             <div class="row mt-4 gap-2" v-if="users.length">
-                                <div class="col-md-4">
-                                    <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b-form-input size="sm" v-model="tableFilter" placeholder="Buscar"></b-form-input>
+                                        </div>
+                                        <div class="col">
+                                            <b-button class="float-right" v-if="selectedUsers.length" size="sm" variant="danger" @click="$bvModal.show('delete-selected')">Deletar</b-button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 table-responsive">
                                     <b-table
@@ -57,6 +64,12 @@
                                         :filter="tableFilter"
                                         hover
                                     >
+                                        <template #head(select)>
+                                            <b-form-checkbox v-model="selectAll" @change="handleSelectAll()"></b-form-checkbox>
+                                        </template>
+                                        <template #cell(select)="row">
+                                            <b-form-checkbox name="selected-users" v-model="selectedUsers" :value="row.item.id"></b-form-checkbox>
+                                        </template>
                                         <template #cell(students)="row">
                                                 <span v-if="row.item.students.length == 1">{{ row.item.students[0].name }}</span>
                                                 <span v-else-if="row.item.students.length > 1">{{ row.item.students[0].name }} <b>+{{row.item.students.length - 1}}</b></span>
@@ -106,6 +119,31 @@
                 </div>
             </div>
         </div>
+
+        <b-modal  hide-footer id="delete-selected">
+            <div>
+                <div v-if="selectedUsers.length == 1">
+                    <h2 class="text-center">Deseja deletar o usuário selecionado?</h2>
+                    <h5 v-if="activeUserSelected" class="text-danger text-center">Este usuário está ativo</h5>
+                </div>
+                <div v-else>
+                    <h2 class="text-center">Deseja deletar os {{selectedUsers.length}} usuários selecionados?</h2>
+                    <h5 v-if="activeUserSelected" class="text-danger text-center">Existem usuários ativos selecionados</h5>
+                </div>
+                <p class="text-center">
+                    Esta ação será irreversível
+                    <br>
+                    Digite a palavra 'confirmar' para deletar
+                </p>
+                <b-form-input v-model="confirmationDelete"></b-form-input>
+                <div class="text-right mt-3">
+                    <b-button @click="() => {$bvModal.hide('delete-selected'); confirmationDelete=''}">Cancelar</b-button>
+                    <b-button variant="danger" @click="deleteSelected">
+                        Deletar
+                    </b-button>
+                </div>
+            </div>
+        </b-modal>
 
         <new-user-modal 
             :isVisible="newUserModalShow" 
@@ -165,6 +203,7 @@ export default {
     computed: {
         tableFields(){
             return [
+                { key: 'select', label: ''},
                 { key: 'name', label: 'Nome', sortable: true },
                 { key: 'status_text', label: 'Status', sortable: true },
                 { key: 'students', label: 'Alunos' },
@@ -182,7 +221,9 @@ export default {
             ]
         },
         unitsOptions(){
-            return this.units.map(un => ({ text: un.name, value: un.id }))
+            const units = this.units.map(un => ({ text: un.name, value: un.id }))
+            units.unshift({text: 'Todos', value: null})
+            return units
         },
         usersTable(){
 
@@ -192,9 +233,35 @@ export default {
         },
         expiredUsersCount(){
             return this.users.filter(user => !!user?.open_invoices?.length).length
+        },
+        activeUserSelected() {
+            let sel = false
+            this.users.forEach(us => {
+                if (this.selectedUsers.find(i => i == us.id && us.status == 'A'))
+                    sel = true
+            })
+            return sel
         }
     },
 
+    watch: {
+        selectedUsers: function(val) {
+            if (val.length == this.users.length) {
+                this.selectAll = true
+            } else {
+                this.selectAll = false
+            }
+        },
+
+        users: function(val) {
+            this.selectAll = false
+            this.selectedUsers = []
+        },
+        tableFilter: function(val) {
+            this.selectAll = false
+            this.selectedUsers = []
+        }
+    },
        
     mounted: function(){
         this.getUsers()
@@ -209,9 +276,12 @@ export default {
         toPasswordUpdateId: null,
         editableStudentId: null,
         studentModalShow: false,
-        filter: {status: null},
+        filter: {status: null, id_unit: null},
         tableFilter: '',
         units: [],
+        selectedUsers: [],
+        selectAll: false,
+        confirmationDelete: '',
 
         userInvoice: null,
         unsignedUsers: 0
@@ -357,6 +427,40 @@ export default {
                 }
             })
         },
+
+        handleSelectAll(val) {
+            if (!val && this.selectedUsers.length == this.users.length) {
+                this.selectedUsers = []
+            } else if (this.selectedUsers.length != this.users.length) {
+                this.selectedUsers = this.users.map(us => us.id)
+            }
+        },
+
+        deleteSelected() {
+            if( this.confirmationDelete != 'confirmar' ){
+                common.setError({
+                    message: 'Informe o termo correto para confirmar'
+                })
+                return
+            }
+
+            common.request({
+                url: '/api/users/delete-multiple',
+                type: 'post',
+                auth: true,
+                setError: true,
+                load: true,
+                data: {
+                    confirmation: this.confirmationDelete,
+                    ids: this.selectedUsers
+                },
+                success: (data) => {
+                    this.onEditUserSave()
+                    this.confirmationDelete = ''
+                    this.$bvModal.hide('delete-selected')
+                }
+            })
+        }
     }
 }
 </script>

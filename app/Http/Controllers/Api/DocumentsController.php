@@ -5,6 +5,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\StudentResource;
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
@@ -101,7 +102,28 @@ class DocumentsController extends Controller
 
             $contract = $this->contractsService->find($id);
             $result = $this->clicksignService->notifyAll( $contract );
-            $response = [ 'status' => 'success', 'data' => $contract->student ];
+            $response = [ 'status' => 'success', 'data' => $result ];
+            
+        } catch ( ValidationException $e ){
+
+            $response = [ 'status' => 'error', 'message' => $e->errors() ];
+        }
+        return response()->json( $response );
+    }
+
+    /**
+     * notify all
+     */
+    public function notifyAll() {
+        
+        try {
+
+            $contracts = Contract::where('status', 'running')->get();
+            $result = [];
+            foreach ($contracts as $contract) {
+                $result[] = $this->clicksignService->notifyAll( $contract );
+            }
+            $response = [ 'status' => 'success', 'data' => $result ];
             
         } catch ( ValidationException $e ){
 

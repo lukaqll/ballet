@@ -536,6 +536,7 @@ export default {
                     confirmation: this.confirmationDelete
                 },
                 success: (data) => {
+                    this.confirmationDelete = ''
                     this.$emit('onSave', data)
                     this.$bvModal.hide('delete-confirmation')
                 }

@@ -209,19 +209,7 @@ class InvoiceController extends Controller
 
         try {
 
-            $invoice = $this->invoicesService->find($id);
-            if($invoice->status != 'A')
-                throw ValidationException::withMessages(['Esta fatura não está mais aberta']);
-
-            if( !empty($invoice->reference) ){
-                $this->mercadoPagoService->cancelPayment($invoice->reference);
-            }
-
-            if( !empty($invoice->openPayment) ){
-                $invoice->openPayment->update(['status' => 'cancelled', 'status_detail' => 'cancelled_manual']);
-            }
-
-            $cancelled = $this->invoicesService->updateById( $id, ['status' => 'C'] );
+            $cancelled = $this->invoicesService->cancelInvoice($id);
             $response = [ 'status' => 'success', 'data' => new InvoiceResource($cancelled) ];
 
         } catch ( ValidationException $e ){
