@@ -120,7 +120,7 @@ class UsersService extends AbstractService
                                  });
         }
         
-        return $findable->where('users.deleted', '!=', 1)->select('users.*')->get();
+        return $findable->where('users.deleted', '!=', 1)->select('users.*')->group('users.id')->get();
     }
 
     /**
