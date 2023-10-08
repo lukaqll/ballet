@@ -32,10 +32,10 @@ services:
         image: mysql:5.7.22
         restart: unless-stopped
         environment: 
-            MYSQL_DATABASE: 'ballet'
+            MYSQL_DATABASE: 'ellega78_app'
             MYSQL_ROOT_PASSWORD: 'root'
             MYSQL_PASSWORD: 'root'
-            MYSQL_USER: 'root'
+            # MYSQL_USER: 'root'
         volumes: 
             - ./.docker/mysql/dbdata:/var/lib/mysql
         ports: 

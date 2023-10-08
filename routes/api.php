@@ -109,6 +109,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/user/admin', [AuthController::class, 'getUser']);
 
     Route::get('/users/list', [UserController::class, 'list']);
+    Route::get('/users/test', [UserController::class, 'test']);
     Route::get('/users', [UserController::class, 'get']);
     Route::get('/users/{id}', [UserController::class, 'getById']);
     Route::post('/users/with-students', [UserController::class, 'createWithStudent']);

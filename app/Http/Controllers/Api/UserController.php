@@ -7,8 +7,10 @@ use App\Http\Resources\RegisterFileResource;
 use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\UserResource;
 use App\Models\ClassModel;
+use App\Models\Invoice;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -19,6 +21,115 @@ class UserController extends Controller
     {
         parent::__construct();
     }
+
+    public function test(Request $req) {
+        $period = self::getGroupedPeriod($req->get('start'), $req->get('end'));
+        $months = [];
+        $list = [];
+        foreach ($period as $month) {
+            $monthFormat = Carbon::parse($month['start'])->format('Y-m');
+            $months[] = $monthFormat;
+            $data = DB::table('invoices', 'i')
+                    ->join('users AS u', 'u.id', 'i.id_user')
+                    ->leftJoin('students AS st', function($st) {
+                        $st->on('st.id_user', 'u.id')
+                            ->where('st.deleted', '!=', 1);
+                    })
+                    ->where('i.status', '!=', 'C')
+                    ->where('u.deleted', '!=', 1)
+                    ->whereBetween('i.expires_at', [$month['start'], $month['end']])
+                    ->groupBy('u.id')
+                    ->selectRaw("
+                        u.id,
+                        u.name,
+                        u.status,
+                        DATE_FORMAT(u.created_at, '%Y-%m') AS created_at,
+                        GROUP_CONCAT(DISTINCT st.name) AS students,
+                        sum(if(i.status = 'P', i.value + i.fee + i.added, 0)) as paid,
+                        sum(if(i.status = 'A', i.value + i.fee + i.added, 0)) as pending,
+                        (
+                            SELECT DATE_FORMAT(created_at, '%Y-%m')
+                            FROM invoices
+                            WHERE id_user = u.id
+                                AND status != 'C'
+                            ORDER BY created_at
+                            LIMIT 1
+                        ) AS last_invoice
+                    ")
+                    ->get()->toArray();
+
+            $list[] = [
+                'month' => $monthFormat,
+                'data' => $data
+            ];
+        }
+        // dd($list);
+        $users = [];
+        foreach ($list as $month) {
+            foreach ($month['data'] as $data) {
+                $users[] = [
+                    'id' => $data->id,
+                    'name' => $data->name,
+                    'status' => $data->status,
+                    'created_at' => $data->created_at,
+                    'last_invoice' => $data->last_invoice,
+                    'students' => $data->students
+                ];
+            }
+        }
+
+        $result = [];
+        foreach ($users as $user) {
+            $result[$user['id']]['user'] = $user;
+            foreach ($list as $month) {
+                $dataUser = array_search($user['id'], array_column((array)$month['data'], 'id'));
+                $values = null;
+                if ($dataUser !== false) {
+                    $arr = ((array)$month['data'])[$dataUser];
+                    $values = [
+                        'paid' => floatval($arr->paid),
+                        'pending' => floatval($arr->pending)
+                    ];
+                } else if ($user['created_at'] >= $month['month']) {
+                    $values = 'nonexistent';
+                } else if ($user['status'] == 'I' && $user['last_invoice'] < $month['month']) {
+                    $values = 'inactive';
+                }
+                $result[$user['id']]['data'][$month['month']] = $values;
+            }
+        }
+
+        $response = [];
+        foreach ($result as $item) {
+            $response[] = $item;
+        }
+
+        return response()->json(['data' => $response, 'months' => $months]);
+    }
+
+    public static function getGroupedPeriod(string $start, string $end) {
+        $startDate = Carbon::parse($start);
+        $endDate = Carbon::parse($end);
+        $monthsCount = $endDate->clone()->startOfMonth()->diffInMonths($startDate->clone()->startOfMonth());
+
+        for ($i = 0; $i <= $monthsCount; $i++) {
+
+            $start = $startDate->clone()->addMonthNoOverflow($i)->startOfMonth();
+            $end = $startDate->clone()->addMonthNoOverflow($i)->endOfMonth();
+
+            // if ($end->format('Y-m-d') > $endDate->format('Y-m-d')) {
+            //     $end = $endDate->clone();
+            // }
+
+            $period[] = [
+                'start' => $start->format('Y-m-d'),
+                'end' => $end->format('Y-m-d')
+            ];
+        }
+
+        return $period;
+    }
+
 
     /**
      * list all
@@ -32,7 +143,7 @@ class UserController extends Controller
             $result = $this->usersService->listClients( $dataFilter );
 
             $response = [ 'status' => 'success', 'data' => UserResource::collection($result) ];
-            
+
         } catch ( ValidationException $e ){
 
             $response = [ 'status' => 'error', 'message' => $e->errors() ];
